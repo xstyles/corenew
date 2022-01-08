@@ -119,7 +119,8 @@ class Rendez_Vous_Component extends BP_Component {
 		 * @param string default subnav to use (shedule or attend)
 		 */
 		$this->default_subnav = apply_filters( 'rendez_vous_member_default_subnav', rendez_vous()->get_schedule_slug() );
-
+		
+		
 		$this->subnav_position = array(
 			'schedule' => 10,
 			'attend'   => 20,
@@ -165,7 +166,7 @@ class Rendez_Vous_Component extends BP_Component {
 
 		// Add a subnav item under the main Rendez-vous tab
 		$sub_nav[] = array(
-			'name'            =>  __( 'Schedule', 'rendez-vous' ),
+			'name'            =>  __( 'Meetings', 'rendez-vous' ),
 			'slug'            => rendez_vous()->get_schedule_slug(),
 			'parent_url'      => $rendez_vous_link,
 			'parent_slug'     => $this->slug,

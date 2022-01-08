@@ -6,7 +6,6 @@
  * @version 7.0.0
  */
 ?>
-<?php //bp_get_template_part ( 'members/single/parts/corewp_mem-header' ) ?>
 
 <div id="item-header-avatar">
 	<a href="<?php bp_displayed_user_link(); ?>">

@@ -344,7 +344,7 @@ function rendez_vous_enqueue_editor( $args = array() ) {
 	wp_localize_script( 'rendez-vous-media-views', '_wpMediaViewsL10n', $strings );
 
 	wp_enqueue_script( 'rendez-vous-modal' );
-	wp_enqueue_style( 'rendez-vous-modal-style' );
+	//wp_enqueue_style( 'rendez-vous-modal-style' );
 	rendez_vous_plupload_settings();
 
 	require_once ABSPATH . WPINC . '/media-template.php';
