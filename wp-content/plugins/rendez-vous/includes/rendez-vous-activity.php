@@ -79,7 +79,7 @@ add_action( 'bp_register_activity_actions', 'rendez_vous_register_activity_actio
 function rendez_vous_format_activity_action( $action, $activity ) {
 	$rendez_vous_id = $activity->item_id;
 	$organizer      = $activity->secondary_item_id;
-
+	
 	if ( $activity->component != buddypress()->rendez_vous->id ) {
 		$rendez_vous_id = $activity->secondary_item_id;
 		$organizer      = $activity->user_id;

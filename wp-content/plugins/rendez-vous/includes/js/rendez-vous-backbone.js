@@ -3,7 +3,7 @@ var rdv = rdv || {};
 /**
  * Rendez Vous Editor
  */
-( function( $ ) {
+// ( function( $ ) {
 	var media;
 
 	rdv.media = media = {};
@@ -1096,4 +1096,4 @@ var rdv = rdv || {};
 
 	$( media.init );
 
-} )( jQuery );
+// } )( jQuery );
