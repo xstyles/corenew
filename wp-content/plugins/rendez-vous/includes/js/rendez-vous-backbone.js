@@ -963,6 +963,9 @@ var rdv = rdv || {};
 	});
 
 	media.view.stepsItem = wp.media.view.RouterItem.extend( {
+		// Attempts to fix tabs not appearing in certain themes
+		tagName: 'a',
+		className: 'media-menu-item faux-button',
 
 		initialize: function() {
 			wp.media.view.RouterItem.prototype.initialize.apply( this, arguments );
@@ -1045,7 +1048,6 @@ var rdv = rdv || {};
 		},
 
 		rdvContentRender: function( tab ) {
-
 			media.frame().content.set( new rdv.media.view.RendezVous( {
 				controller : media.frame(),
 				model      : media.frame().state(),
