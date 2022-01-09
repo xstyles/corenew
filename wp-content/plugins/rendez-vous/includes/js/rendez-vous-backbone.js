@@ -950,11 +950,17 @@ var rdv = rdv || {};
 				} );
 			}
 
-			if ( ! disabled ) {
-				var selection = this.controller.state().props.get( '_all' ).get( 'selection' );
+			// 
+			// Below code checks for selected users. We disable it for CoreWeapons
+			// 
 
-				disabled = !selection.length;
-			}
+			// if ( ! disabled ) {
+			// 	var selection = this.controller.state().props.get( '_all' ).get( 'selection' );
+
+			// 	disabled = !selection.length;
+			// }
+
+			// ///////////////////
 
 			this.get( 'inserter' ).model.set( 'disabled', disabled );
 
