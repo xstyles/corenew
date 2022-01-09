@@ -502,6 +502,7 @@ var rdv = rdv || {};
 				value = $(event.target).val();
 			}
 
+			// console.log('this.model.get("rdvfields")', this.model.get("rdvfields"))
 			this.model.get( 'rdvfields').get( event.target.id ).set( 'value', value );
 		},
 
@@ -824,6 +825,8 @@ var rdv = rdv || {};
 			this.frame.on( 'content:render:when', this.manageWhenTab, this );
 			// this.frame.on( 'content:render:who', this.manageWhoTab, this );
 
+			this.frame.on('close', this.resetAll, this);
+
 			rdvfields.on( 'change', this.observeChanges, this );
 			rdvdays.on( 'change', this.observeChanges, this );
 		},
@@ -834,6 +837,22 @@ var rdv = rdv || {};
 			if( !mirror || !mirror.get( model.id ) )
 				mirror.add( model );
 		},
+
+		resetAll: function () {
+			this.resetFields('rdvfields');
+			this.resetFields('rdvdays');
+		},
+
+		resetFields: function (key) {
+			const fields = this.get(key)
+
+			for (const field in fields) {
+				if (Object.hasOwnProperty.call(fields, field)) {
+					fields[field].set('value', null);
+				}
+			}
+		},
+
 
 		manageWhoTab:function( who ) {
 			this.set( 'content', 'who');
@@ -1074,6 +1093,7 @@ var rdv = rdv || {};
 		},
 
 		close: function() {
+			console.log('media.frame() =', media.frame())
 			$( '.media-modal' ).removeClass( 'smaller' );
 		},
 
