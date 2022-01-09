@@ -267,7 +267,7 @@ class Rendez_Vous_Admin {
 			$class = "nav-tab-active";
 		}
 		?>
-		<a href="<?php echo esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'rendez-vous' ), 'admin.php' ) ) );?>" class="nav-tab <?php echo $class;?>"><?php esc_html_e( 'Core-Scheduler', 'rendez-vous' );?></a>
+		<a href="<?php echo esc_url( bp_get_admin_url( add_query_arg( array( 'page' => 'rendez-vous' ), 'admin.php' ) ) );?>" class="nav-tab <?php echo $class;?>"><?php esc_html_e( 'Class Scheduler', 'rendez-vous' );?></a>
 		<?php
 	}
 }
