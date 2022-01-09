@@ -20,6 +20,20 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_schedule_title() {
+	esc_html_e( 'Classes', 'rendez-vous' );
+	?>
+	<?php
+}
+
+/**
+ * Schedule screen actions
+ *
+ * @package Rendez Vous
+ * @subpackage Parts
+ *
+ * @since Rendez Vous (1.0.0)
+ */
+function rendez_vous_schedule_actions() {
 	?>
 	<ul id="rendez-vous-nav">
 		<li><?php rendez_vous_editor( 'new-rendez-vous' ); ?></li>
@@ -37,6 +51,7 @@ function rendez_vous_schedule_title() {
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_schedule_content() {
+	rendez_vous_schedule_actions();
 	rendez_vous_loop();
 }
 
