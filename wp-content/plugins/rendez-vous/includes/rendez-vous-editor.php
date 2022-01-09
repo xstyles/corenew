@@ -167,26 +167,26 @@ function rendez_vous_enqueue_editor( $args = array() ) {
 				'tab'         => 'what',
 				'class'       => 'required'
 			),
-			array(
-				'id'          => 'venue',
-				'order'       => 10,
-				'type'        => 'text',
-				'placeholder' => esc_html__( 'Where ?', 'rendez-vous' ),
-				'label'       => esc_html__( 'Venue', 'rendez-vous' ),
-				'value'       => '',
-				'tab'         => 'what',
-				'class'       => ''
-			),
-			array(
-				'id'          => 'description',
-				'order'       => 20,
-				'type'        => 'textarea',
-				'placeholder' => esc_html__( 'Some details about this rendez-vous ?', 'rendez-vous' ),
-				'label'       => esc_html__( 'Description', 'rendez-vous' ),
-				'value'       => '',
-				'tab'         => 'what',
-				'class'       => ''
-			),
+			// array(
+			// 	'id'          => 'venue',
+			// 	'order'       => 10,
+			// 	'type'        => 'text',
+			// 	'placeholder' => esc_html__( 'Where ?', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Venue', 'rendez-vous' ),
+			// 	'value'       => '',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
+			// array(
+			// 	'id'          => 'description',
+			// 	'order'       => 20,
+			// 	'type'        => 'textarea',
+			// 	'placeholder' => esc_html__( 'Some details about this rendez-vous ?', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Description', 'rendez-vous' ),
+			// 	'value'       => '',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
 			array(
 				'id'          => 'duration',
 				'order'       => 30,
@@ -197,16 +197,16 @@ function rendez_vous_enqueue_editor( $args = array() ) {
 				'tab'         => 'what',
 				'class'       => 'required'
 			),
-			array(
-				'id'          => 'privacy',
-				'order'       => 40,
-				'type'        => 'checkbox',
-				'placeholder' => esc_html__( 'Restrict to the selected members of the Who? tab', 'rendez-vous' ),
-				'label'       => esc_html__( 'Access', 'rendez-vous' ),
-				'value'       => '0',
-				'tab'         => 'what',
-				'class'       => ''
-			),
+			// array(
+			// 	'id'          => 'privacy',
+			// 	'order'       => 40,
+			// 	'type'        => 'checkbox',
+			// 	'placeholder' => esc_html__( 'Restrict to the selected members of the Who? tab', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Access', 'rendez-vous' ),
+			// 	'value'       => '0',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
 			array(
 				'id'          => 'utcoffset',
 				'order'       => 50,
