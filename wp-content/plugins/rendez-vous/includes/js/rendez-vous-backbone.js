@@ -783,12 +783,12 @@ var rdv = rdv || {};
 					priority:40,
 					id:'when'
 				},
-				who: {
-					tpl:'who',
-					text : rdv.strings.whoTab,
-					priority:60,
-					id:'who'
-				}
+				// who: {
+				// 	tpl:'who',
+				// 	text : rdv.strings.whoTab,
+				// 	priority:60,
+				// 	id:'who'
+				// }
 			},
 
 		},
@@ -822,7 +822,7 @@ var rdv = rdv || {};
 
 			this.frame.on( 'content:render:what', this.manageWhatTab, this );
 			this.frame.on( 'content:render:when', this.manageWhenTab, this );
-			this.frame.on( 'content:render:who', this.manageWhoTab, this );
+			// this.frame.on( 'content:render:who', this.manageWhoTab, this );
 
 			rdvfields.on( 'change', this.observeChanges, this );
 			rdvdays.on( 'change', this.observeChanges, this );
