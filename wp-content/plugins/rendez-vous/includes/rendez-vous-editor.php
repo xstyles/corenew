@@ -460,12 +460,23 @@ function rendezvous_media_templates() {
 					</legend>
 					<div class="daytd">
 						<label for="{{data.id}}-hour1"><?php esc_html_e( 'Define 1 to 3 hours for this day, please respect the format HH:MM', 'rendez-vous' );?></label>
-						<input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">&nbsp;
+
+						<!-- <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">&nbsp;
 						<input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
-						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp;
+						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+						<div style="display: flex; flex-direction: row; justify-items: space-between;">
+							<input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">
+							<!-- &nbsp; -->
+							<!-- <input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
+							<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+						</div>
 					</div>
 				</fieldset>
 			<# } #>
+	</script>
+
+	<script type="text/html" id="tmpl-when-add-slot">
+		<input type="time" value="{{data.hour}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp;
 	</script>
 
 	<script type="text/html" id="tmpl-rendez-vous">

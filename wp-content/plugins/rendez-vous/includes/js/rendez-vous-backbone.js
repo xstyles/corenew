@@ -443,7 +443,7 @@ var rdv = rdv || {};
 
 			this.createSteps();
 
-			if( activeTab == 'when' )
+			if( activeTab == 'what' )
 				this.createSidebar();
 
 			if( activeTab == 'who' )
@@ -462,6 +462,7 @@ var rdv = rdv || {};
 
 		createSteps:function() {
 			var content;
+			var contentWhen;
 
 			switch( this.options.tab.id ) {
 				case 'what':
@@ -471,7 +472,14 @@ var rdv = rdv || {};
 						model:      this.model,
 						tab:        this.options.tab,
 					});
+					contentWhen = this.rdvdays = new media.view.RendezVousDays({
+						controller: this.controller,
+						collection: this.model.get( 'rdvdays' ),
+						model:      this.model,
+						tab:        this.options.tab,
+					});
 					break;
+					
 				case 'when':
 					content = this.rdvdays = new media.view.RendezVousDays({
 						controller: this.controller,
@@ -480,6 +488,7 @@ var rdv = rdv || {};
 						tab:        this.options.tab,
 					});
 					break;
+
 				case 'who':
 					content = this.rdvusers = new media.view.RendezVousUsers({
 						controller: this.controller,
@@ -491,6 +500,7 @@ var rdv = rdv || {};
 			}
 
 			this.views.add( content );
+			contentWhen && this.views.add(contentWhen)
 		},
 
 		storeWhatInput: function( event ) {
