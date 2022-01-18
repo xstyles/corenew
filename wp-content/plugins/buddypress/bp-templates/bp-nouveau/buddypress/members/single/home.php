@@ -6,7 +6,6 @@
  * @version 3.0.0
  */
 ?>
-	
 
 	<?php bp_nouveau_member_hook( 'before', 'home_content' ); ?>
 

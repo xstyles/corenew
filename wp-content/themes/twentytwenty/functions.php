@@ -786,3 +786,31 @@ function twentytwenty_get_elements_array() {
 	 */
 	return apply_filters( 'twentytwenty_get_elements_array', $elements );
 }
+
+// setting the global variable
+add_filter('template_include', 'var_template_include',1000);
+
+function var_template_include($t){
+	$GLOBALS['current_theme_template']= $t;
+	
+	return $t;
+}
+
+
+// display template name on demand
+function get_current_template($echo=false){
+	if(!isset($GLOBALS['current_theme_template'])){
+		return false;
+	}
+	if($echo){
+		echo $GLOBALS['current_theme_template'];
+	}
+	else{
+		return $GLOBALS['current_theme_template'];
+	}
+}
+add_filter( 'woocommerce_gforms_strip_meta_html', 'configure_woocommerce_gforms_strip_meta_html' );
+function configure_woocommerce_gforms_strip_meta_html( $strip_html ) {
+    $strip_html = false;
+    return $strip_html;
+}

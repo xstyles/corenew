@@ -99,14 +99,14 @@ function rendez_vous_ajax_create() {
 	);
 
 	// First attendees
-	$attendees = array_map( 'absint', $_POST['attendees'] );
+	// $attendees = array_map( 'absint', $_POST['attendees'] );
 
-	if ( empty( $attendees ) ) {
-		wp_send_json_error( __( 'No users were selected.', 'rendez-vous' ) );
-	}
+	// if ( empty( $attendees ) ) {
+	// 	wp_send_json_error( __( 'No users were selected.', 'rendez-vous' ) );
+	// }
 
 	// Add to create arguments
-	$args['attendees'] = $attendees;
+	// $args['attendees'] = $attendees;
 
 	// Then fields
 	if ( empty( $_POST['desc'] ) || ! is_array( $_POST['desc'] ) ) {

@@ -689,9 +689,9 @@ function bp_nouveau_member_template_part() {
 function bp_nouveau_member_header_template_part() {
 	$template = 'member-header';
 
-	// if ( bp_displayed_user_use_cover_image_header() ) {
-	// 	$template = 'cover-image-header';
-	// }
+	if ( bp_displayed_user_use_cover_image_header() ) {
+		$template = 'cover-image-header';
+	}
 
 	/**
 	 * Fires before the display of a member's header.
