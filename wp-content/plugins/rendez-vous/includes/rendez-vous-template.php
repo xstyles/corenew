@@ -645,7 +645,17 @@ function rendez_vous_last_modified() {
 	 * @since Rendez Vous (1.0.0)
  	 */
 	function rendez_vous_get_last_modified() {
-		$last_modified = bp_core_time_since( rendez_vous()->query_loop->rendez_vous->post_modified_gmt );
+		// Get the post status and switch reading post date
+		$post_status = rendez_vous()->query_loop->rendez_vous->post_status;
+
+		if ($post_status === "publish") {
+			// Published meetings -> use post_modified_gmt
+			$last_modified = bp_core_time_since( rendez_vous()->query_loop->rendez_vous->post_modified_gmt );
+		} else {
+			// Draft meetings -> use post_modified. post_modified_gmt is usually all 0s at this point
+			$last_modified = bp_core_time_since( rendez_vous()->query_loop->rendez_vous->post_modified );
+		}
+
 		return apply_filters( 'rendez_vous_get_last_modified', sprintf( __( 'Modified %s', 'rendez-vous' ), $last_modified ) );
 	}
 

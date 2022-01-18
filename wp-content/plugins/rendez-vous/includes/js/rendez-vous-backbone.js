@@ -443,7 +443,7 @@ var rdv = rdv || {};
 
 			this.createSteps();
 
-			if( activeTab == 'when' )
+			if( activeTab == 'what' )
 				this.createSidebar();
 
 			if( activeTab == 'who' )
@@ -462,6 +462,7 @@ var rdv = rdv || {};
 
 		createSteps:function() {
 			var content;
+			var contentWhen;
 
 			switch( this.options.tab.id ) {
 				case 'what':
@@ -471,7 +472,14 @@ var rdv = rdv || {};
 						model:      this.model,
 						tab:        this.options.tab,
 					});
+					contentWhen = this.rdvdays = new media.view.RendezVousDays({
+						controller: this.controller,
+						collection: this.model.get( 'rdvdays' ),
+						model:      this.model,
+						tab:        this.options.tab,
+					});
 					break;
+					
 				case 'when':
 					content = this.rdvdays = new media.view.RendezVousDays({
 						controller: this.controller,
@@ -480,6 +488,7 @@ var rdv = rdv || {};
 						tab:        this.options.tab,
 					});
 					break;
+
 				case 'who':
 					content = this.rdvusers = new media.view.RendezVousUsers({
 						controller: this.controller,
@@ -491,6 +500,7 @@ var rdv = rdv || {};
 			}
 
 			this.views.add( content );
+			contentWhen && this.views.add(contentWhen)
 		},
 
 		storeWhatInput: function( event ) {
@@ -502,6 +512,7 @@ var rdv = rdv || {};
 				value = $(event.target).val();
 			}
 
+			// console.log('this.model.get("rdvfields")', this.model.get("rdvfields"))
 			this.model.get( 'rdvfields').get( event.target.id ).set( 'value', value );
 		},
 
@@ -783,12 +794,12 @@ var rdv = rdv || {};
 					priority:40,
 					id:'when'
 				},
-				who: {
-					tpl:'who',
-					text : rdv.strings.whoTab,
-					priority:60,
-					id:'who'
-				}
+				// who: {
+				// 	tpl:'who',
+				// 	text : rdv.strings.whoTab,
+				// 	priority:60,
+				// 	id:'who'
+				// }
 			},
 
 		},
@@ -822,7 +833,9 @@ var rdv = rdv || {};
 
 			this.frame.on( 'content:render:what', this.manageWhatTab, this );
 			this.frame.on( 'content:render:when', this.manageWhenTab, this );
-			this.frame.on( 'content:render:who', this.manageWhoTab, this );
+			// this.frame.on( 'content:render:who', this.manageWhoTab, this );
+
+			this.frame.on('close', this.resetAll, this);
 
 			rdvfields.on( 'change', this.observeChanges, this );
 			rdvdays.on( 'change', this.observeChanges, this );
@@ -834,6 +847,22 @@ var rdv = rdv || {};
 			if( !mirror || !mirror.get( model.id ) )
 				mirror.add( model );
 		},
+
+		resetAll: function () {
+			this.resetFields('rdvfields');
+			this.resetFields('rdvdays');
+		},
+
+		resetFields: function (key) {
+			const fields = this.get(key)
+
+			for (const field in fields) {
+				if (Object.hasOwnProperty.call(fields, field)) {
+					fields[field].set('value', null);
+				}
+			}
+		},
+
 
 		manageWhoTab:function( who ) {
 			this.set( 'content', 'who');
@@ -950,11 +979,17 @@ var rdv = rdv || {};
 				} );
 			}
 
-			if ( ! disabled ) {
-				var selection = this.controller.state().props.get( '_all' ).get( 'selection' );
+			// 
+			// Below code checks for selected users. We disable it for CoreWeapons
+			// 
 
-				disabled = !selection.length;
-			}
+			// if ( ! disabled ) {
+			// 	var selection = this.controller.state().props.get( '_all' ).get( 'selection' );
+
+			// 	disabled = !selection.length;
+			// }
+
+			// ///////////////////
 
 			this.get( 'inserter' ).model.set( 'disabled', disabled );
 
@@ -963,6 +998,9 @@ var rdv = rdv || {};
 	});
 
 	media.view.stepsItem = wp.media.view.RouterItem.extend( {
+		// Attempts to fix tabs not appearing in certain themes
+		tagName: 'a',
+		className: 'media-menu-item faux-button',
 
 		initialize: function() {
 			wp.media.view.RouterItem.prototype.initialize.apply( this, arguments );
@@ -1045,7 +1083,6 @@ var rdv = rdv || {};
 		},
 
 		rdvContentRender: function( tab ) {
-
 			media.frame().content.set( new rdv.media.view.RendezVous( {
 				controller : media.frame(),
 				model      : media.frame().state(),
@@ -1066,6 +1103,7 @@ var rdv = rdv || {};
 		},
 
 		close: function() {
+			console.log('media.frame() =', media.frame())
 			$( '.media-modal' ).removeClass( 'smaller' );
 		},
 

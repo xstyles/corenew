@@ -50,6 +50,10 @@
 							?>
 						</span><!-- .to-the-top-short -->
 					</a><!-- .to-the-top -->
+					
+					<div style="color: dodgerblue"><strong>Current template:</strong>
+						<?php echo get_current_template(true); ?>
+					</div>
 
 				</div><!-- .section-inner -->
 

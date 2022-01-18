@@ -20,6 +20,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_schedule_title() {
+	esc_html_e( 'Schedule classes', 'rendez-vous' );
+}
+
+/**
+ * Schedule screen actions
+ *
+ * @package Rendez Vous
+ * @subpackage Parts
+ *
+ * @since Rendez Vous (1.0.0)
+ */
+function rendez_vous_schedule_actions() {
 	?>
 	<ul id="rendez-vous-nav">
 		<li><?php rendez_vous_editor( 'new-rendez-vous' ); ?></li>
@@ -37,6 +49,7 @@ function rendez_vous_schedule_title() {
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_schedule_content() {
+	rendez_vous_schedule_actions();
 	rendez_vous_loop();
 }
 
@@ -49,6 +62,18 @@ function rendez_vous_schedule_content() {
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_attend_title() {
+	esc_html_e( 'Attend a class', 'rendez-vous' );
+}
+
+/**
+ * Attend screen actions
+ *
+ * @package Rendez Vous
+ * @subpackage Parts
+ *
+ * @since Rendez Vous (1.0.0)
+ */
+function rendez_vous_attend_actions() {
 	?>
 	<ul id="rendez-vous-nav">
 		<li class="last"><?php render_vous_type_filter(); ?></li>
@@ -65,6 +90,7 @@ function rendez_vous_attend_title() {
  * @since Rendez Vous (1.0.0)
  */
 function rendez_vous_attend_content() {
+	rendez_vous_attend_actions();
 	rendez_vous_loop();
 }
 

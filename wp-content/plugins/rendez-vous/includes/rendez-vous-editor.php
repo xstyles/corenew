@@ -167,26 +167,26 @@ function rendez_vous_enqueue_editor( $args = array() ) {
 				'tab'         => 'what',
 				'class'       => 'required'
 			),
-			array(
-				'id'          => 'venue',
-				'order'       => 10,
-				'type'        => 'text',
-				'placeholder' => esc_html__( 'Where ?', 'rendez-vous' ),
-				'label'       => esc_html__( 'Venue', 'rendez-vous' ),
-				'value'       => '',
-				'tab'         => 'what',
-				'class'       => ''
-			),
-			array(
-				'id'          => 'description',
-				'order'       => 20,
-				'type'        => 'textarea',
-				'placeholder' => esc_html__( 'Some details about this rendez-vous ?', 'rendez-vous' ),
-				'label'       => esc_html__( 'Description', 'rendez-vous' ),
-				'value'       => '',
-				'tab'         => 'what',
-				'class'       => ''
-			),
+			// array(
+			// 	'id'          => 'venue',
+			// 	'order'       => 10,
+			// 	'type'        => 'text',
+			// 	'placeholder' => esc_html__( 'Where ?', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Venue', 'rendez-vous' ),
+			// 	'value'       => '',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
+			// array(
+			// 	'id'          => 'description',
+			// 	'order'       => 20,
+			// 	'type'        => 'textarea',
+			// 	'placeholder' => esc_html__( 'Some details about this rendez-vous ?', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Description', 'rendez-vous' ),
+			// 	'value'       => '',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
 			array(
 				'id'          => 'duration',
 				'order'       => 30,
@@ -197,16 +197,16 @@ function rendez_vous_enqueue_editor( $args = array() ) {
 				'tab'         => 'what',
 				'class'       => 'required'
 			),
-			array(
-				'id'          => 'privacy',
-				'order'       => 40,
-				'type'        => 'checkbox',
-				'placeholder' => esc_html__( 'Restrict to the selected members of the Who? tab', 'rendez-vous' ),
-				'label'       => esc_html__( 'Access', 'rendez-vous' ),
-				'value'       => '0',
-				'tab'         => 'what',
-				'class'       => ''
-			),
+			// array(
+			// 	'id'          => 'privacy',
+			// 	'order'       => 40,
+			// 	'type'        => 'checkbox',
+			// 	'placeholder' => esc_html__( 'Restrict to the selected members of the Who? tab', 'rendez-vous' ),
+			// 	'label'       => esc_html__( 'Access', 'rendez-vous' ),
+			// 	'value'       => '0',
+			// 	'tab'         => 'what',
+			// 	'class'       => ''
+			// ),
 			array(
 				'id'          => 'utcoffset',
 				'order'       => 50,
@@ -460,12 +460,23 @@ function rendezvous_media_templates() {
 					</legend>
 					<div class="daytd">
 						<label for="{{data.id}}-hour1"><?php esc_html_e( 'Define 1 to 3 hours for this day, please respect the format HH:MM', 'rendez-vous' );?></label>
-						<input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">&nbsp;
+
+						<!-- <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">&nbsp;
 						<input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
-						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp;
+						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+						<div style="display: flex; flex-direction: row; justify-items: space-between;">
+							<input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">
+							<!-- &nbsp; -->
+							<!-- <input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
+							<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+						</div>
 					</div>
 				</fieldset>
 			<# } #>
+	</script>
+
+	<script type="text/html" id="tmpl-when-add-slot">
+		<input type="time" value="{{data.hour}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp;
 	</script>
 
 	<script type="text/html" id="tmpl-rendez-vous">

@@ -1,0 +1,107 @@
+# Copyright (C) 2021 GP eCommerce Fields
+# This file is distributed under the same license as the GP eCommerce Fields package.
+msgid ""
+msgstr ""
+"Project-Id-Version: GP eCommerce Fields\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_ex:1,2c;_n:1,2;_n_noop:1,2;_nx:1,2,4c;_nx_noop:1,2,3c;_x:1,2c;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../class-gp-ecommerce-fields.php:104, ../class-gp-ecommerce-fields.php:968
+msgid "Subtotal"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:109
+msgid "Coupon Total"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:114
+msgid "Discounts Total"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:119
+msgid "Order Summary"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:185, ../class-gp-ecommerce-fields.php:209
+msgid "Tax Amount"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:185
+msgid "Specify the percentage amount that should be added to the form total as tax."
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:186, ../class-gp-ecommerce-fields.php:213
+msgid "Discount Amount"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:186
+msgid "Specify the amount that should be discounted from the form total."
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:187, ../class-gp-ecommerce-fields.php:230
+msgid "Applicable Products"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:187
+msgid "Specify which Product fields should be included when calculating the value of this field."
+msgstr ""
+
+#. translators: The %s is replaced with "$10" customized to the user's configured currency.
+#: ../class-gp-ecommerce-fields.php:221
+msgid "Supports 10&#37; or %s"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:235
+msgid "Include"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:238
+msgid "Apply tax to"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:241
+msgid "Apply discount to"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:244
+msgid "all products"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:245
+msgid "specific products"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:250, ../class-gp-ecommerce-fields.php:251
+msgid "Select Products"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:963
+msgid "Order"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:964
+msgid "Product"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:965
+msgid "Qty"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:966
+msgid "Unit Price"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:967
+msgid "Price"
+msgstr ""
+
+#: ../class-gp-ecommerce-fields.php:969
+msgid "Total"
+msgstr ""
