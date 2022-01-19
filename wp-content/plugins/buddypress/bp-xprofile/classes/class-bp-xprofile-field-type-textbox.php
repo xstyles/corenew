@@ -64,10 +64,14 @@ class BP_XProfile_Field_Type_Textbox extends BP_XProfile_Field_Type {
 			'value' => bp_get_the_profile_field_edit_value(),
 		) ); ?>
 
-		<legend id="<?php bp_the_profile_field_input_name(); ?>-1">
+		<!-- <legend id="<?php // bp_the_profile_field_input_name(); ?>-1">
+			<?php // bp_the_profile_field_name(); ?>
+			<?php // bp_the_profile_field_required_label(); ?>
+		</legend> -->
+		<label for="<?php bp_the_profile_field_input_name(); ?>-1">
 			<?php bp_the_profile_field_name(); ?>
-			<?php bp_the_profile_field_required_label(); ?>
-		</legend>
+			<span class="required"><?php bp_the_profile_field_required_label(); ?></span>
+		</label>
 
 		<?php
 
