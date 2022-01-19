@@ -19,6 +19,38 @@
 //          exit();
 // }
 
+// onboarding redirect
+add_action( 'wp_login', 'track_user_logins', 10, 2 );
+function track_user_logins( $user_login, $user ){
+    if( $login_amount = get_user_meta( $user->id, 'login_amount', true ) ){
+        // They've Logged In Before, increment existing total by 1
+        update_user_meta( $user->id, 'login_amount', ++$login_amount );
+    } else {
+        // First Login, set it to 1
+        update_user_meta( $user->id, 'login_amount', 1 );
+    }
+}
+
+add_shortcode( 'login_content', 'login_content' );
+function login_content( $atts ){
+    if( is_user_logged_in() ){
+        // Get current total amount of logins (should be at least 1)
+        $login_amount = get_user_meta( get_current_user_id(), 'login_amount', true );
+
+        // return content based on how many times they've logged in.
+        if( $login_amount == 1 ){
+            return 'Welcome, this is your first time here!';
+        } else if( $login_amount == 2 ){
+            //return 'Welcome back, second timer!';
+            wp_redirect('http://localhost/corenew/u');
+        } else if( $login_amount == 3 ){
+            return 'Welcome back, third timer!';
+        } else {
+            return "Geez, you have logged in a lot, $login_amount times in fact...";
+        }
+    }
+}
+
 // add_filter( 'bp_login_redirect', 'bpdev_redirect_to_profile', 11, 3 );
 
 // function bpdev_redirect_to_profile( $redirect_to_calculated, $redirect_url_specified, $user )
