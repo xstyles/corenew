@@ -23,10 +23,10 @@
 define( 'DB_NAME', 'corenew' );
 
 /** MySQL database username */
-define( 'DB_USER', 'root' );
+define( 'DB_USER', 'coredb_user' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', '' );
+define( 'DB_PASSWORD', 'pfqW.z!]7GpE' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
