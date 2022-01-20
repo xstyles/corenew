@@ -12,5 +12,5 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /corenew/index.php [L]
 </IfModule>
-
+php_value memory_limit 512M
 # END WordPress
