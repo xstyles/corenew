@@ -198,6 +198,8 @@ function rendez_vous_save( $args = array() ) {
 	$id = $rendez_vous->save();
 
 	do_action( 'rendez_vous_after_saved', $rendez_vous, $r );
+    add_action('rendez_vous_after_saved', 'rendezvousAddAllAttendees', 1, 1);
+
 
 	return $id;
 }

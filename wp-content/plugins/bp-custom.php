@@ -67,7 +67,7 @@ function login_content( $atts ){
 //     return $redirect_to_calculated; /*if site admin or not logged in,do not do anything much*/
 
 // }
- 
+
 /**
  * Removes tab items from Member Single
  */
@@ -83,3 +83,19 @@ function login_content( $atts ){
 //  add_action( 'bp_actions', 'bpcodex_remove_member_notifications_tab' );
 // }
 
+
+/**
+ * Removes tab items from Member Single
+ */
+function bpcodex_remove_member_notifications_tab()
+{
+    // bp_core_remove_nav_item('home');
+    // bp_core_remove_nav_item('activity');
+    // bp_core_remove_nav_item('friends');
+    bp_core_remove_nav_item('groups');
+
+}
+
+add_action('bp_actions', 'bpcodex_remove_member_notifications_tab');
+// do_action('bp_action_remove_member_nav_items');
+// bpcodex_remove_member_notifications_tab();
