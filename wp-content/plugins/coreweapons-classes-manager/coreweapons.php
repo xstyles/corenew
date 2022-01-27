@@ -13,7 +13,7 @@
  * @package         Coreweapons
  */
 
-class ScheduleClassForAllStudents
+class CoreWeaponsClassesManager
 {
   /**
    * The single instance of this class
@@ -24,7 +24,7 @@ class ScheduleClassForAllStudents
   /**
    * Returns the single instance of the main plugin class.
    *
-   * @return WCS_Gifting_Product_Restrictions
+   * @return ScheduleClassForAllStudents
    */
   public static function instance()
   {
@@ -38,39 +38,22 @@ class ScheduleClassForAllStudents
 
   private function __construct()
   {
-    $filter_key = 'rendez_vous_save_args';
-    add_filter('bp_after_' . $filter_key . '_parse_args', [$this, 'addAllPossibleAttendeesForClass'], 10, 1);
+    // Needs to run after Rendez Vouz has loaded its dependant classes
+    self::load_dependant_classes();
   }
 
-
-  function addAllPossibleAttendeesForClass($meeting)
-  {
-    $attendees = $this->_getAllMembersByType(['student', 'individual']);
-
-    $meeting['attendees'] = $attendees;
-
-    return $meeting;
-  }
 
   /**
-   * Private functions
+   * Loads classes after plugins for classes dependant on other plugin files.
    */
-
-  private function _getAllMembersByType($memberType)
+  private static function load_dependant_classes()
   {
-    $members = [];
-
-    if (bp_has_members(['member_type' => $memberType])) {
-      while (bp_members()) : bp_the_member();
-        $members[] = bp_get_member_user_id();
-      endwhile;
-    }
-
-    return $members;
+    // Add all students that can access a newly created class/meeting
+    require_once 'includes/schedule-class-for-students.php';
   }
 }
 
 /**
  * Transformers, roll out!
  */
-add_action('plugins_loaded', array('ScheduleClassForAllStudents', 'instance'));
+add_action('plugins_loaded', ['CoreWeaponsClassesManager', 'instance']);
