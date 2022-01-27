@@ -13,46 +13,64 @@
  * @package         Coreweapons
  */
 
-// Your code starts here.
+class ScheduleClassForAllStudents
+{
+  /**
+   * The single instance of this class
+   * @var ScheduleClassForAllStudents
+   */
+  private static $instance = null;
 
-// class ScheduleClassForAllStudents
-// {
-
-  function initialize()
+  /**
+   * Returns the single instance of the main plugin class.
+   *
+   * @return WCS_Gifting_Product_Restrictions
+   */
+  public static function instance()
   {
-  echo "test1";
+    if (is_null(self::$instance)) {
+      self::$instance = new self;
+    }
+
+    return self::$instance;
+  }
+
+
+  private function __construct()
+  {
     $filter_key = 'rendez_vous_save_args';
-    add_filter('bp_after_' . $filter_key . '_parse_args' , 'addAllPossibleAttendeesForClass', 1, 1);
+    add_filter('bp_after_' . $filter_key . '_parse_args', [$this, 'addAllPossibleAttendeesForClass'], 10, 1);
   }
 
 
   function addAllPossibleAttendeesForClass($meeting)
   {
-    // echo "test1";
-    // $memberType = bp_get_member_type(bp_current_user_id());
-    $memberType = bp_get_current_member_type();
-    $members = _getAllMembersByType($memberType);
+    $attendees = $this->_getAllMembersByType(['student', 'individual']);
 
-    $meeting->attendees = $members;
-    // return 'foobar';
+    $meeting['attendees'] = $attendees;
+
     return $meeting;
   }
 
-  function _getAllMembersByType($memberType)
+  /**
+   * Private functions
+   */
+
+  private function _getAllMembersByType($memberType)
   {
-    $hasMembers = bp_has_members(bp_ajax_querystring($memberType));
-
-    if (!$hasMembers) return [];
-
     $members = [];
 
-    while (bp_members()) {
-      $members[] = bp_the_member()->id;
+    if (bp_has_members(['member_type' => $memberType])) {
+      while (bp_members()) : bp_the_member();
+        $members[] = bp_get_member_user_id();
+      endwhile;
     }
 
     return $members;
   }
-// }
+}
 
-// new ScheduleClassForAllStudents();
-initialize();
+/**
+ * Transformers, roll out!
+ */
+add_action('plugins_loaded', array('ScheduleClassForAllStudents', 'instance'));
