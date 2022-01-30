@@ -51,7 +51,6 @@ class CoreWeaponsClassesManager
     // Add all students that can access a newly created class/meeting
     require_once 'includes/schedule-class-for-students.php';
 
-
     // Add gifting scription for students
     require_once 'includes/gift-subscription-for-students.php';
   }
