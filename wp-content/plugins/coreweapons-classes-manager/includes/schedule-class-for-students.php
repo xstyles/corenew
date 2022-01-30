@@ -36,7 +36,7 @@ class ScheduleClassForAllStudents
   }
 
 
-  private function __construct()
+  public function __construct()
   {
     $filter_key = 'rendez_vous_save_args';
     add_filter('bp_after_' . $filter_key . '_parse_args', [$this, 'addAllPossibleAttendeesForClass'], 10, 1);
@@ -81,7 +81,5 @@ class ScheduleClassForAllStudents
   }
 }
 
-/**
- * Transformers, roll out!
- */
-add_action('plugins_loaded', array('ScheduleClassForAllStudents', 'instance'));
+// add_action('plugins_loaded', array('ScheduleClassForAllStudents', 'instance'));
+new ScheduleClassForAllStudents();

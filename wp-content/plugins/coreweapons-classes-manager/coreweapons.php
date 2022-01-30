@@ -17,14 +17,14 @@ class CoreWeaponsClassesManager
 {
   /**
    * The single instance of this class
-   * @var ScheduleClassForAllStudents
+   * @var CoreWeaponsClassesManager
    */
   private static $instance = null;
 
   /**
    * Returns the single instance of the main plugin class.
    *
-   * @return ScheduleClassForAllStudents
+   * @return CoreWeaponsClassesManager
    */
   public static function instance()
   {
@@ -50,6 +50,10 @@ class CoreWeaponsClassesManager
   {
     // Add all students that can access a newly created class/meeting
     require_once 'includes/schedule-class-for-students.php';
+
+
+    // Add gifting scription for students
+    require_once 'includes/gift-subscription-for-students.php';
   }
 }
 
