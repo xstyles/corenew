@@ -814,3 +814,12 @@ function configure_woocommerce_gforms_strip_meta_html( $strip_html ) {
     $strip_html = false;
     return $strip_html;
 }
+// add_action("gform_pre_submission", "cp_add_product_to_wc");
+// function cp_add_product_to_wc($form){
+// 	global $woocommerce;
+// 	$product_id = $_POST["input_3_17"];
+// 	$nos = "1";
+// 	$woocommerce->cart->add_to_cart($product_id,$nos,null);
+// }
+
+add_filter( 'woocommerce_defer_transactional_emails', '__return_true' );

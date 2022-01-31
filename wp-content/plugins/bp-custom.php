@@ -6,18 +6,18 @@
 // add_filter( 'bp_template_hierarchy_members_single_item', function ( $templates ) {
 // 	$member_types = bp_get_member_type( bp_displayed_user_id(), false );
 // 	foreach ( $member_types as $member_type ) {
-// 		array_unshift( $templates, "members/single/index-{$member_type}.php" );
+// 		array_unshift( $templates, "members/single/index-member-type-{$member_type}.php" );
 // 	}
 // 	// echo var_dump($templates);
 
 // 	return $templates;
 // } );
 
-// add_action('wp_logout','ps_redirect_after_logout');
-// function ps_redirect_after_logout(){
-//          wp_redirect( site_url() );
-//          exit();
-// }
+add_action('wp_logout','ps_redirect_after_logout');
+function ps_redirect_after_logout(){
+         wp_redirect( site_url() );
+         exit();
+}
 
 // onboarding redirect
 add_action( 'wp_login', 'track_user_logins', 10, 2 );

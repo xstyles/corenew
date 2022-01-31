@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
+
 <fieldset>
 	<input type="checkbox" id="gifting_<?php echo esc_attr( $id ); ?>_option" class="woocommerce_subscription_gifting_checkbox <?php echo esc_attr( implode( ' ', $checkbox_field_args['class'] ) ); ?>" style="<?php echo esc_attr( implode( '; ', $checkbox_field_args['style_attributes'] ) ); ?>" value="gift" <?php checked( $checkbox_field_args['checked'] ); ?> <?php disabled( $checkbox_field_args['disabled'] ); ?> />
 	<label for="gifting_<?php echo esc_attr( $id ); ?>_option">

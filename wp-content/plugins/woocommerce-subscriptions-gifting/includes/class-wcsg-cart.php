@@ -66,7 +66,7 @@ class WCSG_Cart {
 	public static function add_gifting_option_minicart( $quantity, $cart_item, $cart_item_key ) {
 		$recipient_email = '';
 		$html_string     = '';
-
+	
 		if ( self::contains_gifted_renewal() ) {
 			$recipient_user_id = self::get_recipient_from_cart_item( wcs_cart_contains_renewal() );
 			$recipient_user    = get_userdata( $recipient_user_id );
@@ -86,7 +86,7 @@ class WCSG_Cart {
 
 		return $quantity . $html_string;
 	}
-
+	
 	/**
 	 * Updates the cart items for changes made to recipient infomation on the cart page.
 	 *
@@ -97,6 +97,7 @@ class WCSG_Cart {
 			if ( ! empty( $_POST['_wcsgnonce'] ) && wp_verify_nonce( $_POST['_wcsgnonce'], 'wcsg_add_recipient' ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$recipients = $_POST['recipient_email']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				WCS_Gifting::validate_recipient_emails( $recipients );
+				
 				foreach ( WC()->cart->cart_contents as $key => $item ) {
 					if ( isset( $_POST['recipient_email'][ $key ] ) ) {
 						WCS_Gifting::update_cart_item_key( $item, $key, $_POST['recipient_email'][ $key ] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
