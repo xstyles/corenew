@@ -27,10 +27,12 @@ wp-config.php
 /wp-content/plugins/hello.php
 
 # Uploads
-#/wp-content/uploads/
+/wp-content/uploads/
+/wp-content/uploads.zip
 
 # Log files
 *.log
+/wp-admin/logs/
 
 # htaccess
 /.htaccess
@@ -46,3 +48,5 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
+
+/wp-content/mu-plugins/elementor-safe-mode.php
