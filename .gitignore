@@ -27,7 +27,8 @@ wp-config.php
 /wp-content/plugins/hello.php
 
 # Uploads
-#/wp-content/uploads/
+/wp-content/uploads/
+/wp-content/uploads.zip
 
 # Log files
 *.log
