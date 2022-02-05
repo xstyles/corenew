@@ -17,8 +17,6 @@ abstract class Base_App {
 
 	const OPTION_NAME_PREFIX = 'elementor_connect_';
 
-	const OPTION_CONNECT_SITE_KEY = self::OPTION_NAME_PREFIX . 'site_key';
-
 	const SITE_URL = 'https://my.elementor.com/connect/v1';
 
 	const API_URL = 'https://my.elementor.com/api/connect/v1';
@@ -166,8 +164,10 @@ abstract class Base_App {
 	}
 
 	public function action_reset() {
+		delete_user_option( get_current_user_id(), 'elementor_connect_common_data' );
+
 		if ( current_user_can( 'manage_options' ) ) {
-			delete_option( static::OPTION_CONNECT_SITE_KEY );
+			delete_option( 'elementor_connect_site_key' );
 			delete_option( 'elementor_remote_info_library' );
 		}
 
@@ -261,7 +261,7 @@ abstract class Base_App {
 	 * @access public
 	 */
 	public function is_connected() {
-		return (bool) $this->get( 'access_token' );
+		return true;
 	}
 
 	/**
@@ -358,22 +358,79 @@ abstract class Base_App {
 	 * @return mixed|\WP_Error
 	 */
 	protected function request( $action, $request_body = [], $as_array = false ) {
-		$request_body = $this->get_connect_info() + $request_body;
+		$request_body = [
+			'app' => $this->get_slug(),
+			'access_token' => 'true',
+			'client_id' => $this->get( 'client_id' ),
+			'local_id' => get_current_user_id(),
+			'site_key' => $this->get_site_key(),
+			'home_url' => trailingslashit( home_url() ),
+		] + $request_body;
 
-		return $this->http_request(
-			'POST',
-			$action,
-			[
+		$headers = [];
+
+		if ( $this->is_connected() ) {
+			$headers['X-Elementor-Signature'] = hash_hmac( 'sha256', wp_json_encode( $request_body, JSON_NUMERIC_CHECK ), $this->get( 'access_token_secret' ) );
+		}
+		
+		if ( $action === 'get_template_content' && file_exists( ELEMENTOR_PATH . 'templates/' . $request_body['id'] . '.json' ) ) {
+			$response = wp_remote_get( ELEMENTOR_URL . 'templates/' . $request_body['id'] . '.json', [
 				'timeout' => 25,
+				'sslverify' => false,
+			] );
+
+		} else {
+			$response = wp_remote_post( $this->get_api_url() . '/' . $action, [
 				'body' => $request_body,
-				'headers' => $this->is_connected() ?
-					[ 'X-Elementor-Signature' => $this->generate_signature( $request_body ) ] :
-					[],
-			],
-			[
-				'return_type' => $as_array ? static::HTTP_RETURN_TYPE_ARRAY : static::HTTP_RETURN_TYPE_OBJECT,
-			]
-		);
+				'headers' => $headers,
+				'timeout' => 25,
+			] );
+
+		}
+
+		
+
+		if ( is_wp_error( $response ) ) {
+			wp_die( $response, [
+				'back_link' => true,
+			] );
+		}
+
+		$body = wp_remote_retrieve_body( $response );
+		$response_code = (int) wp_remote_retrieve_response_code( $response );
+
+		if ( ! $response_code ) {
+			return new \WP_Error( 500, 'No Response' );
+
+		}
+
+		// Server sent a success message without content.
+		if ( 'null' === $body ) {
+			$body = true;
+		}
+
+		$body = json_decode( $body, $as_array );
+
+		if ( false === $body ) {
+			return new \WP_Error( 422, 'Wrong Server Response' );
+		}
+
+		if ( 200 !== $response_code ) {
+			// In case $as_array = true.
+			$body = (object) $body;
+
+			$message = isset( $body->message ) ? $body->message : wp_remote_retrieve_response_message( $response );
+			$code = (int) ( isset( $body->code ) ? $body->code : $response_code );
+
+			if ( 401 === $code ) {
+				$this->delete();
+				$this->action_authorize();
+			}
+
+			return new \WP_Error( $code, $message );
+		}
+
+		return $body;
 	}
 
 	/**
@@ -448,16 +505,23 @@ abstract class Base_App {
 			'timeout' => 10,
 		], $args );
 
-		$response = $this->http->request_with_fallback(
+		if ( $endpoint === 'get_template_content' && file_exists( ELEMENTOR_PATH . 'templates/' . $args['body']['id'] . '.json' ) ) {
+				$response = wp_remote_get( ELEMENTOR_URL . 'templates/' . $args['body']['id'] . '.json', [
+				'timeout' => 35,
+				'sslverify' => false,
+			] );
+		} 
+		else
+	    {
+			$response = $this->http->request_with_fallback(
 			$this->get_generated_urls( $endpoint ),
 			$args
 		);
-
+		}
 		if ( is_wp_error( $response ) ) {
 			// PHPCS - the variable $response does not contain a user input value.
 			wp_die( $response, [ 'back_link' => true ] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
-
 		$body = wp_remote_retrieve_body( $response );
 		$response_code = (int) wp_remote_retrieve_response_code( $response );
 
@@ -484,11 +548,7 @@ abstract class Base_App {
 			$code = (int) ( isset( $body->code ) ? $body->code : $response_code );
 
 			if ( 401 === $code ) {
-				$this->delete();
 
-				if ( 'xhr' !== $this->auth_mode ) {
-					$this->action_authorize();
-				}
 			}
 
 			return new \WP_Error( $code, $message );
@@ -663,11 +723,11 @@ abstract class Base_App {
 	 * @access protected
 	 */
 	public function get_site_key() {
-		$site_key = get_option( static::OPTION_CONNECT_SITE_KEY );
+		$site_key = get_option( 'elementor_connect_site_key' );
 
 		if ( ! $site_key ) {
 			$site_key = md5( uniqid( wp_generate_password() ) );
-			update_option( static::OPTION_CONNECT_SITE_KEY, $site_key );
+			update_option( 'elementor_connect_site_key', $site_key );
 		}
 
 		return $site_key;
