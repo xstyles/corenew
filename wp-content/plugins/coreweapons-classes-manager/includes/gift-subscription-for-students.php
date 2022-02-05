@@ -22,29 +22,73 @@ class GiftSubscriptionForStudents
     return self::$instance;
   }
 
+  private $membershipTypeField = 'input_15';
+  private $individualMembershipProductField = 'input_20';
+  private $studentMembershipProductField = 'input_20';
+
 
   public function __construct()
   {
-    $formId = '3';
+    $formId = '2';
     add_action('gform_after_submission_' . $formId, [$this, 'addSubToCartPerStudent'], 10, 1);
-    add_filter('gform_validation', [$this, 'addFilter'], 10, 1);
-  }
+    // add_filter('gform_validation_'. $formId, [$this, 'addFilter'], 10, 1);
+    // add_filter('woocommerce_add_to_cart_redirect',[$this, 'addFilter']);
+  }  
 
 
+  // public function addSubToCartPerStudent($result)
+  // {
+  //   // echo var_dump($result);
+  // }
+
+  // public function addFilter($result)
   public function addSubToCartPerStudent($result)
   {
-    // echo var_dump($result);
+    // Get the value of field ID 1
+    $recipient = rgpost('input_17');
+    $product_id = rgpost('input_20');
+    global $woocommerce;
+
+    // If no product found, short-circuit
+    if (is_null($product_id) || $product_id == "") return;
+    
+    // If this is an individual, then just add membership product to cart and send to checkout page
+    if ($this->_isIndividual($result)) {
+      WC()->cart->add_to_cart($product_id, 1);
+      return wp_safe_redirect( wc_get_checkout_url() );
+    }
+
+    // If we're here, then the user is a parent and has children to gift subscriptions to.
+    // Proceed to subscription product as gift to students
+    // TODO: 1. Get student information from $result
+    // TODO: 2. Loop the lines below for each student retrieved from $result
+
+    // $students_count = 0; // Step 1. above
+
+    // for ($i=0; $i < $students_count; $i++) { 
+      // $item_key = WC()->cart->add_to_cart($product_id, 1);
+      // $item = WC()->cart->get_cart_item($item_key);
+  
+      // $new_recipient_data = [
+      //   'email' => $recipient,
+      // ];
+  
+      // WCS_Gifting::update_cart_item_key( $item, $item_key, $recipient );
+    // }
+    
+    // wp_safe_redirect( wc_get_checkout_url() );
+
+    
   }
 
-  public function addFilter($result)
+  private function _isIndividual($formData)
   {
-    // Get the value of field ID 1
-    $value = rgpost('input_17');
-    WC()->cart->add_to_cart($value, 1);
-    // if( $value == 'gibberish' ) {
-    //     // activate honeypot
-    // }
-    return $result;
+    return $formData[$this->membershipTypeField] == 'individual';
+  }
+
+  private function _isParent($formData)
+  {
+    return $formData[$this->membershipTypeField] == 'parent';
   }
 }
 
