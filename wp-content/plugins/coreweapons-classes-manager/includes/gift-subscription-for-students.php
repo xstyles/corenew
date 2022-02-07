@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\map;
+
 class GiftSubscriptionForStudents
 {
   /**
@@ -35,7 +37,7 @@ class GiftSubscriptionForStudents
     // add_action('gform_after_submission_' . $S_formId, [$this, 'getstudententries'],10,1);
     // add_filter('gform_validation_'. $formId, [$this, 'addFilter'], 10, 1);
     // add_filter('woocommerce_add_to_cart_redirect',[$this, 'addFilter']);
-  }  
+  }
 
 
 
@@ -43,7 +45,7 @@ class GiftSubscriptionForStudents
   {
     // Get the value of field ID 1
     $recipient = rgpost('input_17');
-    $product_id = rgpost('input_20');
+    $product_id = rgpost('input_20'); // This field only appears for Individuals
     $entryIds = rgpost('input_26');
 
     $studentEntries = [];
@@ -54,22 +56,22 @@ class GiftSubscriptionForStudents
 
       $obj = [
         'email' => rgar($studentEntry, 'input_18'),
-        'productId' => rgar($studentEntry, 'input_17'),
+        'product_id' => rgar($studentEntry, 'input_17'),
       ];
 
       $studentEntries[] = $obj;
     }
 
 
-    
-   
-    var_dump($result);
-    echo $result;
-    global $woocommerce;
-   
+
+
+    // var_dump($result);
+    // echo $result;
+    // global $woocommerce;
+
     // If no product found, short-circuit
     if (is_null($product_id) || $product_id == "") return;
-    
+
     // If this is an individual, then just add membership product to cart and send to checkout page
     if ($this->_isIndividual($result)) {
       WC()->cart->add_to_cart($product_id, 1);
@@ -81,22 +83,29 @@ class GiftSubscriptionForStudents
     // TODO: 1. Get student information from $result
     // TODO: 2. Loop the lines below for each student retrieved from $result
 
-    // $students_count = 0; // Step 1. above
+    $recipients = array_map(function ($entry) {
+      return $entry['email'];
+    }, $studentEntries);
 
-    // for ($i=0; $i < $students_count; $i++) { 
-      // $item_key = WC()->cart->add_to_cart($product_id, 1);
-      // $item = WC()->cart->get_cart_item($item_key);
-  
-      // $new_recipient_data = [
-      //   'email' => $recipient,
-      // ];
-  
-      // WCS_Gifting::update_cart_item_key( $item, $item_key, $recipient );
-    // }
-    
-    // wp_safe_redirect( wc_get_checkout_url() );
-    
-    
+    WCS_Gifting::validate_recipient_emails($recipients);
+
+    for ($i=0; $i < count($studentEntries); $i++) {
+      $student = $studentEntries[$i];
+
+      $item_key = WC()->cart->add_to_cart($student['product_id'], 1);
+      $item = WC()->cart->get_cart_item($item_key);
+
+      $new_recipient_data = [
+        'email' => $student['email'],
+      ];
+
+      // WCS_Gifting::update_cart_item_key( $item, $item_key, $student['email'] );
+      WCS_Gifting::update_cart_item_key( $item, $item_key, $new_recipient_data );
+    }
+
+    wp_safe_redirect( wc_get_checkout_url() );
+
+
   }
 
   private function _isIndividual($formData)
