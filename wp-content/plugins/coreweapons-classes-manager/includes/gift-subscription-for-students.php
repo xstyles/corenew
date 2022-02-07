@@ -30,25 +30,43 @@ class GiftSubscriptionForStudents
   public function __construct()
   {
     $formId = '2';
+    $S_formId ='3';
     add_action('gform_after_submission_' . $formId, [$this, 'addSubToCartPerStudent'], 10, 1);
+    // add_action('gform_after_submission_' . $S_formId, [$this, 'getstudententries'],10,1);
     // add_filter('gform_validation_'. $formId, [$this, 'addFilter'], 10, 1);
     // add_filter('woocommerce_add_to_cart_redirect',[$this, 'addFilter']);
   }  
 
 
-  // public function addSubToCartPerStudent($result)
-  // {
-  //   // echo var_dump($result);
-  // }
 
-  // public function addFilter($result)
   public function addSubToCartPerStudent($result)
   {
     // Get the value of field ID 1
     $recipient = rgpost('input_17');
     $product_id = rgpost('input_20');
-    global $woocommerce;
+    $entryIds = rgpost('input_26');
 
+    $studentEntries = [];
+
+    foreach (explode(',', $entryIds) as $key => $value) {
+      $entryId = $value;
+      $studentEntry = GFAPI::get_entry($entryId);
+
+      $obj = [
+        'email' => rgar($studentEntry, 'input_18'),
+        'productId' => rgar($studentEntry, 'input_17'),
+      ];
+
+      $studentEntries[] = $obj;
+    }
+
+
+    
+   
+    var_dump($result);
+    echo $result;
+    global $woocommerce;
+   
     // If no product found, short-circuit
     if (is_null($product_id) || $product_id == "") return;
     
@@ -77,7 +95,7 @@ class GiftSubscriptionForStudents
     // }
     
     // wp_safe_redirect( wc_get_checkout_url() );
-
+    
     
   }
 
