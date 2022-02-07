@@ -48,32 +48,12 @@ class GiftSubscriptionForStudents
     $product_id = rgpost('input_20'); // This field only appears for Individuals
     $entryIds = rgpost('input_26');
 
-    $studentEntries = [];
-
-    foreach (explode(',', $entryIds) as $key => $value) {
-      $entryId = $value;
-      $studentEntry = GFAPI::get_entry($entryId);
-
-      $obj = [
-        'email' => rgar($studentEntry, 'input_18'),
-        'product_id' => rgar($studentEntry, 'input_17'),
-      ];
-
-      $studentEntries[] = $obj;
-    }
-
-
-
-
-    // var_dump($result);
-    // echo $result;
-    // global $woocommerce;
-
-    // If no product found, short-circuit
-    if (is_null($product_id) || $product_id == "") return;
-
+    
     // If this is an individual, then just add membership product to cart and send to checkout page
     if ($this->_isIndividual($result)) {
+      // If no product found, short-circuit
+      if (is_null($product_id) || $product_id == "") return;
+
       WC()->cart->add_to_cart($product_id, 1);
       return wp_safe_redirect( wc_get_checkout_url() );
     }
@@ -83,11 +63,19 @@ class GiftSubscriptionForStudents
     // TODO: 1. Get student information from $result
     // TODO: 2. Loop the lines below for each student retrieved from $result
 
-    $recipients = array_map(function ($entry) {
-      return $entry['email'];
-    }, $studentEntries);
+    $studentEntries = [];
 
-    WCS_Gifting::validate_recipient_emails($recipients);
+    foreach (explode(',', $entryIds) as $key => $value) {
+      $entryId = $value;
+      $studentEntry = GFAPI::get_entry($entryId);
+
+      $obj = [
+        'email' => rgar($studentEntry, '18'),
+        'product_id' => rgar($studentEntry, '17'),
+      ];
+
+      $studentEntries[] = $obj;
+    }
 
     for ($i=0; $i < count($studentEntries); $i++) {
       $student = $studentEntries[$i];
@@ -96,8 +84,10 @@ class GiftSubscriptionForStudents
       $item = WC()->cart->get_cart_item($item_key);
 
       $new_recipient_data = [
-        'email' => $student['email'],
+        $item_key => $student['email'],
       ];
+
+      WCS_Gifting::validate_recipient_emails($new_recipient_data);
 
       // WCS_Gifting::update_cart_item_key( $item, $item_key, $student['email'] );
       WCS_Gifting::update_cart_item_key( $item, $item_key, $new_recipient_data );
