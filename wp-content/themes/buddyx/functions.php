@@ -9,8 +9,6 @@
  * @package buddyx
  */
 
-use ElementorPro\Modules\Woocommerce\Widgets\Add_To_Cart;
-
 define( 'BUDDYX_MINIMUM_WP_VERSION', '4.5' );
 define( 'BUDDYX_MINIMUM_PHP_VERSION', '7.0' );
 
@@ -224,18 +222,3 @@ function add_inr_currency( $currencies ) {
   
     return $currencies;
 }
-// add_action("gform_after_submission_2", "cp_add_product_to_wc");
-
-// function cp_add_product_to_wc($form){
-// 	global $woocommerce;
-// 	$product_id = rgpost('input_2_20');
-// 	$quantity = "1";
-// 	$recipient_email = rgpost('input_2_17');
-// 	// foreach(wc()->cart->get_cart() as $cart_item){
-
-// 	// }
-	
-// 	$woocommerce->cart->cart_contents['meta_key']['wcsg_gift_recipients_email'] = $recipient_email;
-// 	$woocommerce->cart->add_to_cart($product_id,$quantity,null);
-// 	}
-// add_action('woocommerce_proceed_to_checkout','cp_add_product_to_wc');
