@@ -107,9 +107,7 @@ class GiftSubscriptionForStudents
 
     // $field_student_name = GF_Fields::create()
     $origForm = GFAPI::get_form($this->subject_purchase_subform_id);
-    add_filter('gform_field_value_student_display_name', function($value) {
-      return 'Hello world!';
-    });
+    
     foreach ($origForm['fields'] as $field) {
       if ($field->id == '16') {
         $children = $this->getChildrenOfCurrentUser();
