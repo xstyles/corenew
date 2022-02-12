@@ -47,6 +47,7 @@ class GiftSubscriptionForStudents
   private $S_formId = '3';
   private $subject_purchase_subform_id = '5';
   private $subject_purchase_form_id = '8';
+  private $list_form_id = '9';
 
   private $recipient_email_field = '17';
   private $subject_field = '18';
@@ -62,18 +63,19 @@ class GiftSubscriptionForStudents
     // add_filter('gform_pre_submission_filter_' . $this->subject_purchase_form_id, [$this, 'truncateSubjectPurchaseFormFields'], 10, 3);
     add_action('gform_after_submission_' . $this->subject_purchase_form_id, [$this, 'addCourseToCart'], 10, 1);
 
+    //List column testing form for student purchase hooks
+
     // 
     // TESTING AREA
     // 
     // Setting column1 to dropdown for emails
-    add_filter( 'gform_column_input_6_22_1', [$this, 'set_column1'], 10, 5 );
+    add_filter( 'gform_column_input_' . $this->list_form_id . '_1_1', [$this, 'set_column1'], 10, 5 );
 
     // Setting column2 to dropdown for products
-    add_filter( 'gform_column_input_6_22_2', [$this, 'set_column2'], 10, 5 );
-    add_filter( 'gform_column_input_content_6_22_2', [$this,'change_column2_content'], 10, 6 );
-
-    add_action('gform_after_submission_6', [$this, 'check_results']);
-
+    add_filter( 'gform_column_input_' . $this->list_form_id . '_1_2', [$this, 'set_column2'], 10, 5 );
+    add_filter( 'gform_column_input_content_' . $this->list_form_id . '_1_2', [$this,'change_column2_content'], 10, 6 );
+    add_filter( 'gform_field_validation_' . $this->list_form_id . '_1', [$this, 'validate_inputs'], 10, 4);
+    // add_action('gform_after_submission_' . $this->list_form_id, [$this, 'check_results']);
   }
 
   function set_column1( $input_info, $field, $column, $value, $form_id ) {
@@ -114,47 +116,40 @@ class GiftSubscriptionForStudents
 
   function change_column2_content( $input, $input_info, $field, $text, $value, $form_id ) {
     //build field name, must match List field syntax to be processed correctly
-    $input_field_name = 'input_' . $field->id . '[]';
     $tabindex = GFCommon::get_tabindex();
     // $new_input = '<textarea name="' . $input_field_name . '" ' . $tabindex . ' class="textarea medium" cols="50" rows="10">' . $value . '</textarea>';
     
+    $unique_id = str_replace( '-', '', wp_generate_uuid4());
+
     $new_input = '';
     foreach ($input_info['choices'] as $key => $value) {
-      $new_input .= '<input type="radio" name="' . $input_field_name . '" ' . $tabindex . ' value="' . $value['value'] . '/>' . '<label for="' . $input_field_name . '">' . $value['text'] . '</label>';
+      // $input_field_name = 'input_' . $field->id . $key ;
+      $input_field_name = 'input_' . $unique_id;
+
+      $new_input .= '<input type="radio" name="' . $input_field_name . '[]' . '" ' . $tabindex . ' value="' . $value['value'] . '/>' . '<label for="' . $input_field_name . '">' . $value['text'] . '</label>';
     }
 
-    $new_input = '<div class="custom-radio-yay">' . $new_input . '</div>';
+    // $new_input = '<div class="custom-radio-yay">' . $new_input . '</div>';
 
     return $new_input;
   }
 
-  public function check_results ($result)
-  {
-      $res = unserialize($result[1000][0][22]);
-      
-      return $result;
-  }
-
-  public function populateStudentsField($form)
-  {
-    $children = $this->getChildrenOfCurrentUser();
-
-    foreach ($form['fields'] as &$field) {
-      $studentsFieldId = '16';
-      $studentDisplaynameFieldId = '17';
-
-      if ($field->id == $studentsFieldId) {
-        $field->choices = $children;
-      }
-
-      if ($field->id == $studentDisplaynameFieldId) {
-        $field->label = "Student";
-        $field->input = "student";
-        $field->defaultValue = "StudentName";
+  public function validate_inputs($result, $value, $form, $field) {
+    if ( $field->type == 'list' ) {
+      foreach ($value as $row_values) {
+        // $emailField = $row_values['']
+        var_dump($row_values);
       }
     }
 
-    return $form;
+    return $result;
+  }
+
+  public function check_results ($result)
+  {
+      $res = unserialize($result[1000][0][1]);
+      
+      return $result;
   }
 
   public function populateSubjectPurchaseFormForParent($form)
@@ -336,8 +331,13 @@ class GiftSubscriptionForStudents
     $customerOrders = WCS_Gifting::get_gifted_subscriptions([
       'customer_id' => get_current_user_id(),
       'post_status' => $post_status,
+      'type' => '',
     ]);
 
+    // Entries that must not appear
+    // foo7 : foo7@test.com : 534
+    // foo10 : foo10@test.com : 535
+    // f0011 : foo11@test.com : 536
 
     $children = array_map(function ($order) {
       $targetKey = '_recipient_user';
