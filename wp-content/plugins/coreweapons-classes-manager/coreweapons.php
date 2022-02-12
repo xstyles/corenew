@@ -48,11 +48,14 @@ class CoreWeaponsClassesManager
    */
   private static function load_dependant_classes()
   {
-    // Add all students that can access a newly created class/meeting
-    require_once 'includes/schedule-class-for-students.php';
-
+    // Add gifting basic membership for seat (deposit)
+    require_once 'includes/gift-subscription-for-students.php';
+        
     // Add gifting scription for students
     require_once 'includes/gift-subscription-for-students.php';
+    
+    // Add all students that can access a newly created class/meeting
+    require_once 'includes/schedule-class-for-students.php';
   }
 }
 
