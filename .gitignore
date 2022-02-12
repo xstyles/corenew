@@ -41,11 +41,11 @@ wp-config.php
 #
 # Note: If you wish to whitelist plugins,
 # uncomment the next line
+/wp-content/plugins/*
 
 !/wp-content/plugins/bp-custom.php
-!/wp-content/plugins/core-members/
-!/wp-content/plugins/coreweapons-classes-manager/
-/wp-content/plugins
+!/wp-content/plugins/core-members/*
+!/wp-content/plugins/coreweapons-classes-manager/*
 
 # All themes
 #
