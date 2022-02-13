@@ -39,10 +39,6 @@ class GiftSubscriptionForStudents
    *    ]);
    */
 
-  private $membershipTypeField = '15';
-  private $individualMembershipProductField = 'input_20';
-  private $studentMembershipProductField = 'input_20';
-
   private $registration_form_id = '2';
   private $S_formId = '3';
   private $subject_purchase_subform_id = '5';
@@ -54,14 +50,9 @@ class GiftSubscriptionForStudents
 
   public function __construct()
   {
-    // Membership purchase form hooks
-    add_action('gform_after_submission_' . $this->registration_form_id, [$this, 'addMembershipToCart'], 10, 1);
-
     // Subject purchase form hooks
-    add_filter('gform_pre_render_' . $this->subject_purchase_form_id, [$this, 'populateSubjectPurchaseFormForParent']);
-    // add_filter('gform_form_update_meta_' . $this->subject_purchase_form_id, [$this, 'truncateSubjectPurchaseFormFields'], 10, 3);
-    // add_filter('gform_pre_submission_filter_' . $this->subject_purchase_form_id, [$this, 'truncateSubjectPurchaseFormFields'], 10, 3);
-    add_action('gform_after_submission_' . $this->subject_purchase_form_id, [$this, 'addCourseToCart'], 10, 1);
+    // add_filter('gform_pre_render_' . $this->subject_purchase_form_id, [$this, 'populateSubjectPurchaseFormForParent']);
+    // add_action('gform_after_submission_' . $this->subject_purchase_form_id, [$this, 'addCourseToCart'], 10, 1);
 
     //List column testing form for student purchase hooks
 
@@ -156,7 +147,7 @@ class GiftSubscriptionForStudents
   {
     // $field_student_name = GF_Fields::create()
     $origForm = GFAPI::get_form($this->subject_purchase_subform_id);
-    $children = $this->getChildrenOfCurrentUser();
+    $children = $this->_getChildrenOfCurrentUser();
     $newFields = [];
 
     $form['field_map'] = [];
@@ -174,7 +165,7 @@ class GiftSubscriptionForStudents
         }
 
         if ($field->id == $this->subject_field) {
-          $subjects = $this->getSubjectSubscriptionProducts();
+          $subjects = $this->_getSubjectSubscriptionProducts();
           $childname = $child->get('display_name');
           $newField->label = "Choose a course for $childname";
           $newField->choices = $subjects;
@@ -201,17 +192,6 @@ class GiftSubscriptionForStudents
     // Save modified form object
     // https://docs.gravityforms.com/how-to-add-field-to-form-using-gfapi/#save-the-modified-form-object-
     GFAPI::update_form($form);
-
-    return $form;
-  }
-
-  public function truncateSubjectPurchaseFormFields($form)
-  {
-    // if ($meta_name == 'display_meta') {
-    //   $form['fields'] = [];
-    // }
-    $form['fields'] = [];
-    // GFAPI::update_form($form);
 
     return $form;
   }
@@ -254,72 +234,7 @@ class GiftSubscriptionForStudents
     wp_safe_redirect(wc_get_checkout_url());
   }
 
-
-  public function addMembershipToCart($result)
-  {
-    // Get the value of field ID 1
-    $recipient = rgpost('input_17');
-    $product_id = rgpost('input_20'); // This field only appears for Individuals
-    $entryIds = rgpost('input_26');
-
-
-    // If this is an individual, then just add membership product to cart and send to checkout page
-    if ($this->_isIndividual($result)) {
-      // If no product found, short-circuit
-      if (is_null($product_id) || $product_id == "") return;
-
-      // Add product to user's cart
-      WC()->cart->add_to_cart($product_id, 1);
-    } else 
-    if ($this->_isParent(($result))) {
-      // If we're here, then the user is a parent and has children to gift subscriptions to.
-      // Proceed to subscription product as gift to students
-      $studentEntries = [];
-
-      // $entryIds recieved here is a single (comma-concatenated) string
-      // Use explode() to split the string by commas
-      // Looping over each form entry, we pick the email and product_id from each form entry.
-      foreach (explode(',', $entryIds) as $key => $value) {
-        $entryId = $value;
-        $studentEntry = GFAPI::get_entry($entryId);
-
-        $obj = [
-          'email' => rgar($studentEntry, '18'),
-          'product_id' => rgar($studentEntry, '17'),
-        ];
-
-        $studentEntries[] = $obj;
-      }
-
-      for ($i = 0; $i < count($studentEntries); $i++) {
-        $student = $studentEntries[$i];
-
-        // TODO: Move this validation of recipient email to form-validation hook. It must be triggered before submit happens
-        $isValid = WCS_Gifting::validate_recipient_emails([$student['email']]);
-
-        if (!$isValid) throw new Error('Invalid email address. Please try a different email address.');
-
-        $item_key = WC()->cart->add_to_cart($student['product_id'], 1, 0, [], [
-          'wcsg_gift_recipients_email' => $student['email'],
-        ]);
-      }
-    }
-
-    // Redirect to Checkout for payment
-    wp_safe_redirect(wc_get_checkout_url());
-  }
-
-  private function _isIndividual($formData)
-  {
-    return $formData[$this->membershipTypeField] == 'individual';
-  }
-
-  private function _isParent($formData)
-  {
-    return $formData[$this->membershipTypeField] == 'parent';
-  }
-
-  private function getChildrenOfCurrentUser()
+  private function _getChildrenOfCurrentUser()
   {
     $post_status = ['wc-active'];
 
@@ -359,7 +274,7 @@ class GiftSubscriptionForStudents
     return $children;
   }
 
-  private function getSubjectSubscriptionProducts()
+  private function _getSubjectSubscriptionProducts()
   {
     $subscriptions = wc_get_products([
       'type' => 'subscription',
@@ -375,7 +290,31 @@ class GiftSubscriptionForStudents
 
     return $subjects;
   }
+
+  private function _filter_children_with_subscription($children, $product_id)
+  {
+    $filtered_children = [];
+
+    foreach ($children as $child) {
+      $has_sub = $this->_user_has_subscription($child->get('ID'), $product_id);
+      if (!$has_sub) $filtered_children[] = $child;
+    }
+
+    return $filtered_children;
+  }
+
+  private function _user_has_subscription($user_id, $product_id)
+  {
+    $post_status = ['wc-active'];
+
+    if (WP_DEBUG) {
+      $post_status = ['wc-processing', 'wc-active'];
+    }
+
+    return wcs_user_has_subscription($user_id, $product_id, 'wc-active', $post_status);
+  }
 }
+
 
 // add_action('plugins_loaded', ['GiftSubscriptionForStudents', 'instance']);
 new GiftSubscriptionForStudents();
