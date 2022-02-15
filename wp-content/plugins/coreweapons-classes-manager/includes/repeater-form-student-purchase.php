@@ -145,31 +145,39 @@ class RepeaterFormStudentPurchase
         }
     }
 
-    // public function return_validation($form)
-    // {
-    //     $validation['is_valid'] = false;
+//     public function return_validation($validation_result)
+//     {
+//         $form = $validation_result['form'];
 
-    //     foreach ($form as &$field) {
+//         foreach($form['fields'] as &$fields){
+
+//             if(rgpost('input_') == null)
+
+//             $validation['is_valid'] = false;
+
+//             foreach ($form as &$field) {
+                
             
+//                 if (empty($form['fields'])) {
+//                 $form->failed_validation = true;
+//                 $form->validation_message = 'Please fill out atleast one field';
+//                 break;
+//                 }
+//             }
+//         }
         
-    //         if (empty($form['fields'])) {
-    //         $form->failed_validation = true;
-    //         $form->validation_message = 'Please fill out atleast one field';
-    //         return;
-    //         }
-    //     }
-    //     $validation['form'] = $form;
-    // }
+//         $validation['form'] = $form;
+//     }
 
-    private function _get_children_of_current_user()
-    {
-        return getChildrenOfUser(get_current_user_id());
-    }
+//     private function _get_children_of_current_user()
+//     {
+//         return getChildrenOfUser(get_current_user_id());
+//     }
 
-    private function _get_subject_subscription_products()
-    {
-        return getSubjectSubscriptionProducts();
-    }
-}
+//     private function _get_subject_subscription_products()
+//     {
+//         return getSubjectSubscriptionProducts();
+//     }
+// }
 
 new RepeaterFormStudentPurchase();
