@@ -41,8 +41,17 @@ class RepeaterFormStudentPurchase
       10,
       2
     );
-    // add_filter('gform_validation_' . $this->repeater_form_id, [$this, 'return_validation'],10,1);
+    add_filter('gform_field_validation_' . $this->repeater_form_id . '_' . $this->repeater_field_id, [$this, 'all_subjects_cannot_be_empty'], 10, 4);
     add_action('gform_after_submission_' . $this->repeater_form_id, [$this,  'add_subject_to_cart_per_student']);
+
+
+    // Load Validation hook for disabling submit button on any form
+    if (!class_exists('CW_Disable_Submit')) {
+      require_once 'cw-disable-submit-btn-validation.php';
+    }
+
+    // Validation hook for disabling submit button on Repeater form (11)
+    new CW_Disable_Submit($this->repeater_form_id);
   }
 
   public function customize_subjects_field_label($field_content, $field)
@@ -50,7 +59,7 @@ class RepeaterFormStudentPurchase
     $children = $this->_get_children_of_current_user();
     $repeater_index = $field->get_context_property('itemIndex');
 
-    $field_content = str_replace($field->label, 'Choose a course for ' . $children[$repeater_index]->get('display_name'), $field_content);
+    $field_content = str_replace($field->label, 'Please select a subject course for ' . $children[$repeater_index]->get('display_name'), $field_content);
 
     return $field_content;
   }
@@ -79,12 +88,12 @@ class RepeaterFormStudentPurchase
     $repeater = GF_Fields::create([
       'type'              => 'repeater',
       'allowsPrepopulate' => true,
-      'description'      => 'Please select a subject course for each child',
+      // 'description'      => 'Please select a subject course for each child',
       'id'               => $this->repeater_field_id, // The Field ID must be unique on the form
       'formId'           => $form['id'],
-      'label'            => 'Team Members',
-      'addButtonText'    => 'Add team member', // Optional
-      'removeButtonText' => 'Remove team member', // Optional
+      // 'label'            => 'Team Members',
+      'addButtonText'    => 'Add Student', // Optional
+      'removeButtonText' => 'Remove Student', // Optional
       'maxItems'         => $count, // Optional
       'pageNumber'       => 1, // Ensure this is correct
       //   'fields'           => array($students, $subscriptions), // Add the fields here.
@@ -145,39 +154,63 @@ class RepeaterFormStudentPurchase
     }
   }
 
-  //     public function return_validation($validation_result)
-  //     {
-  //         $form = $validation_result['form'];
+  public function all_subjects_cannot_be_empty($result, $value, $form, $field)
+  {
+    // echo 'foo';
 
-  //         foreach($form['fields'] as &$fields){
+    $isValid = array_reduce($value, function ($isValid, $student_info) {
+      if ($isValid) return $isValid;
 
-  //             if(rgpost('input_') == null)
+      if (!empty($student_info[$this->repeater_field_subject_id])) {
+        $isValid = true;
+      }
 
-  //             $validation['is_valid'] = false;
+      return $isValid;
+    }, false);
 
-  //             foreach ($form as &$field) {
+    $result['is_valid'] = $isValid;
+
+    if (!$isValid) {
+      $result['message'] = 'Please select a subject for at least 1 student.';
+    }
+
+    $field->failed_validation = !$result['is_valid'];
+    $field->validation_message = $result['message'];
+
+    return $result;
+
+    // $form = $validation_result['form'];
+    // return $validation_result;
+
+    // foreach ($form['fields'] as &$fields) {
+
+    //   if (rgpost('input_') == null)
+
+    //     $validation['is_valid'] = false;
+
+    //   foreach ($form as &$field) {
 
 
-  //                 if (empty($form['fields'])) {
-  //                 $form->failed_validation = true;
-  //                 $form->validation_message = 'Please fill out atleast one field';
-  //                 break;
-  //                 }
-  //             }
-  //         }
+    //     if (empty($form['fields'])) {
+    //       $form->failed_validation = true;
+    //       $form->validation_message = 'Please fill out atleast one field';
+    //       break;
+    //     }
+    //   }
+    // }
 
-  //         $validation['form'] = $form;
-  //     }
+    // $validation['form'] = $form;
+  }
 
-  //     private function _get_children_of_current_user()
-  //     {
-  //         return getChildrenOfUser(get_current_user_id());
-  //     }
+  private function _get_children_of_current_user()
+  {
+    return getChildrenOfUser(get_current_user_id());
+  }
 
-  //     private function _get_subject_subscription_products()
-  //     {
-  //         return getSubjectSubscriptionProducts();
-  //     }
+  private function _get_subject_subscription_products()
+  {
+    return getSubjectSubscriptionProducts();
+  }
 }
 
 new RepeaterFormStudentPurchase();
