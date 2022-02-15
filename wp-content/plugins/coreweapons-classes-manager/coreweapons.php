@@ -50,10 +50,10 @@ class CoreWeaponsClassesManager
   {
     // Add gifting basic membership for seat (deposit)
     require_once 'includes/gift-subscription-for-students.php';
-        
+
     // Add gifting scription for students
     require_once 'includes/gift-subscription-for-students.php';
-    
+
     // Add all students that can access a newly created class/meeting
     require_once 'includes/schedule-class-for-students.php';
 
@@ -65,6 +65,7 @@ class CoreWeaponsClassesManager
 
     // Purchase subject course for students (children)
     // require_once 'includes/subject-purchase-form.php';
+    // wp_enqueue_script('subject-purchase-form-repeater-field-validation', __DIR__ . '/includes/repeater-form-validation.js', [], false, true);
   }
 }
 
