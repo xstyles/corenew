@@ -46,12 +46,12 @@ class RepeaterFormStudentPurchase
 
 
     // Load Validation hook for disabling submit button on any form
-    if (!class_exists('CW_Disable_Submit')) {
-      require_once 'cw-disable-submit-btn-validation.php';
-    }
+    // if (!class_exists('CW_Disable_Submit')) {
+    //   require_once 'cw-disable-submit-btn-validation.php';
+    // }
 
     // Validation hook for disabling submit button on Repeater form (11)
-    new CW_Disable_Submit($this->repeater_form_id);
+    // new CW_Disable_Submit($this->repeater_form_id);
   }
 
   public function customize_subjects_field_label($field_content, $field)
