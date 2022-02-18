@@ -25,6 +25,17 @@ $subtitle_tag     = ! empty( $subtitle_tag ) ? $subtitle_tag : 'h5';
 $title_format     = '<' . $title_tag . ' class="jet-slider__title">%s</' . $title_tag . '>';
 $subtitle_format  = '<' . $subtitle_tag . ' class="jet-slider__subtitle">%s</' . $subtitle_tag . '>';
 $slide_id         = ! empty( $item_settings['slide_id'] ) ? 'id="' . $item_settings['slide_id'] . '"' : '';
+$linked_class     = '';
+$pseudo_link      = '';
+
+if (  isset( $item_settings['item_link_url'] ) && ! empty( $item_settings['item_link_url'] ) ) {
+	$item_target = isset( $item_settings['item_link_target'] ) ? $item_settings['item_link_target'] : '';
+
+	$this->add_render_attribute( 'item_link', 'data-slide-url', $item_settings['item_link_url'] );
+	$this->add_render_attribute( 'item_link', 'data-slide-url-target',  $item_target );
+	$linked_class = 'jet-slider__item-linked';
+	$pseudo_link  = '<a class="jet-slider__content-item-link" href="' . $item_settings['item_link_url'] . '"></a>';
+}
 
 ?><div <?php echo $slide_id; ?> class="jet-slider__item sp-slide"><?php
 		echo $this->_loop_item_image_tag();
@@ -32,7 +43,7 @@ $slide_id         = ! empty( $item_settings['slide_id'] ) ? 'id="' . $item_setti
 		if ( filter_var( $settings['thumbnails'], FILTER_VALIDATE_BOOLEAN ) ) {
 			echo $this->_loop_item_image_thumb();
 		}
-	?><div class="jet-slider__content sp-layer" data-position="centerCenter" data-width="100%" data-height="100%" data-horizontal="0%" data-show-transition="<?php echo esc_attr( $show_transition ); ?>" data-show-duration="400" data-show-delay="400">
+	?><div class="jet-slider__content sp-layer <?php echo $linked_class;?>" data-position="centerCenter" data-width="100%" data-height="100%" data-horizontal="0%" data-show-transition="<?php echo esc_attr( $show_transition ); ?>" data-show-duration="400" data-show-delay="400" <?php echo $this->get_render_attribute_string( 'item_link' ); $this->remove_render_attribute( 'item_link' );?>>
 		<div class="jet-slider__content-item">
 			<div class="jet-slider__content-inner"><?php
 				switch ( $content_type ) {
@@ -56,6 +67,7 @@ $slide_id         = ! empty( $item_settings['slide_id'] ) ? 'id="' . $item_setti
 				}
 			?></div>
 		</div>
+		<?php echo $pseudo_link; ?>
 	</div>
 </div>
 

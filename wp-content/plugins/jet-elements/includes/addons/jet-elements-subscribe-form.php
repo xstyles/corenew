@@ -320,6 +320,7 @@ class Jet_Elements_Subscribe_Form extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['instance'] => '{{VALUE}}',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 		50
 		);

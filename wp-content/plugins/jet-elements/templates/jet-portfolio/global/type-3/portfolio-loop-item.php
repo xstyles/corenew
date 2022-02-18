@@ -30,9 +30,14 @@ $this->add_render_attribute( $link_instance, 'class', array(
 	class_exists( 'OCEANWP_Theme_Class' ) ? 'no-lightbox' : '',
 ) );
 
-$link_href = $is_lightbox
-	? $this->_loop_item( array( 'item_image', 'url' ) )
-	: $this->_loop_item( array( 'item_button_url', 'url' ) );
+if ( $is_lightbox ) {
+	$link_href = $this->_loop_item( array( 'item_image', 'url' ) );
+} else {
+	$link_href   = $this->_loop_item( array( 'item_button_url', 'url' ) );
+	$is_external = $this->_loop_item( array( 'item_button_url', 'is_external') );
+	$link_target = 'on' === $is_external ? '_blank' : '';
+	$this->add_render_attribute( $link_instance, 'target', $link_target );
+}
 
 $this->add_render_attribute( $link_instance, 'href', $link_href );
 
@@ -47,7 +52,10 @@ if ( $is_lightbox ) {
 			<div class="jet-portfolio__image">
 				<?php echo $this->_loop_image_item(); ?>
 				<div class="jet-portfolio__image-loader"><span></span></div>
-				<div class="jet-portfolio__cover"><?php echo $cover_icon; ?></div>
+
+				<?php if ( ! $this->trp_edit_mode() ) :?>
+					<div class="jet-portfolio__cover"><?php echo $cover_icon; ?></div>
+				<?php endif;?>
 			</div>
 		</a>
 	</div>

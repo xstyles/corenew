@@ -6,6 +6,10 @@ $settings      = $this->get_settings_for_display();
 $layout        = $settings['vertical_layout'];
 $item_settings = $this->_processed_item;
 
+if ( true === wp_is_mobile() ) {
+	$layout = isset( $settings['mobile_vertical_layout'] ) ? $settings['mobile_vertical_layout'] : $settings['vertical_layout'];
+}
+
 $this->add_render_attribute(
 	'item_top_' . $item_settings['_id'],
 	array(

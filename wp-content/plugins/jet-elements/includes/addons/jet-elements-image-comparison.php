@@ -229,10 +229,12 @@ class Jet_Elements_Image_Comparison extends Jet_Elements_Base {
 		$this->add_responsive_control(
 			'slides_to_show',
 			array(
-				'label'   => esc_html__( 'Slides to Show', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => '1',
-				'options' => jet_elements_tools()->get_select_range( 10 ),
+				'label'              => esc_html__( 'Slides to Show', 'jet-elements' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => '1',
+				'options'            => jet_elements_tools()->get_select_range( 10 ),
+				'frontend_available' => true,
+				'render_type'        => 'template',
 			)
 		);
 
@@ -284,18 +286,6 @@ class Jet_Elements_Image_Comparison extends Jet_Elements_Base {
 				),
 			)
 		);
-
-//		$this->add_control(
-//			'infinite',
-//			array(
-//				'label'        => esc_html__( 'Infinite Loop', 'jet-elements' ),
-//				'type'         => Controls_Manager::SWITCHER,
-//				'label_on'     => esc_html__( 'Yes', 'jet-elements' ),
-//				'label_off'    => esc_html__( 'No', 'jet-elements' ),
-//				'return_value' => 'true',
-//				'default'      => 'true',
-//			)
-//		);
 
 		$this->add_control(
 			'effect',
@@ -429,7 +419,7 @@ class Jet_Elements_Image_Comparison extends Jet_Elements_Base {
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['instance'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} .slick-list' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			),
 			100
@@ -1606,13 +1596,10 @@ class Jet_Elements_Image_Comparison extends Jet_Elements_Base {
 
 		$instance_settings = array(
 			'slidesToShow'   => array(
-				'desktop' => absint( $settings['slides_to_show'] ),
-				'tablet'  => absint( $settings['slides_to_show_tablet'] ),
-				'mobile'  => absint( $settings['slides_to_show_mobile'] ),
+				'desktop' => absint( $settings['slides_to_show'] )
 			),
 			'autoplaySpeed'  => absint( $settings['autoplay_speed'] ),
 			'autoplay'       => filter_var( $settings['autoplay'], FILTER_VALIDATE_BOOLEAN ),
-			//'infinite'       => filter_var( $settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
 			'pauseOnHover'   => filter_var( $settings['pause_on_hover'], FILTER_VALIDATE_BOOLEAN ),
 			'speed'          => absint( $settings['speed'] ),
 			'arrows'         => filter_var( $settings['arrows'], FILTER_VALIDATE_BOOLEAN ),

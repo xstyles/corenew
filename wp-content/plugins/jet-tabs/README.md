@@ -6,18 +6,36 @@ The plugin makes it simple to create a template with Elementor and add it to the
 
 # ChangeLog
 
-## [2.1.11](https://github.com/ZemezLab/jet-tricks/releases/tag/2.1.11) - 03.03.2021
+## [2.1.15](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.15) - 20.12.2021
+* Fixed: rtl compatibility
+* Fixed: minor issues
+
+## [2.1.14](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.14) - 02.12.2021
+* Added: [Crocoblock/suggestions#2911](https://github.com/Crocoblock/suggestions/issues/2911)
+* Added: [Crocoblock/suggestions#3351](https://github.com/Crocoblock/suggestions/issues/3351)
+* Fixed: widgets compatibility with new breakpoints
+* Fixed: rtl compatibility
+* Fixed: minor issues
+
+## [2.1.13](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.13)
+* Added: [Crocoblock/suggestions#2584](https://github.com/Crocoblock/suggestions/issues/2584)
+* Fixed: prevent php warning
+
+## [2.1.12](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.12) - 04.03.2021
+* Fixed: [Crocoblock/suggestions#2751](https://github.com/Crocoblock/suggestions/issues/2751)
+
+## [2.1.11](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.11) - 03.03.2021
 * Added: JS triggers on ajax load template
 * Fixed: image alt attribute in the Image accordion widget
 * Fixed: Elementor 3.1.2 compatibility issue
 
-## [2.1.10](https://github.com/ZemezLab/jet-tricks/releases/tag/2.1.10) - 14.11.2020
+## [2.1.10](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.10) - 14.11.2020
 * Update: JetDashboard Module to v2.0.4
 
-## [2.1.9](https://github.com/ZemezLab/jet-tricks/releases/tag/2.1.9) - 11.11.2020
+## [2.1.9](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.9) - 11.11.2020
 * Update: JetDashboard Module to v2.0.3
 
-## [2.1.8](https://github.com/ZemezLab/jet-tricks/releases/tag/2.1.8) - 06.10.2020
+## [2.1.8](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.8) - 06.10.2020
 * Update: JetDashboard Module to v2.0.0
 
 ## [2.1.7](https://github.com/ZemezLab/jet-tabs/releases/tag/2.1.7) - 17.07.2020

@@ -165,9 +165,12 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 			'front_side_template_id',
 			array(
 				'label'       => esc_html__( 'Choose Template', 'jet-elements' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
+				'edit_button' => array(
+					'active' => true,
+					'label'  => __( 'Edit Template', 'jet-elements' ),
+				),
 				'condition'   => array(
 					'front_side_content_type' => 'template',
 				),
@@ -299,9 +302,12 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 			'back_side_template_id',
 			array(
 				'label'       => esc_html__( 'Choose Template', 'jet-elements' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
+				'edit_button' => array(
+					'active' => true,
+					'label'  => __( 'Edit Template', 'jet-elements' ),
+				),
 				'condition'   => array(
 					'back_side_content_type' => 'template',
 				),
@@ -1286,6 +1292,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_title_front'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -1397,6 +1404,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_title_back'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1526,6 +1534,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_subtitle_front'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -1637,6 +1646,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_subtitle_back'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -1739,6 +1749,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_desc_front'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1823,6 +1834,7 @@ class Jet_Elements_Animated_Box extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['animated_box_desc_back'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);

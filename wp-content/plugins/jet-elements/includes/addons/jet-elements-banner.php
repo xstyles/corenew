@@ -469,6 +469,7 @@ class Jet_Elements_Banner extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['banner_title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -542,6 +543,7 @@ class Jet_Elements_Banner extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['banner_text'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);

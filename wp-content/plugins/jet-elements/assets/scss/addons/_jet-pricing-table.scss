@@ -81,16 +81,6 @@
 	&:last-child {
 		margin-bottom: 0 !important;
 	}
-
-	.tippy-popper {
-		.tippy-backdrop {
-			background-color: transparent;
-		}
-	}
-
-	.tippy-tooltip[data-animatefill] {
-		background-color: #333;
-	}
 }
 
 .fold_visible_last {

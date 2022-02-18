@@ -146,6 +146,8 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'condition' => array(
 					'columns!' => '1',
 				),
+				'frontend_available' => true,
+				'render_type'        => 'template',
 			)
 		);
 
@@ -160,19 +162,6 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'default'      => 'true',
 			)
 		);
-
-		/*$this->add_control(
-			'prev_arrow',
-			array(
-				'label'   => esc_html__( 'Prev Arrow Icon', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'fa fa-angle-left',
-				'options' => jet_elements_tools()->get_available_prev_arrows_list(),
-				'condition' => array(
-					'arrows' => 'true',
-				),
-			)
-		);*/
 
 		$this->_add_advanced_icon_control(
 			'prev_arrow',
@@ -191,19 +180,6 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				),
 			)
 		);
-
-		/*$this->add_control(
-			'next_arrow',
-			array(
-				'label'   => esc_html__( 'Next Arrow Icon', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'fa fa-angle-right',
-				'options' => jet_elements_tools()->get_available_next_arrows_list(),
-				'condition' => array(
-					'arrows' => 'true',
-				),
-			)
-		);*/
 
 		$this->_add_advanced_icon_control(
 			'next_arrow',
@@ -428,6 +404,33 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 			)
 		);
 
+		$this->_add_responsive_control(
+			'thumb_alignment',
+			array(
+				'label'   => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'options' => array(
+					'left' => array(
+						'title' => esc_html__( 'Left', 'jet-elements' ),
+						'icon'  => 'eicon-text-align-left',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'jet-elements' ),
+						'icon'  => 'eicon-text-align-center',
+					),
+					'right' => array(
+						'title' => esc_html__( 'Right', 'jet-elements' ),
+						'icon'  => 'eicon-text-align-right',
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['thumb'] => 'text-align: {{VALUE}};',
+				),
+				'classes' => 'jet-elements-text-align-control',
+			),
+			50
+		);
+
 		$this->_add_group_control(
 			Group_Control_Border::get_type(),
 			array(
@@ -636,6 +639,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -762,6 +766,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['meta'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -892,6 +897,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['excerpt'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1841,6 +1847,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['terms'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -2445,11 +2452,6 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 		$widget_id = $this->get_id();
 
 		$options = array(
-			'slidesToShow'   => array(
-				'desktop' => absint( $settings['columns'] ),
-				'tablet'  => absint( $settings['columns_tablet'] ),
-				'mobile'  => absint( $settings['columns_mobile'] ),
-			),
 			'autoplaySpeed'  => absint( $settings['autoplay_speed'] ),
 			'autoplay'       => filter_var( $settings['autoplay'], FILTER_VALIDATE_BOOLEAN ),
 			'infinite'       => filter_var( $settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
@@ -2535,7 +2537,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 		$this->_close_wrap();
 	}
 
-	protected function _content_template() {}
+	protected function content_template() {}
 
 	/**
 	 * Add meta controls for selected position
@@ -2853,6 +2855,7 @@ class Jet_Elements_Posts extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} .' . $base => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);

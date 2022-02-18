@@ -3,6 +3,50 @@
 Brand new addon for Elementor Page builder. It provides the set of modules to create different kinds of content, adds custom modules to your website and applies attractive styles in the matter of several clicks!
 
 # ChangeLog
+## [2.6.2](https://github.com/ZemezLab/jet-elements/archive/2.6.2.zip) - 27.01.2022
+* Added: [Crocoblock/suggestions#3657](https://github.com/Crocoblock/suggestions/issues/3657)
+* Added: [Crocoblock/suggestions#3760](https://github.com/Crocoblock/suggestions/issues/3760)
+* Added: [Crocoblock/suggestions#4465](https://github.com/Crocoblock/suggestions/issues/4465)
+* Added: [Crocoblock/suggestions#3646](https://github.com/Crocoblock/suggestions/issues/3646)
+* Added: [Crocoblock/suggestions#1754](https://github.com/Crocoblock/suggestions/issues/1754)
+* Fixed: WPML compatibility
+* Fixed: compatibility template library with Elementor 3.5
+* Fixed: minor issues
+
+## [2.6.1](https://github.com/ZemezLab/jet-elements/archive/2.6.1.zip) - 19.11.2021
+* Fixed: js error in the Slider widget
+
+## [2.6.0](https://github.com/ZemezLab/jet-elements/archive/2.6.0.zip) - 09.11.2021
+* Added: [Crocoblock/suggestions#3227](https://github.com/Crocoblock/suggestions/issues/3227)
+* Fixed: widgets compatibility with new breakpoints
+* Fixed: PHP 8 compatibility
+* Fixed: scratch type in the Animated Box widget
+* Fixed: minor issues
+
+## [2.5.9](https://github.com/ZemezLab/jet-elements/archive/2.5.9.zip) - 23.08.2021
+* Added: [Crocoblock/suggestions#3624](https://github.com/Crocoblock/suggestions/issues/3624)
+* Added: [Crocoblock/suggestions#3639](https://github.com/Crocoblock/suggestions/issues/3639)
+* Fixed: RTL issues
+* Fixed: WPML issues
+* Fixed: PHP 8 compatibility
+* Fixed: scratch type in the Animated Box widget
+* Fixed: typing effect in the Animated Text widget
+* Fixed: lightbox in the Portfolio widget
+* Fixed: default slider height in the Slider widget
+
+## [2.5.8](https://github.com/ZemezLab/jet-elements/archive/2.5.8.zip) - 23.06.2021
+* Added: [Crocoblock/suggestions#1748](https://github.com/Crocoblock/suggestions/issues/1748)
+* Added: [Crocoblock/suggestions#2518](https://github.com/Crocoblock/suggestions/issues/2518)
+* Added: [Crocoblock/suggestions#2523](https://github.com/Crocoblock/suggestions/issues/2523)
+* Added: [Crocoblock/suggestions#2520](https://github.com/Crocoblock/suggestions/issues/2520)
+* Added: [Crocoblock/suggestions#2672](https://github.com/Crocoblock/suggestions/issues/2672)
+* Added: [Crocoblock/suggestions#2532](https://github.com/Crocoblock/suggestions/issues/2532)
+* Added: [Crocoblock/suggestions#3076](https://github.com/Crocoblock/suggestions/issues/3076)
+* Added: [Crocoblock/suggestions#3133](https://github.com/Crocoblock/suggestions/issues/3133)
+* Fixed: use global colors in the Circle Progress widget
+* Fixed: tooltips in the Pricing Table widget
+* Fixed: actions after expire in the Countdown widget
+* Fixed: image border in the Team Member widget
 
 ## [2.5.7](https://github.com/ZemezLab/jet-elements/archive/2.5.7.zip) - 28.04.2021
 * Updated: JetDashboard Module to v2.0.8

@@ -3,11 +3,7 @@
  * Features list item template
  */
 ?>
-<div class="brands-list__item <?php echo jet_elements_tools()->col_classes( array(
-	'desk' => $this->_get_html( 'columns' ),
-	'tab'  => $this->_get_html( 'columns_tablet' ),
-	'mob'  => $this->_get_html( 'columns_mobile' ),
-) ); ?>"><?php
+<div class="brands-list__item"><?php
 	echo $this->_open_brand_link( 'item_url' );
 	echo $this->_get_brand_image( 'item_image' );
 	echo $this->_loop_item( array( 'item_name' ), '<h5 class="brands-list__item-name">%s</h5>' );

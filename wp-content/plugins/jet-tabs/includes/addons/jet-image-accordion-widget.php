@@ -12,8 +12,8 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Schemes\Color as Scheme_Color;
+use Elementor\Core\Schemes\Typography as Scheme_Typography;
 use Elementor\Widget_Base;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -306,7 +306,7 @@ class Jet_Image_Accordion_Widget extends Jet_Tabs_Base {
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['list'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} ' . $css_scheme['instance'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
 			),
 			75
@@ -536,20 +536,21 @@ class Jet_Image_Accordion_Widget extends Jet_Tabs_Base {
 				'options' => array(
 					'left'    => array(
 						'title' => esc_html__( 'Left', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-left',
+						'icon'  => 'eicon-h-align-left',
 					),
 					'center' => array(
 						'title' => esc_html__( 'Center', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-center',
+						'icon'  => 'eicon-h-align-center',
 					),
 					'right' => array(
 						'title' => esc_html__( 'Right', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-right',
+						'icon'  => 'eicon-h-align-right',
 					),
 				),
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -625,20 +626,21 @@ class Jet_Image_Accordion_Widget extends Jet_Tabs_Base {
 				'options' => array(
 					'left'    => array(
 						'title' => esc_html__( 'Left', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-left',
+						'icon'  => 'eicon-h-align-left',
 					),
 					'center' => array(
 						'title' => esc_html__( 'Center', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-center',
+						'icon'  => 'eicon-h-align-center',
 					),
 					'right' => array(
 						'title' => esc_html__( 'Right', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-right',
+						'icon'  => 'eicon-h-align-right',
 					),
 				),
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['desc'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -713,16 +715,16 @@ class Jet_Image_Accordion_Widget extends Jet_Tabs_Base {
 				'default' => 'flex-start',
 				'options' => array(
 					'flex-start'    => array(
-						'title' => esc_html__( 'Left', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-left',
+						'title' => ! is_rtl() ? esc_html__( 'Left', 'jet-tabs' ) : esc_html__( 'Right', 'jet-tabs' ),
+						'icon'  => ! is_rtl() ? 'fa fa-align-left' : 'fa fa-align-right',
 					),
 					'center' => array(
 						'title' => esc_html__( 'Center', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-center',
+						'icon'  => 'eicon-h-align-center',
 					),
 					'flex-end' => array(
-						'title' => esc_html__( 'Right', 'jet-tabs' ),
-						'icon'  => 'fa fa-align-right',
+						'title' => ! is_rtl() ? esc_html__( 'Right', 'jet-tabs' ) : esc_html__( 'Left', 'jet-tabs' ),
+						'icon'  => ! is_rtl() ? 'fa fa-align-right' : 'fa fa-align-left',
 					),
 				),
 				'selectors'  => array(
@@ -1106,7 +1108,7 @@ class Jet_Image_Accordion_Widget extends Jet_Tabs_Base {
 			return sprintf( $format, Utils::get_placeholder_image_src(), '' );
 		}
 
-		$src = wp_get_attachment_image_url( $image['id'] );
+		$src = wp_get_attachment_image_url( $image['id'], 'full' );
 		$alt = Control_Media::get_image_alt( $image );
 
 		return sprintf( $format, esc_url( $src ), esc_attr( $alt ) );

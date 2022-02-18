@@ -562,6 +562,7 @@ class Jet_Elements_Price_List extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['item_price'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -639,6 +640,7 @@ class Jet_Elements_Price_List extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['item_description'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -782,7 +784,7 @@ class Jet_Elements_Price_List extends Jet_Elements_Base {
 					'unit' => 'px',
 				),
 				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['item_image_wrap'] => 'margin-right: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} ' . $css_scheme['item_image_wrap'] => ! is_rtl() ? 'margin-right: {{SIZE}}{{UNIT}};' : 'margin-left: {{SIZE}}{{UNIT}};',
 				),
 			),
 			25

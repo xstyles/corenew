@@ -103,7 +103,7 @@ class Jet_Elements_Advanced_Map extends Jet_Elements_Base {
 			'map_center_lat_lng',
 			array(
 				'label'       => esc_html__( 'Map Center Coordinates', 'jet-elements' ),
-				'description' => esc_html__( 'To get an address from latitude and longitude coordinates from one meta field, combine coordinates names with the ";" sign. For example lat;lng. Where latitude always goes first. The latitude value range is from -90 to 90. The longitude value outside range is from -180 to 180.', 'jet-elements' ),
+				'description' => esc_html__( 'To get an address from latitude and longitude coordinates from one meta field, combine coordinates names with the ";" sign. For example 51.503399;-0.119519. Where latitude always goes first. The latitude value range is from -90 to 90. The longitude value outside range is from -180 to 180.', 'jet-elements' ),
 				'type'        => Controls_Manager::TEXT,
 				'placeholder' => $default_lat_long,
 				'default'     => $default_lat_long,
@@ -373,9 +373,40 @@ class Jet_Elements_Advanced_Map extends Jet_Elements_Base {
 			'pin_desc',
 			array(
 				'label'   => esc_html__( 'Pin Description', 'jet-elements' ),
-				'type'    => Controls_Manager::TEXTAREA,
+				'type'    => Controls_Manager::WYSIWYG,
 				'default' => $default_address,
 				'dynamic' => array( 'active' => true ),
+			)
+		);
+
+		$repeater->add_control(
+			'pin_link_title',
+			array(
+				'label'   => esc_html__( 'Link Text', 'jet-elements' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array(
+					'active' => true,
+				),
+				'default'     => '',
+				'placeholder' => esc_html__( 'View more', 'jet-elements' ),
+			)
+		);
+
+		$repeater->add_control(
+			'pin_link',
+			array(
+				'label' => esc_html__( 'Link', 'jet-elements' ),
+				'type' => Controls_Manager::URL,
+				'dynamic' => array(
+					'active' => true,
+				),
+				'placeholder' => esc_html__( 'https://your-link.com', 'jet-elements' ),
+				'default' => array(
+					'url' => '#',
+				),
+				'condition'   => array(
+					'pin_link_title!' => '',
+				),
 			)
 		);
 
@@ -483,6 +514,139 @@ class Jet_Elements_Advanced_Map extends Jet_Elements_Base {
 
 		$this->end_controls_section();
 
+		/**
+		 * Style Section
+		 */
+
+		$this->start_controls_section(
+			'section_pin_style',
+			array(
+				'label'      => esc_html__( 'Pin', 'jet-elements' ),
+				'tab'        => Controls_Manager::TAB_STYLE,
+				'show_label' => false,
+			)
+		);
+
+		$this->add_control(
+			'pin_link_width',
+			array(
+				'label'      => esc_html__( 'Pin Width', 'jet-elements' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array(
+					'px' => array(
+						'min' => 1,
+						'max' => 400,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .gm-style .gm-style-iw-c' => 'width: {{SIZE}}{{UNIT}}; max-width: {{SIZE}}{{UNIT}};',
+				),
+				'dynamic'   => array( 'active' => true ),
+			)
+		);
+
+		$this->add_control(
+			'pin_link_styles',
+			array(
+				'label'     => esc_html__( 'Link Styles', 'jet-elements' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'     => 'pin_link_typography',
+				'scheme'   => Scheme_Typography::TYPOGRAPHY_4,
+				'selector' => '{{WRAPPER}} .jet-map-pin__link',
+			)
+		);
+
+		$this->add_responsive_control(
+			'pin_link_margin',
+			array(
+				'label'      => esc_html__( 'Margin', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} .jet-map-pin__wrapper' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'pin_link_alignment',
+			array(
+				'label'   => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'default' => 'center',
+				'options' => array(
+					'left' => array(
+						'title' => esc_html__( 'Left', 'jet-elements' ),
+						'icon'  => ! is_rtl() ? 'eicon-text-align-left' : 'eicon-text-align-right',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'jet-elements' ),
+						'icon'  => 'eicon-text-align-center',
+					),
+					'right' => array(
+						'title' => esc_html__( 'Right', 'jet-elements' ),
+						'icon'  => ! is_rtl() ? 'eicon-text-align-right' : 'eicon-text-align-left',
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .jet-map-pin__wrapper' => 'text-align: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->start_controls_tabs( 'tabs_pin_link_style' );
+
+		$this->start_controls_tab(
+			'tab_pin_link__normal',
+			array(
+				'label' => esc_html__( 'Normal', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'pin_link_color',
+			array(
+				'label'     => esc_html__( 'Text Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .jet-map-pin__link' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_pin_link_hover',
+			array(
+				'label' => esc_html__( 'Hover', 'jet-elements' ),
+			)
+		);
+
+		$this->add_control(
+			'pin_link_hover_color',
+			array(
+				'label'     => esc_html__( 'Text Color', 'jet-elements' ),
+				'type'      => Controls_Manager::COLOR,
+				'selectors' => array(
+					'{{WRAPPER}} .jet-map-pin__link:hover' => 'color: {{VALUE}}',
+				),
+			)
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->end_controls_section();
 	}
 
 	/**
@@ -827,6 +991,11 @@ class Jet_Elements_Advanced_Map extends Jet_Elements_Base {
 						$current['image_width']  = $pin['pin_icon_width']['size'];
 						$current['image_height'] = $pin['pin_icon_height']['size'];
 					}
+				}
+
+				if ( ! empty ( $pin['pin_link_title'] ) && ! empty( $pin['pin_link'] ) ) {
+					$current['link_title'] = $pin['pin_link_title'];
+					$current['link']       = $pin['pin_link'];
 				}
 
 				$pins[] = $current;

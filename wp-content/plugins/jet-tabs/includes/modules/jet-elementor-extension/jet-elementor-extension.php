@@ -2,7 +2,7 @@
 /**
  * Jet Elementor Extension Module.
  *
- * Version: 1.0.3
+ * Version: 1.0.5
  */
 
 namespace Jet_Elementor_Extension;
@@ -35,7 +35,7 @@ if ( ! class_exists( 'Jet_Elementor_Extension\Module' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $version = '1.0.3';
+		protected $version = '1.0.5';
 
 		/**
 		 * Module directory path.

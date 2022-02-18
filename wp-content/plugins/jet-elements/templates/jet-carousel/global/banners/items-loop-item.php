@@ -2,18 +2,22 @@
 	/**
 	 * Loop item template
 	 */
-	
-	$target = $this->_loop_item( array( 'item_link_target' ), ' target="%s"' );
-	$rel = $this->_loop_item( array( 'item_link_rel' ), ' rel="%s"' );
-	
+	$settings  = $this->get_settings_for_display();
+	$target    = $this->_loop_item( array( 'item_link_target' ), ' target="%s"' );
+	$rel       = $this->_loop_item( array( 'item_link_rel' ), ' rel="%s"' );
+
 	$item_settings = $this->_processed_item;
-	
+
 	$content_type = ! empty( $item_settings['item_content_type'] ) ? $item_settings['item_content_type'] : 'default';
 
-	$img = $this->get_advanced_carousel_img( 'jet-banner__img' );
+	$img      = $this->get_advanced_carousel_img( 'jet-banner__img' );
+
+	if( 'true' === $settings['hide_items_without_image'] && empty( $img ) ){
+		return;
+	}
+
 	$lightbox = 'data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="' . $this->get_id() . '"';
 	$settings = $this->get_settings_for_display();
-
 ?>
 <div class="jet-carousel__item">
 	<div class="jet-carousel__item-inner">

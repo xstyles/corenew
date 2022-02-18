@@ -289,6 +289,14 @@ class Jet_Elements_Images_Layout extends Jet_Elements_Base {
 				'condition' => array(
 					'layout_type' => array( 'masonry', 'grid' ),
 				),
+				'frontend_available' => true,
+				'render_type'        => 'template',
+				'selectors'          => array(
+					'{{WRAPPER}} .salvattore-column' => 'width: calc(100% / {{VALUE}});',
+					'{{WRAPPER}} .jet-images-layout__list::before' => 'content: "{{VALUE}} .salvattore-column"',
+					'{{WRAPPER}} .layout-type-grid .jet-images-layout__list::before' => 'content: ""',
+					'{{WRAPPER}} .layout-type-grid .jet-images-layout__list .jet-images-layout__item' => 'width: calc(100% / {{VALUE}});',
+				),
 			)
 		);
 
@@ -756,6 +764,7 @@ class Jet_Elements_Images_Layout extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -845,6 +854,7 @@ class Jet_Elements_Images_Layout extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['desc'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -910,9 +920,6 @@ class Jet_Elements_Images_Layout extends Jet_Elements_Base {
 
 		$settings = array(
 			'layoutType'    => $module_settings['layout_type'],
-			'columns'       => $module_settings['columns'],
-			'columnsTablet' => $module_settings['columns_tablet'],
-			'columnsMobile' => $module_settings['columns_mobile'],
 			'justifyHeight' => $module_settings['justify_height'],
 		);
 
@@ -969,7 +976,7 @@ class Jet_Elements_Images_Layout extends Jet_Elements_Base {
 		$this->_close_wrap();
 	}
 
-	protected function _content_template() {}
+	protected function content_template() {}
 
 	public function shuffle_image_list( $list ) {
 		shuffle( $list );

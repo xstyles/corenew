@@ -33,9 +33,7 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 			// WPML String Translation plugin exist check
 			if ( defined( 'WPML_ST_VERSION' ) ) {
 
-				if ( class_exists( 'WPML_Elementor_Module_With_Items' ) ) {
-					$this->load_wpml_modules();
-				}
+				add_action( 'init', array( $this, 'load_wpml_modules' ) );
 
 				add_filter( 'wpml_elementor_widgets_to_translate', array( $this, 'add_translatable_nodes' ) );
 				add_filter( 'jet-elements/widgets/template_id',    array( $this, 'set_wpml_translated_template_id' ) );
@@ -68,6 +66,11 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 		 * @return void
 		 */
 		public function load_wpml_modules() {
+
+			if ( ! class_exists( 'WPML_Elementor_Module_With_Items' ) ) {
+				return;
+			}
+
 			require jet_elements()->plugin_path( 'includes/lib/compatibility/modules/class-wpml-jet-elements-advanced-carousel.php' );
 			require jet_elements()->plugin_path( 'includes/lib/compatibility/modules/class-wpml-jet-elements-map.php' );
 			require jet_elements()->plugin_path( 'includes/lib/compatibility/modules/class-wpml-jet-elements-animated-text.php' );
@@ -232,7 +235,11 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 						'type'        => esc_html__( 'Jet Countdown Timer: Label Sec', 'jet-elements' ),
 						'editor_type' => 'LINE',
 					),
-
+					array(
+						'field'       => 'message_after_expire',
+						'type'        => esc_html__( 'Jet Countdown Timer: Message After Expire', 'jet-elements' ),
+						'editor_type' => 'AREA',
+					),
 				),
 			);
 
@@ -264,6 +271,16 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 					array(
 						'field'       => 'subtitle',
 						'type'        => esc_html__( 'Jet Circle Progress: Subtitle', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
+					array(
+						'field'       => 'prefix',
+						'type'        => esc_html__( 'Jet Circle Progress: Prefix', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
+					array(
+						'field'       => 'suffix',
+						'type'        => esc_html__( 'Jet Circle Progress: Suffix', 'jet-elements' ),
 						'editor_type' => 'LINE',
 					),
 				),
@@ -497,12 +514,12 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 					array(
 						'field'       => 'first_part',
 						'type'        => esc_html__( 'Jet Headline: First Part', 'jet-elements' ),
-						'editor_type' => 'LINE',
+						'editor_type' => 'AREA',
 					),
 					array(
 						'field'       => 'second_part',
 						'type'        => esc_html__( 'Jet Headline: Second Part', 'jet-elements' ),
-						'editor_type' => 'LINE',
+						'editor_type' => 'AREA',
 					),
 					'link' => array(
 						'field'       => 'url',
@@ -529,6 +546,11 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 					array(
 						'field'       => 'submit_placeholder',
 						'type'        => esc_html__( 'Jet Subscribe Form: Input Placeholder', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
+					array(
+						'field'       => 'redirect_url',
+						'type'        => esc_html__( 'Jet Subscribe Form: Redirect Url', 'jet-elements' ),
 						'editor_type' => 'LINE',
 					),
 				),
@@ -631,6 +653,16 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 						'type'        => esc_html__( 'Jet Bar Chart: Labels', 'jet-elements' ),
 						'editor_type' => 'LINE',
 					),
+					array(
+						'field'       => 'chart_tooltip_prefix',
+						'type'        => esc_html__( 'Jet Bar Chart: Tooltips Prefix', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
+					array(
+						'field'       => 'chart_tooltip_suffix',
+						'type'        => esc_html__( 'Jet Bar Chart: Tooltips Suffix', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
 				),
 				'integration-class' => 'WPML_Jet_Elements_Bar_Chart',
 			);
@@ -643,12 +675,17 @@ if ( ! class_exists( 'Jet_Elements_Compatibility' ) ) {
 						'type'        => esc_html__( 'Jet Pie Chart: Title', 'jet-elements' ),
 						'editor_type' => 'LINE',
 					),
+					array(
+						'field'       => 'chart_tooltip_suffix',
+						'type'        => esc_html__( 'Jet Pie Chart: Tooltips Suffix', 'jet-elements' ),
+						'editor_type' => 'LINE',
+					),
 				),
 				'integration-class' => 'WPML_Jet_Elements_Pie_Chart',
 			);
 
 			$nodes_to_translate['jet-line-chart'] = array(
-				'conditions'        => array( 'widgetType' => 'jet-lien-chart' ),
+				'conditions'        => array( 'widgetType' => 'jet-line-chart' ),
 				'fields'            => array(
 					array(
 						'field'       => 'labels',

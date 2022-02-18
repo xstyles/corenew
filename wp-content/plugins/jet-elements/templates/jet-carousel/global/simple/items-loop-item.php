@@ -2,19 +2,23 @@
 	/**
 	 * Loop item template
 	 */
+	$settings  = $this->get_settings_for_display();
+	$target    = $this->_loop_item( array( 'item_link_target' ), ' target="%s"' );
+	$rel       = $this->_loop_item( array( 'item_link_rel' ), ' rel="%s"' );
+	$img       = $this->get_advanced_carousel_img( 'jet-carousel__item-img' );
 
-	$target = $this->_loop_item( array( 'item_link_target' ), ' target="%s"' );
-	$rel = $this->_loop_item( array( 'item_link_rel' ), ' rel="%s"' );
-	$img = $this->get_advanced_carousel_img( 'jet-carousel__item-img' );
+	if( 'true' === $settings['hide_items_without_image'] && empty( $img ) ){
+		return;
+	}
 
 	$item_settings = $this->_processed_item;
 
 	$content_type = ! empty( $item_settings['item_content_type'] ) ? $item_settings['item_content_type'] : 'default';
 
 	$lightbox = 'data-elementor-open-lightbox="yes" data-elementor-lightbox-slideshow="'.$this->get_id().'"';
-	$settings = $this->get_settings_for_display();
+?>
 
-?><div class="jet-carousel__item">
+<div class="jet-carousel__item">
 	<div class="jet-carousel__item-inner"><?php
 		if ( $img ) {
 			if ( $settings['item_link_type'] === 'link' ) {
@@ -22,7 +26,7 @@
 			} else {
 				printf( '<a href="%1$s" class="jet-carousel__item-link" %2$s>', $item_settings['item_image']['url'], $lightbox );
 			}
-			
+
 			echo $img;
 
 			if ( $settings['item_link_type'] === 'link' ) {

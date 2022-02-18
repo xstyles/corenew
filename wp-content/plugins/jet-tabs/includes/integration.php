@@ -43,7 +43,7 @@ if ( ! class_exists( 'Jet_Tabs_Integration' ) ) {
 		 */
 		public function init() {
 
-			add_action( 'elementor/init', array( $this, 'register_category' ) );
+			add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 
 			add_action( 'elementor/widgets/widgets_registered', array( $this, 'register_addons' ), 10 );
 
@@ -213,9 +213,8 @@ if ( ! class_exists( 'Jet_Tabs_Integration' ) ) {
 		 *
 		 * @return void
 		 */
-		public function register_category() {
+		public function register_category( $elements_manager ) {
 
-			$elements_manager = Elementor\Plugin::instance()->elements_manager;
 			$cherry_cat       = 'cherry';
 
 			$elements_manager->add_category(

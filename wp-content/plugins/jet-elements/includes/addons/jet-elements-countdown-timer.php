@@ -746,7 +746,7 @@ class Jet_Elements_Countdown_Timer extends Jet_Elements_Base {
 			array(
 				'name'     => 'value_typography',
 				'scheme'   => Scheme_Typography::TYPOGRAPHY_1,
-				'selector' => '{{WRAPPER}} ' . $css_scheme['value'],
+				'selector' => '{{WRAPPER}} ' . $css_scheme['digit'],
 			),
 			50
 		);
@@ -1073,6 +1073,7 @@ class Jet_Elements_Countdown_Timer extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['message'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);

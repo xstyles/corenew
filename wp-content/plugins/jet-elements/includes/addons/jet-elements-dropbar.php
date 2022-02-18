@@ -177,6 +177,7 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['inner'] => '{{VALUE}}',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			)
 		);
 
@@ -243,9 +244,12 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 			'template_id',
 			array(
 				'label'       => esc_html__( 'Choose Template', 'jet-elements' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
+				'edit_button' => array(
+					'active' => true,
+					'label'  => __( 'Edit Template', 'jet-elements' ),
+				),
 				'condition'   => array(
 					'content_type' => 'template',
 				),
@@ -861,6 +865,7 @@ class Jet_Elements_Dropbar extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['content'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);

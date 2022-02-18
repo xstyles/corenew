@@ -290,10 +290,18 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 			);
 
 			wp_register_script(
-				'tippy',
-				jet_elements()->plugin_url( 'assets/js/lib/tippy/tippy.all.min.js' ),
+				'popperjs',
+				jet_elements()->plugin_url( 'assets/js/lib/tippy/popperjs.js' ),
 				array(),
-				'2.5.3',
+				'2.5.2',
+				true
+			);
+
+			wp_register_script(
+				'tippy-bundle',
+				jet_elements()->plugin_url( 'assets/js/lib/tippy/tippy-bundle.min.js' ),
+				array( 'popperjs' ),
+				'6.3.1',
 				true
 			);
 
@@ -316,7 +324,7 @@ if ( ! class_exists( 'Jet_Elements_Assets' ) ) {
 			wp_register_script(
 				'jet-slick',
 				jet_elements()->plugin_url( 'assets/js/lib/slick/slick.min.js' ),
-				array(),
+				array( 'jquery' ),
 				'1.8.1',
 				true
 			);

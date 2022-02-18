@@ -30,9 +30,14 @@ $this->add_render_attribute( $link_instance, 'class', array(
 	class_exists( 'OCEANWP_Theme_Class' ) ? 'no-lightbox' : '',
 ) );
 
-$link_href = $is_lightbox
-	? $this->_loop_item( array( 'item_image', 'url' ) )
-	: $this->_loop_item( array( 'item_button_url', 'url' ) );
+if ( $is_lightbox ) {
+	$link_href = $this->_loop_item( array( 'item_image', 'url' ) );
+} else {
+	$link_href   = $this->_loop_item( array( 'item_button_url', 'url' ) );
+	$is_external = $this->_loop_item( array( 'item_button_url', 'is_external') );
+	$link_target = 'on' === $is_external ? '_blank' : '';
+	$this->add_render_attribute( $link_instance, 'target', $link_target );
+}
 
 $this->add_render_attribute( $link_instance, 'href', $link_href );
 

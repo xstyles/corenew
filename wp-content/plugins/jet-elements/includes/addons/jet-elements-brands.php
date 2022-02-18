@@ -143,6 +143,10 @@ class Jet_Elements_Brands extends Jet_Elements_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => 4,
 				'options' => jet_elements_tools()->get_select_range( 6 ),
+				'selectors' => array(
+					'{{WRAPPER}} .brands-list__item' => 'max-width: calc( 100% / {{VALUE}} );flex: 0 0 calc( 100% / {{VALUE}} ); -webkit-box-flex: 0;
+					-ms-flex: 0 0 calc( 100% / {{VALUE}} );',
+				)
 			)
 		);
 
@@ -229,6 +233,7 @@ class Jet_Elements_Brands extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['logo_wrap'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			)
 		);
 
@@ -350,6 +355,7 @@ class Jet_Elements_Brands extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['name'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -426,6 +432,7 @@ class Jet_Elements_Brands extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['desc'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -482,7 +489,7 @@ class Jet_Elements_Brands extends Jet_Elements_Base {
 		$this->_close_wrap();
 	}
 
-	protected function _content_template() {
+	protected function content_template() {
 
 		$this->_context = 'edit';
 

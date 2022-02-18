@@ -6,7 +6,7 @@
 $classes      = 'pricing-feature-' . $this->_loop_item( array( '_id' ) );
 $classes     .= ' ' . $this->_loop_item( array( 'item_included' ) );
 $tooltip      = $this->_loop_item( array( 'item_tooltip' ) ) ;
-$tooltip_attr = ! empty( $tooltip ) ? ' title="' . $tooltip . '"' : '';
+$tooltip_attr = ! empty( $tooltip ) ? ' data-tippy-content="' . $tooltip . '"' : '';
 
 if ( $fold_enabled ) {
 	$fold_visible_number = isset( $settings['fold_items_show'] ) ? $settings['fold_items_show'] : 1;

@@ -292,6 +292,11 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 				'condition' => array(
 					'layout_type' => array( 'masonry', 'grid' ),
 				),
+				'frontend_available' => true,
+				'render_type'        => 'template',
+				'selectors'          => array(
+					'{{WRAPPER}} ' . $css_scheme['item'] => 'width: calc(100% / {{VALUE}});',
+				),
 			)
 		);
 
@@ -1202,6 +1207,7 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -1288,6 +1294,7 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['category'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -1399,6 +1406,7 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['desc'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -1513,6 +1521,7 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['button'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);
@@ -1989,11 +1998,8 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 		$module_settings = $this->get_settings();
 
 		$settings = array(
-			'layoutType'    => $module_settings['layout_type'],
-			'columns'       => $module_settings['columns'],
-			'columnsTablet' => $module_settings['columns_tablet'],
-			'columnsMobile' => $module_settings['columns_mobile'],
-			'perPage'       => $module_settings['per_page'],
+			'layoutType' => $module_settings['layout_type'],
+			'perPage'    => $module_settings['per_page'],
 		);
 
 		$settings = json_encode( $settings );
@@ -2291,6 +2297,10 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 		return $loop;
 	}
 
+	public function trp_edit_mode() {
+		return ! empty( $_GET['trp-edit-translation'] ) ? true : false;
+	}
+
 	/**
 	 * [render description]
 	 * @return [type] [description]
@@ -2303,6 +2313,6 @@ class Jet_Elements_Portfolio extends Jet_Elements_Base {
 		$this->_close_wrap();
 	}
 
-	protected function _content_template() {}
+	protected function content_template() {}
 
 }

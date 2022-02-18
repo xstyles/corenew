@@ -83,7 +83,6 @@
 				<?php endif; ?>
 
 			<?php endif; // request-details signup step ?>
-			<?php gravity_form( 'Student Registration', false, false, false, '', false ); ?>		
 			</div><!-- //.layout-wrap -->
 
 			<?php bp_nouveau_signup_hook( 'custom', 'steps' ); ?>

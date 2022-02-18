@@ -3,13 +3,16 @@
  * Plugin Name: JetTabs For Elementor
  * Plugin URI:  https://crocoblock.com/plugins/jettabs/
  * Description: JetTabs - Tabs and Accordions for Elementor Page Builder
- * Version:     2.1.11
+ * Version:     2.1.15
  * Author:      Crocoblock
  * Author URI:  https://crocoblock.com/
  * Text Domain: jet-tabs
  * License:     GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  * Domain Path: /languages
+ *
+ * Elementor tested up to: 3.2
+ * Elementor Pro tested up to: 3.3
  */
 
 // If this file is called directly, abort.
@@ -39,7 +42,7 @@ if ( ! class_exists( 'Jet_Tabs' ) ) {
 		 *
 		 * @var string
 		 */
-		private $version = '2.1.11';
+		private $version = '2.1.15';
 
 		/**
 		 * Holder for base plugin path

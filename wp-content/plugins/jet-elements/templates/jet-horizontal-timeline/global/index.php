@@ -3,12 +3,14 @@
  * Timeline main template
  */
 
-$settings = $this->get_settings_for_display();
+$settings      = $this->get_settings_for_display();
+$mobile_layout = isset( $settings['mobile_vertical_layout'] ) ? $settings['mobile_vertical_layout'] : $settings['vertical_layout'];
+$layout        = true === wp_is_mobile() ? $mobile_layout : $settings['vertical_layout'];
 
 $this->add_render_attribute( 'wrapper', 'class',
 	array(
 		'jet-hor-timeline',
-		'jet-hor-timeline--layout-' . esc_attr( $settings['vertical_layout'] ),
+		'jet-hor-timeline--layout-' . esc_attr( $layout ),
 		'jet-hor-timeline--align-' . esc_attr( $settings['horizontal_alignment'] ),
 		'jet-hor-timeline--' . esc_attr( $settings['navigation_type'] ),
 	)

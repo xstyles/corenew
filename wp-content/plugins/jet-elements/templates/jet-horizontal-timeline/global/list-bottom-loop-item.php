@@ -5,6 +5,11 @@
 
 $settings      = $this->get_settings_for_display();
 $layout        = $settings['vertical_layout'];
+
+if ( true === wp_is_mobile() ) {
+	$layout = isset( $settings['mobile_vertical_layout'] ) ? $settings['mobile_vertical_layout'] : $settings['vertical_layout'];
+}
+
 $item_settings = $this->_processed_item;
 
 $this->add_render_attribute(

@@ -11,8 +11,8 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Schemes\Color as Scheme_Color;
+use Elementor\Core\Schemes\Typography as Scheme_Typography;
 use Elementor\Widget_Base;
 use Elementor\Utils;
 
@@ -111,52 +111,55 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'   => esc_html__( 'Label', 'jet-tabs' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => esc_html__( 'New Tab', 'jet-tabs' ),
-				'dynamic' => [
+				'dynamic' => array(
 					'active' => true,
-				],
+				),
 			)
 		);
 
 		$repeater->add_control(
 			'content_type',
-			[
+			array(
 				'label'       => esc_html__( 'Content Type', 'jet-tabs' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => 'template',
-				'options'     => [
+				'options'     => array(
 					'template' => esc_html__( 'Template', 'jet-tabs' ),
 					'editor'   => esc_html__( 'Editor', 'jet-tabs' ),
-				],
+				),
 				'label_block' => 'true',
-			]
+			)
 		);
 
 		$repeater->add_control(
 			'item_template_id',
 			array(
 				'label'       => esc_html__( 'Choose Template', 'jet-tabs' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
-				'condition'   => [
+				'edit_button' => array(
+					'active' => true,
+					'label'  => esc_html__( 'Edit Template', 'jet-tabs' ),
+				),
+				'condition'   => array(
 					'content_type' => 'template',
-				]
+				)
 			)
 		);
 
 		$repeater->add_control(
 			'item_editor_content',
-			[
-				'label'      => __( 'Content', 'jet-tabs' ),
+			array(
+				'label'      => esc_html__( 'Content', 'jet-tabs' ),
 				'type'       => Controls_Manager::WYSIWYG,
-				'default'    => __( 'Tab Item Content', 'jet-tabs' ),
-				'dynamic' => [
+				'default'    => esc_html__( 'Tab Item Content', 'jet-tabs' ),
+				'dynamic'    => array(
 					'active' => true,
-				],
-				'condition'   => [
+				),
+				'condition'  => array(
 					'content_type' => 'editor',
-				]
-			]
+				)
+			)
 		);
 
 		$repeater->add_control(
@@ -164,9 +167,9 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 			array(
 				'label'   => esc_html__( 'Control CSS ID', 'jet-tabs' ),
 				'type'    => Controls_Manager::TEXT,
-				'dynamic' => [
+				'dynamic' => array(
 					'active' => true,
-				],
+				),
 			)
 		);
 
@@ -177,13 +180,13 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'fields'      => $repeater->get_controls(),
 				'default'     => array(
 					array(
-						'item_label'  => esc_html__( 'Toggle #1', 'jet-tabs' ),
+						'item_label' => esc_html__( 'Toggle #1', 'jet-tabs' ),
 					),
 					array(
-						'item_label'  => esc_html__( 'Toggle #2', 'jet-tabs' ),
+						'item_label' => esc_html__( 'Toggle #2', 'jet-tabs' ),
 					),
 					array(
-						'item_label'  => esc_html__( 'Toggle #3', 'jet-tabs' ),
+						'item_label' => esc_html__( 'Toggle #3', 'jet-tabs' ),
 					),
 				),
 				'title_field' => '{{{ item_label }}}',
@@ -196,6 +199,17 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 			'section_settings_data',
 			array(
 				'label' => esc_html__( 'Settings', 'jet-tabs' ),
+			)
+		);
+
+		$this->add_control(
+			'item_html_tag',
+			array(
+				'label'       => esc_html__( 'HTML Tag', 'jet-tabs' ),
+				'description' => esc_html__( 'Select the HTML Tag for the Item\'s label', 'jet-tabs' ),
+				'type'        => Controls_Manager::SELECT,
+				'options'     => $this->get_available_item_html_tags(),
+				'default'     => 'div',
 			)
 		);
 
@@ -217,7 +231,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'       => esc_html__( 'Show Effect', 'jet-tabs' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => 'move-up',
-				'options' => array(
+				'options'     => array(
 					'none'             => esc_html__( 'None', 'jet-tabs' ),
 					'fade'             => esc_html__( 'Fade', 'jet-tabs' ),
 					'zoom-in'          => esc_html__( 'Zoom In', 'jet-tabs' ),
@@ -232,6 +246,28 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 			'ajax_template',
 			array(
 				'label'        => esc_html__( 'Use Ajax Loading for Template', 'jet-tabs' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'On', 'jet-tabs' ),
+				'label_off'    => esc_html__( 'Off', 'jet-tabs' ),
+				'return_value' => 'yes',
+				'default'      => 'false',
+			)
+		);
+
+		$this->add_control(
+			'faq_schema',
+			array(
+				'label' => esc_html__( 'FAQ Schema', 'jet-tabs' ),
+				'type' => Controls_Manager::SWITCHER,
+				'separator' => 'before',
+			)
+		);
+
+		$this->add_control(
+			'content_scrolling',
+			array(
+				'label'        => esc_html__( 'Scrolling to the Content', 'jet-tabs' ),
+				'description'  => esc_html__( 'Scrolling to the Content after Switching Tab Control on Mobile Devices', 'jet-tabs' ),
 				'type'         => Controls_Manager::SWITCHER,
 				'label_on'     => esc_html__( 'On', 'jet-tabs' ),
 				'label_off'    => esc_html__( 'Off', 'jet-tabs' ),
@@ -263,7 +299,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'instance_padding',
 			array(
-				'label'      => __( 'Padding', 'jet-tabs' ),
+				'label'      => esc_html__( 'Padding', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -428,6 +464,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				),
 				'default' => 'left',
 				'label_block' => false,
+				'classes' => 'jet-tabs-text-align-control',
 			),
 			25
 		);
@@ -435,7 +472,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'toggle_icon_margin',
 			array(
-				'label'      => __( 'Margin', 'jet-tabs' ),
+				'label'      => esc_html__( 'Margin', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -453,8 +490,8 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'default' => 'flex-start',
 				'options' => array(
 					'flex-start'    => array(
-						'title' => esc_html__( 'Left', 'jet-tabs' ),
-						'icon'  => 'fa fa-arrow-left',
+						'title' => esc_html__( 'Start', 'jet-tabs' ),
+						'icon'  => ! is_rtl() ? 'fa fa-arrow-left' : 'fa fa-arrow-right',
 					),
 					'center' => array(
 						'title' => esc_html__( 'Center', 'jet-tabs' ),
@@ -465,14 +502,41 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 						'icon'  => 'fa fa-align-justify',
 					),
 					'flex-end' => array(
-						'title' => esc_html__( 'Right', 'jet-tabs' ),
-						'icon'  => 'fa fa-arrow-right',
+						'title' => esc_html__( 'End', 'jet-tabs' ),
+						'icon'  => ! is_rtl() ? 'fa fa-arrow-right' : 'fa fa-arrow-left',
 					),
 				),
-				'selectors'  => array(
+				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['control'] => 'justify-content: {{VALUE}};',
 				),
 				'separator' => 'before',
+			),
+			25
+		);
+
+		$this->__add_responsive_control(
+			'toggle_label_text_aligment',
+			array(
+				'label'   => esc_html__( 'Text Alignment', 'jet-tabs' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'default' => 'left',
+				'options' => array(
+					'left'    => array(
+						'title' => esc_html__( 'Left', 'jet-tabs' ),
+						'icon'  => 'eicon-text-align-left',
+					),
+					'center' => array(
+						'title' => esc_html__( 'Center', 'jet-tabs' ),
+						'icon'  => 'eicon-text-align-center',
+					),
+					'right' => array(
+						'title' => esc_html__( 'Right', 'jet-tabs' ),
+						'icon'  => 'eicon-text-align-right',
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['label'] => 'text-align: {{VALUE}};',
+				),
 			),
 			25
 		);
@@ -538,7 +602,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'       => esc_html__( 'Border', 'jet-tabs' ),
 				'placeholder' => '1px',
 				'default'     => '1px',
-				'selector'  => '{{WRAPPER}} ' . $css_scheme['control'],
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['control'],
 			),
 			25
 		);
@@ -604,7 +668,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'       => esc_html__( 'Border', 'jet-tabs' ),
 				'placeholder' => '1px',
 				'default'     => '1px',
-				'selector'  => '{{WRAPPER}} ' . $css_scheme['control'] . ':hover',
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['control'] . ':hover',
 			),
 			25
 		);
@@ -682,13 +746,13 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'toggle_control_padding',
 			array(
-				'label'      => __( 'Padding', 'jet-tabs' ),
+				'label'      => esc_html__( 'Padding', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['control'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
-				'separator' => 'before',
+				'separator'  => 'before',
 			),
 			50
 		);
@@ -741,8 +805,8 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'tabs_content_text_color',
 			array(
-				'label' => esc_html__( 'Text color', 'jet-tabs' ),
-				'type'  => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Text color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['content'] => 'color: {{VALUE}};',
 				),
@@ -762,7 +826,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'tabs_content_padding',
 			array(
-				'label'      => __( 'Padding', 'jet-tabs' ),
+				'label'      => esc_html__( 'Padding', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -775,7 +839,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'tabs_content_margin',
 			array(
-				'label'      => __( 'Margin', 'jet-tabs' ),
+				'label'      => esc_html__( 'Margin', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -792,7 +856,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'       => esc_html__( 'Border', 'jet-tabs' ),
 				'placeholder' => '1px',
 				'default'     => '1px',
-				'selector'  => '{{WRAPPER}} ' . $css_scheme['content'],
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['content'],
 			),
 			25
 		);
@@ -800,7 +864,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'tabs_content_radius',
 			array(
-				'label'      => __( 'Border Radius', 'jet-tabs' ),
+				'label'      => esc_html__( 'Border Radius', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -825,9 +889,9 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'label'     => esc_html__( 'Loader Styles', 'jet-tabs' ),
 				'type'      => Controls_Manager::HEADING,
 				'separator' => 'before',
-				'condition' => [
+				'condition' => array(
 					'ajax_template' => 'yes',
-				],
+				),
 			),
 			25
 		);
@@ -840,9 +904,9 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['content'] . ' .jet-tabs-loader' => 'border-color: {{VALUE}}; border-top-color: white;',
 				),
-				'condition' => [
+				'condition' => array(
 					'ajax_template' => 'yes',
-				],
+				),
 			),
 			25
 		);
@@ -858,8 +922,9 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 
 		$this->__context = 'render';
 
-		$toggles = $this->get_settings_for_display( 'toggles' );
-		$toggles = apply_filters( 'jet-tabs/widget/loop-items', $toggles, 'toggles', $this );
+		$toggles    = $this->get_settings_for_display( 'toggles' );
+		$toggles    = apply_filters( 'jet-tabs/widget/loop-items', $toggles, 'toggles', $this );
+		$faq_schema = $this->get_settings_for_display( 'faq_schema' );
 
 		$id_int = substr( $this->get_id_int(), 0, 3 );
 
@@ -868,19 +933,29 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 		$ajax_template = filter_var( $this->get_settings( 'ajax_template' ), FILTER_VALIDATE_BOOLEAN );
 
 		$settings = array(
-			'collapsible'  => filter_var( $this->get_settings( 'collapsible' ), FILTER_VALIDATE_BOOLEAN ),
-			'ajaxTemplate' => $ajax_template,
+			'collapsible'     => filter_var( $this->get_settings( 'collapsible' ), FILTER_VALIDATE_BOOLEAN ),
+			'ajaxTemplate'    => $ajax_template,
+			'switchScrolling' => filter_var( $this->get_settings( 'content_scrolling' ), FILTER_VALIDATE_BOOLEAN )
 		);
 
 		$this->add_render_attribute( 'instance', array(
-			'class' => array(
+			'class'         => array(
 				'jet-accordion',
 			),
 			'data-settings' => json_encode( $settings ),
-			'role' => 'tablist',
+			'role'          => 'tablist',
 		) );
 
 		$toggle_icon_position = $this->get_settings( 'toggle_icon_position' );
+		$toggle_item_label_tag = ! empty( $this->get_settings( 'item_html_tag' ) ) ? $this->get_settings( 'item_html_tag' ) : 'div';
+
+		if ( 'yes' === $faq_schema ) {
+			$json = array(
+				'@context'   => 'https://schema.org',
+				'@type'      => 'FAQPage',
+				'mainEntity' => [],
+			);
+		}
 
 		?>
 		<div <?php echo $this->get_render_attribute_string( 'instance' ); ?>>
@@ -898,15 +973,15 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 						$toggle_control_id = ! empty( $item['control_id'] ) ? esc_attr( $item['control_id'] ) : 'jet-toggle-control-' . $id_int . $toggle_count;
 
 						$this->add_render_attribute( $toggle_control_setting_key, array(
-							'id'            => $toggle_control_id,
-							'class'         => array(
+							'id'               => $toggle_control_id,
+							'class'            => array(
 								'jet-toggle__control',
 								'elementor-menu-anchor',
 							),
-							'data-toggle'   => $toggle_count,
-							'role'          => 'tab',
-							'aria-controls' => 'jet-toggle-content-' . $id_int . $toggle_count,
-							'aria-expanded' => $is_item_active ? 'true' : 'false',
+							'data-toggle'      => $toggle_count,
+							'role'             => 'tab',
+							'aria-controls'    => 'jet-toggle-content-' . $id_int . $toggle_count,
+							'aria-expanded'    => $is_item_active ? 'true' : 'false',
 							'data-template-id' => ! empty( $item['item_template_id'] ) ? $item['item_template_id'] : 'false',
 						) );
 
@@ -922,17 +997,17 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 						$toggle_control_label_html = '';
 
 						if ( ! empty( $item['item_label'] ) ) {
-							$toggle_control_label_html = sprintf( '<div class="jet-toggle__label-text">%1$s</div>', $item['item_label'] );
+							$toggle_control_label_html = sprintf( '<' . $toggle_item_label_tag . ' class="jet-toggle__label-text">%1$s</' . $toggle_item_label_tag . '>', $item['item_label'] );
 						}
 
 						$this->add_render_attribute( $toggle_content_setting_key, array(
-							'id'          => 'jet-toggle-content-' . $id_int . $toggle_count,
-							'class'       => array(
+							'id'               => 'jet-toggle-content-' . $id_int . $toggle_count,
+							'class'            => array(
 								'jet-toggle__content'
 							),
-							'data-toggle' => $toggle_count,
-							'role'        => 'tabpanel',
-							'aria-hidden' => $is_item_active ? 'false' : 'true',
+							'data-toggle'      => $toggle_count,
+							'role'             => 'tabpanel',
+							'aria-hidden'      => $is_item_active ? 'false' : 'true',
 							'data-template-id' => ! empty( $item['item_template_id'] ) ? $item['item_template_id'] : 'false',
 						) );
 
@@ -982,7 +1057,7 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 						}
 
 						$this->add_render_attribute( $toggle_setting_key, array(
-							'class'         => array(
+							'class' => array(
 								'jet-accordion__item',
 								'jet-toggle',
 								'jet-toggle-' . $show_effect . '-effect',
@@ -999,7 +1074,20 @@ class Jet_Accordion_Widget extends Jet_Tabs_Base {
 								<div class="jet-toggle__content-inner"><?php echo $content_html; ?></div>
 							</div>
 						</div><?php
+						if ( 'yes' === $faq_schema ) {
+							$json['mainEntity'][] = array(
+								'@type' => 'Question',
+								'name'  => wp_strip_all_tags( $item['item_label'] ),
+								'acceptedAnswer' => array(
+									'@type' => 'Answer',
+									'text'  => wp_strip_all_tags( $content_html ),
+								),
+							);
+						}
 					}?>
+					<?php if ( 'yes' === $faq_schema ) : ?>
+						<script type="application/ld+json"><?php echo wp_json_encode( $json ); ?></script>
+					<?php endif?>
 			</div>
 		</div>
 		<?php

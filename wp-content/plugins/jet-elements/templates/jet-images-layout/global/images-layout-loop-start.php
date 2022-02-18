@@ -15,6 +15,7 @@ if ( 'grid' === $settings['layout_type'] ) {
 
 if ( 'masonry' === $settings['layout_type'] ) {
 	$attr_array[] = 'data-columns';
+	$class_array[] = 'salvattore';
 }
 
 $columns        = $this->_get_html( 'columns' );

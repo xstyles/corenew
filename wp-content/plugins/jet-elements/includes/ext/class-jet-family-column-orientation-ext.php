@@ -59,7 +59,7 @@ if ( ! class_exists( 'Jet_Family_Column_Orientation_Ext' ) ) {
 			$element->add_control(
 				'jet_family_column_orientaion',
 				[
-					'label'        => esc_html__( 'Content Orientaion', 'jet-elements' ),
+					'label'        => esc_html__( 'Content Orientation', 'jet-elements' ),
 					'type'         => Elementor\Controls_Manager::SWITCHER,
 					'label_on'     => esc_html__( 'Yes', 'jet-elements' ),
 					'label_off'    => esc_html__( 'No', 'jet-elements' ),

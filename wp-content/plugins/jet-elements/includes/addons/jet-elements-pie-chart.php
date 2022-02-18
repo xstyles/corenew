@@ -357,6 +357,24 @@ class Jet_Elements_Pie_Chart extends Jet_Elements_Base {
 		);
 
 		$this->add_control(
+			'chart_legend_alignment',
+			array(
+				'label'     => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'center',
+				'options'   => array(
+					'start'  => esc_html__( 'Start', 'jet-elements' ),
+					'center' => esc_html__( 'Center', 'jet-elements' ),
+					'end'    => esc_html__( 'End', 'jet-elements' ),
+				),
+				'render_type' => 'template',
+				'condition'   => array(
+					'chart_legend_display' => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
 			'chart_legend_reverse',
 			array(
 				'label'        => esc_html__( 'Revers', 'jet-elements' ),
@@ -790,6 +808,7 @@ class Jet_Elements_Pie_Chart extends Jet_Elements_Base {
 				'display'  => $legend_display,
 				'position' => ! empty( $settings['chart_legend_position'] ) ? $settings['chart_legend_position'] : 'top',
 				'reverse'  => filter_var( $settings['chart_legend_reverse'], FILTER_VALIDATE_BOOLEAN ),
+				'align'    => ! empty( $settings['chart_legend_alignment'] ) ? $settings['chart_legend_alignment'] : 'center',
 			),
 			'tooltips' => array(
 				'enabled' => $tooltips_enabled,

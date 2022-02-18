@@ -147,6 +147,7 @@ class Jet_Elements_Download_Button extends Jet_Elements_Base {
 					),
 				),
 				'prefix_class' => 'elementor%s-align-',
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -174,6 +175,7 @@ class Jet_Elements_Download_Button extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['button'] . ', {{WRAPPER}} .jet-download__text' => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			25
 		);

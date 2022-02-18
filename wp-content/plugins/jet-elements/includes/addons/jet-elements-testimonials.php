@@ -238,14 +238,16 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 		$this->add_responsive_control(
 			'slides_to_show',
 			array(
-				'label'   => esc_html__( 'Slides to Show', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => '1',
-				'options' => jet_elements_tools()->get_select_range( 10 ),
+				'label'              => esc_html__( 'Slides to Show', 'jet-elements' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => '1',
+				'options'            => jet_elements_tools()->get_select_range( 10 ),
+				'frontend_available' => true,
+				'render_type'        => 'template',
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'slides_to_scroll',
 			array(
 				'label'     => esc_html__( 'Slides to Scroll', 'jet-elements' ),
@@ -255,6 +257,8 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'condition' => array(
 					'slides_to_show!' => '1',
 				),
+				'frontend_available' => true,
+				'render_type'        => 'template',
 			)
 		);
 
@@ -421,11 +425,11 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'options' => array(
 					'solid' => array(
 						'title' => esc_html__( 'Solid', 'jet-elements' ),
-						'icon'  => 'fa fa-star',
+						'icon'  => 'eicon-star',
 					),
 					'outline' => array(
 						'title' => esc_html__( 'Outline', 'jet-elements' ),
-						'icon'  => 'fa fa-star-o',
+						'icon'  => 'eicon-star-o',
 					),
 				),
 				'default' => 'solid',
@@ -441,11 +445,11 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'options' => array(
 					'solid' => array(
 						'title' => esc_html__( 'Solid', 'jet-elements' ),
-						'icon'  => 'fa fa-star',
+						'icon'  => 'eicon-star',
 					),
 					'outline' => array(
 						'title' => esc_html__( 'Outline', 'jet-elements' ),
-						'icon'  => 'fa fa-star-o',
+						'icon'  => 'eicon-star-o',
 					),
 				),
 				'default' => 'solid',
@@ -1060,6 +1064,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['title'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1203,6 +1208,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['comment'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1544,6 +1550,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['name'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1725,6 +1732,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['position'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1890,6 +1898,7 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['date'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -2665,13 +2674,14 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 
 	protected function render_stars() {
 
-		$settings = $this->get_settings();
+		$settings   = $this->get_settings();
 		$stars_html = '';
 
 		for ( $stars = 1; $stars <= 5; $stars++ ) {
-			$star_style = ( "outline" === $settings['rating_star_style'] ) ? 'f006' : 'f005' ;
-			$active_star_style = ( "outline" === $settings['rating_active_star_style'] ) ? 'f006' : 'f005' ;
-			$stars_html .= '<i class="fa" aria-hidden="true" data-star-style="&#x' . $star_style .';" data-active-star-style="&#x' . $active_star_style .';"></i>';
+
+			$star_class = ( "outline" === $settings['rating_star_style'] ) ? 'far fa-star' : 'fas fa-star';
+			$active_star_class = ( "outline" === $settings['rating_active_star_style'] ) ? 'far fa-star' : 'fas fa-star';
+			$stars_html .= '<i aria-hidden="true" data-star="' . $star_class .'" data-active-star="' . $active_star_class .'"></i>';
 		}
 		return $stars_html;
 	}
@@ -2685,12 +2695,8 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 		$settings = $this->get_settings();
 		$widget_id = $this->get_id();
 
+
 		$instance_settings = array(
-			'slidesToShow'   => array(
-				'desktop' => absint( $settings['slides_to_show'] ),
-				'tablet'  => absint( $settings['slides_to_show_tablet'] ),
-				'mobile'  => absint( $settings['slides_to_show_mobile'] ),
-			),
 			'autoplaySpeed'  => absint( $settings['autoplay_speed'] ),
 			'autoplay'       => filter_var( $settings['autoplay'], FILTER_VALIDATE_BOOLEAN ),
 			'infinite'       => filter_var( $settings['infinite'], FILTER_VALIDATE_BOOLEAN ),
@@ -2699,13 +2705,13 @@ class Jet_Elements_Testimonials extends Jet_Elements_Base {
 			'speed'          => absint( $settings['speed'] ),
 			'arrows'         => filter_var( $settings['arrows'], FILTER_VALIDATE_BOOLEAN ),
 			'dots'           => filter_var( $settings['dots'], FILTER_VALIDATE_BOOLEAN ),
-			'slidesToScroll' => absint( $settings['slides_to_scroll'] ),
+			'slidesToScroll' => 1 < absint( $settings['slides_to_show'] ) ? absint( $settings['slides_to_scroll'] ) : 1,
 			'prevArrow'      => '.jet-testimonial__prev-arrow-' . $widget_id,
 			'nextArrow'      => '.jet-testimonial__next-arrow-' . $widget_id,
-			'rtl' => is_rtl(),
+			'rtl'            => is_rtl(),
 		);
 
-		if ( 'fade' === $settings['effect'] ) {
+		if ( 'fade' === $settings['effect'] && 1 >= absint( $settings['slides_to_show'] ) ) {
 			$instance_settings['fade'] = true;
 		}
 

@@ -36,13 +36,13 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 	public function get_script_depends() {
 
 		if ( isset( $_GET['elementor-preview'] ) && 'wp_enqueue_scripts' === current_filter() ) {
-			return array( 'tippy', 'jet-anime-js' );
+			return array( 'tippy-bundle', 'jet-anime-js' );
 		}
 
 		$scripts = array();
 
 		if ( $this->_pricing_features_items_tooltips_check() ) {
-			$scripts[] = 'tippy';
+			$scripts[] = 'tippy-bundle';
 		}
 
 		if ( $this->_is_fold_enabled() ) {
@@ -84,7 +84,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'action'           => '.pricing-table__action',
 				'button'           => '.pricing-table__action .pricing-table-button',
 				'button_icon'      => '.pricing-table__action .button-icon',
-				'tooltip'          => '.tippy-tooltip',
+				'tooltip'          => '.tippy-box',
 				'fold_button'      => '.pricing-table__fold-button',
 				'fold_button_icon' => '.pricing-table__fold-button-icon',
 				'fold_button_text' => '.pricing-table__fold-button-text',
@@ -583,10 +583,18 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'top',
 				'options' => array(
-					'top'    => esc_html__( 'Top', 'jet-elements' ),
-					'bottom' => esc_html__( 'Bottom', 'jet-elements' ),
-					'left'   => esc_html__( 'Left', 'jet-elements' ),
-					'right'  => esc_html__( 'Right', 'jet-elements' ),
+					'top-start'    => esc_html__( 'Top Start', 'jet-elements' ),
+					'top'          => esc_html__( 'Top', 'jet-elements' ),
+					'top-end'      => esc_html__( 'Top End', 'jet-elements' ),
+					'right-start'  => esc_html__( 'Right Start', 'jet-elements' ),
+					'right'        => esc_html__( 'Right', 'jet-elements' ),
+					'right-end'    => esc_html__( 'Right End', 'jet-elements' ),
+					'bottom-start' => esc_html__( 'Bottom Start', 'jet-elements' ),
+					'bottom'       => esc_html__( 'Bottom', 'jet-elements' ),
+					'bottom-end'   => esc_html__( 'Bottom End', 'jet-elements' ),
+					'left-start'   => esc_html__( 'Left Start', 'jet-elements' ),
+					'left'         => esc_html__( 'Left', 'jet-elements' ),
+					'left-end'     => esc_html__( 'Left End', 'jet-elements' ),
 				),
 			)
 		);
@@ -598,8 +606,12 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'mouseenter',
 				'options' => array(
-					'mouseenter' => esc_html__( 'Mouseenter', 'jet-elements' ),
-					'click'      => esc_html__( 'Click', 'jet-elements' ),
+					'manual'           => esc_html__( 'None', 'jet-elements' ),
+					'mouseenter'       => esc_html__( 'Mouse Enter', 'jet-elements' ),
+					'click'            => esc_html__( 'Click', 'jet-elements' ),
+					'focus'            => esc_html__( 'Focus', 'jet-elementss' ),
+					'mouseenter click' => esc_html__( 'Mouse Enter + Click', 'jet-elements' ),
+					'mouseenter focus' => esc_html__( 'Mouse Enter + Focus', 'jet-elements' ),
 				),
 			)
 		);
@@ -613,7 +625,6 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'options' => array(
 					'shift-away'   => esc_html__( 'Shift-Away', 'jet-elements' ),
 					'shift-toward' => esc_html__( 'Shift-Toward', 'jet-elements' ),
-					'fade'         => esc_html__( 'Fade', 'jet-elements' ),
 					'scale'        => esc_html__( 'Scale', 'jet-elements' ),
 					'perspective'  => esc_html__( 'Perspective', 'jet-elements' ),
 				),
@@ -633,36 +644,23 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 		);
 
 		$this->add_control(
-			'tooltip_arrow_type',
+			'tooltip_delay',
 			array(
-				'label'   => esc_html__( 'Arrow Type', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'sharp',
-				'options' => array(
-					'sharp' => esc_html__( 'Sharp', 'jet-elements' ),
-					'round' => esc_html__( 'Round', 'jet-elements' ),
+				'label'      => esc_html__( 'Animation Delay', 'jet-elements' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array(
+					'ms',
 				),
-				'condition' => array(
-					'tooltip_arrow' => 'yes',
+				'range' => array(
+					'ms' => array(
+						'min'  => 0,
+						'max'  => 1000,
+						'step' => 100,
+					),
 				),
-			)
-		);
-
-		$this->add_control(
-			'tooltip_arrow_size',
-			array(
-				'label'   => esc_html__( 'Arrow Size', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'scale(1)',
-				'options' => array(
-					'scale(1)'     => esc_html__( 'Normal', 'jet-elements' ),
-					'scale(0.75)'  => esc_html__( 'Small', 'jet-elements' ),
-					'scaleX(0.75)' => esc_html__( 'Skinny', 'jet-elements' ),
-					'scale(1.5)'   => esc_html__( 'Large', 'jet-elements' ),
-					'scaleX(1.5)'  => esc_html__( 'Wide', 'jet-elements' ),
-				),
-				'condition' => array(
-					'tooltip_arrow' => 'yes',
+				'default' => array(
+					'size' => 0,
+					'unit' => 'ms',
 				),
 			)
 		);
@@ -670,7 +668,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 		$this->add_control(
 			'tooltip_show_duration',
 			array(
-				'label'      => esc_html__( 'Show Duration', 'jet-elements' ),
+				'label'      => esc_html__( 'Appearance Duration', 'jet-elements' ),
 				'type'       => Controls_Manager::SLIDER,
 				'size_units' => array(
 					'ms',
@@ -692,7 +690,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 		$this->add_control(
 			'tooltip_hide_duration',
 			array(
-				'label'      => esc_html__( 'Hide Duration', 'jet-elements' ),
+				'label'      => esc_html__( 'Disappearance Duration', 'jet-elements' ),
 				'type'       => Controls_Manager::SLIDER,
 				'size_units' => array(
 					'ms',
@@ -706,28 +704,6 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				),
 				'default' => array(
 					'size' => 300,
-					'unit' => 'ms',
-				),
-			)
-		);
-
-		$this->add_control(
-			'tooltip_delay',
-			array(
-				'label'      => esc_html__( 'Delay', 'jet-elements' ),
-				'type'       => Controls_Manager::SLIDER,
-				'size_units' => array(
-					'ms',
-				),
-				'range' => array(
-					'ms' => array(
-						'min'  => 0,
-						'max'  => 1000,
-						'step' => 100,
-					),
-				),
-				'default' => array(
-					'size' => 0,
 					'unit' => 'ms',
 				),
 			)
@@ -1351,6 +1327,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['header'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1460,6 +1437,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['icon_wrap'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1768,6 +1746,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['price'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -1865,6 +1844,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['features'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -2250,6 +2230,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['action'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -2625,6 +2606,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['table'] . ' ' . $css_scheme['tooltip'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			50
 		);
@@ -2635,10 +2617,10 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 				'label'     => esc_html__( 'Arrow Color', 'jet-elements' ),
 				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
-					'{{WRAPPER}} ' . $css_scheme['table'] . ' .tippy-popper[x-placement^=left] ' . $css_scheme['tooltip'] . ' .tippy-arrow'=> 'border-left-color: {{VALUE}}',
-					'{{WRAPPER}} ' . $css_scheme['table'] . ' .tippy-popper[x-placement^=right] ' . $css_scheme['tooltip'] . ' .tippy-arrow'=> 'border-right-color: {{VALUE}}',
-					'{{WRAPPER}} ' . $css_scheme['table'] . ' .tippy-popper[x-placement^=top] ' . $css_scheme['tooltip'] . ' .tippy-arrow'=> 'border-top-color: {{VALUE}}',
-					'{{WRAPPER}} ' . $css_scheme['table'] . ' .tippy-popper[x-placement^=bottom] ' . $css_scheme['tooltip'] . ' .tippy-arrow'=> 'border-bottom-color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['table'] . ' ' . $css_scheme['tooltip'] . '[data-placement*=left] .tippy-arrow:before'=> 'border-left-color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['table'] . ' ' . $css_scheme['tooltip'] . '[data-placement*=right] .tippy-arrow:before'=> 'border-right-color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['table'] . ' ' . $css_scheme['tooltip'] . '[data-placement*=top] .tippy-arrow:before'=> 'border-top-color: {{VALUE}}',
+					'{{WRAPPER}} ' . $css_scheme['table'] . ' ' . $css_scheme['tooltip'] . '[data-placement*=bottom] .tippy-arrow:before'=> 'border-bottom-color: {{VALUE}}',
 				),
 			),
 			25
@@ -2983,7 +2965,7 @@ class Jet_Elements_Pricing_Table extends Jet_Elements_Base {
 		$this->_close_wrap();
 	}
 
-	protected function _content_template() {}
+	protected function content_template() {}
 
 	public function _pricing_feature_icon() {
 		return call_user_func( array( $this, sprintf( '_pricing_feature_icon_%s', $this->_context ) ) );

@@ -177,6 +177,63 @@ class Jet_Elements_Video extends Jet_Elements_Base {
 		);
 
 		$this->add_control(
+			'video_source',
+			array(
+				'label'   => esc_html__( 'Video Source', 'jet-elements' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'self',
+				'options' => array(
+					'self'     => esc_html__( 'Media library', 'jet-elements' ),
+					'external' => esc_html__( 'External', 'jet-elements' ),
+				),
+				'condition' => array(
+					'video_type' => 'self_hosted',
+				),
+			)
+		);
+
+		$this->add_control(
+			'self_hosted_url',
+			array(
+				'label' => esc_html__( 'URL', 'jet-elements' ),
+				'type'  => Controls_Manager::MEDIA,
+				'media_type' => 'video',
+				'condition' => array(
+					'video_type'   => 'self_hosted',
+					'video_source' => 'self',
+				),
+				'dynamic' => array(
+					'active' => true,
+					'categories' => array(
+						TagsModule::POST_META_CATEGORY,
+						TagsModule::MEDIA_CATEGORY,
+					),
+				),
+			)
+		);
+
+		$this->add_control(
+			'external_url',
+			array(
+				'label'       => esc_html__( 'URL', 'jet-elements' ),
+				'label_block' => true,
+				'type'        => Controls_Manager::TEXT,
+				'placeholder' => esc_html__( 'Enter your URL', 'jet-elements' ),
+				'condition' => array(
+					'video_type'   => 'self_hosted',
+					'video_source' => 'external',
+				),
+				'dynamic' => array(
+					'active' => true,
+					'categories' => array(
+						TagsModule::POST_META_CATEGORY,
+						TagsModule::URL_CATEGORY,
+					),
+				),
+			)
+		);
+
+		$this->add_control(
 			'mejs_player_desc',
 			array(
 				'type' => Controls_Manager::RAW_HTML,
@@ -185,25 +242,6 @@ class Jet_Elements_Video extends Jet_Elements_Base {
 				'condition' => array(
 					'video_type'         => 'self_hosted',
 					'self_hosted_player' => 'mejs',
-				),
-			)
-		);
-
-		$this->add_control(
-			'self_hosted_url',
-			array(
-				'label'      => esc_html__( 'Self Hosted URL', 'jet-elements' ),
-				'type'       => Controls_Manager::MEDIA,
-				'media_type' => 'video',
-				'condition' => array(
-					'video_type' => 'self_hosted',
-				),
-				'dynamic' => array(
-					'active' => true,
-					'categories' => array(
-						TagsModule::POST_META_CATEGORY,
-						TagsModule::MEDIA_CATEGORY,
-					),
 				),
 			)
 		);
@@ -501,7 +539,7 @@ class Jet_Elements_Video extends Jet_Elements_Base {
 					),
 					'image' => array(
 						'title' => esc_html__( 'Image', 'jet-elements' ),
-						'icon'  => 'fa fa-picture-o',
+						'icon'  => 'fa fa-image',
 					)
 				),
 				'condition' => array(
@@ -1780,7 +1818,11 @@ class Jet_Elements_Video extends Jet_Elements_Base {
 		$video_url = '';
 
 		if ( 'self_hosted' === $settings['video_type'] ) {
-			$video_url = is_array( $settings['self_hosted_url'] ) ? $settings['self_hosted_url']['url'] : $settings['self_hosted_url'];
+			if ( 'self' === $settings['video_source'] ) {
+				$video_url = is_array( $settings['self_hosted_url'] ) ? $settings['self_hosted_url']['url'] : $settings['self_hosted_url'];
+			} else {
+				$video_url = $settings['external_url'];
+			}
 
 			if ( is_numeric( $video_url ) ) {
 				$video_url = wp_get_attachment_url( $video_url );
@@ -1855,6 +1897,10 @@ class Jet_Elements_Video extends Jet_Elements_Base {
 		foreach ( array( 'autoplay', 'loop', 'controls' ) as $param_name ) {
 			if ( filter_var( $settings[ $param_name ], FILTER_VALIDATE_BOOLEAN ) ) {
 				$params[ $param_name ] = '';
+
+				if ( 'autoplay' === $param_name ) {
+					$params[ 'playsinline' ] = '';
+				}
 			}
 		}
 

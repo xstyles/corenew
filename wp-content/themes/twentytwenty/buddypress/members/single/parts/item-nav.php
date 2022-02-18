@@ -21,22 +21,9 @@
 			<?php
 				$slug = bp_nouveau()->current_nav_item->slug;
 				$member_type = bp_get_member_type( bp_displayed_user_id(), false );
-
-				// echo var_dump($member_type);
 			?>
-				<?php if ( $slug == 'groups') : ?>
-					<?php if ($member_type[0] !== 'student') : ?>
-					<li id="<?php bp_nouveau_nav_id(); ?>" class="<?php bp_nouveau_nav_classes(); ?>">
-						<a href="<?php bp_nouveau_nav_link(); ?>" id="<?php bp_nouveau_nav_link_id(); ?>">
-							<?php bp_nouveau_nav_link_text(); ?>
-
-							<?php if ( bp_nouveau_nav_has_count() ) : ?>
-								<span class="count"><?php bp_nouveau_nav_count(); ?></span>
-							<?php endif; ?>
-						</a>
-					</li>
-					<?php endif; ?>
-				<?php else : ?>
+				<?php // if ( $slug == 'groups' && $member_type[0] == 'student') : ?>
+				<?php // else : ?>
 				<li id="<?php bp_nouveau_nav_id(); ?>" class="<?php bp_nouveau_nav_classes(); ?>">
 					<a href="<?php bp_nouveau_nav_link(); ?>" id="<?php bp_nouveau_nav_link_id(); ?>">
 						<?php bp_nouveau_nav_link_text(); ?>
@@ -46,7 +33,7 @@
 						<?php endif; ?>
 					</a>
 				</li>
-				<?php endif; ?>
+				<?php // endif; ?>
 
 			<?php endwhile; ?>
 

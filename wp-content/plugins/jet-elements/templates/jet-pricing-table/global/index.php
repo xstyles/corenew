@@ -13,13 +13,11 @@ if ( $has_tooltips ) {
 	$tooltips_settings = array(
 		'tooltipPlacement'    => isset( $settings['tooltip_placement'] ) ? $settings['tooltip_placement'] : 'top',
 		'tooltipArrow'        => filter_var( $settings['tooltip_arrow'], FILTER_VALIDATE_BOOLEAN ),
-		'tooltipArrowType'    => isset( $settings['tooltip_arrow_type'] ) ? $settings['tooltip_arrow_type'] : 'sharp',
-		'tooltipArrowSize'    => isset ( $settings['tooltip_arrow_size'] ) ? $settings['tooltip_arrow_size'] : 'scale(1)',
 		'tooltipTrigger'      => isset( $settings['tooltip_trigger'] ) ? $settings['tooltip_trigger'] : 'mouseenter',
-		'tooltipShowDuration' => isset( $settings['tooltip_show_duration'] ) ? $settings['tooltip_show_duration'] : '500ms',
-		'tooltipHideDuration' => isset( $settings['tooltip_hide_duration'] ) ? $settings['tooltip_hide_duration'] : '300ms',
-		'tooltipDelay'        => isset( $settings['tooltip_delay'] ) ? $settings['tooltip_delay'] : '0ms',
-		'tooltipDistance'     => isset( $settings['tooltip_distance'] ) ? $settings['tooltip_distance'] : '15px',
+		'tooltipShowDuration' => isset( $settings['tooltip_show_duration'] ) ? $settings['tooltip_show_duration'] : '500',
+		'tooltipHideDuration' => isset( $settings['tooltip_hide_duration'] ) ? $settings['tooltip_hide_duration'] : '300',
+		'tooltipDelay'        => isset( $settings['tooltip_delay'] ) ? $settings['tooltip_delay'] : '0',
+		'tooltipDistance'     => isset( $settings['tooltip_distance'] ) ? $settings['tooltip_distance'] : '15',
 		'tooltipAnimation'    => isset( $settings['tooltip_animation'] ) ? $settings['tooltip_animation'] : 'shift-toward',
 	);
 

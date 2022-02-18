@@ -201,6 +201,12 @@
 			}
 		}
 	}
+
+	.mejs-mediaelement {
+		iframe {
+			height: 0;
+		}
+	}
 }
 
 .elementor-widget-jet-audio {

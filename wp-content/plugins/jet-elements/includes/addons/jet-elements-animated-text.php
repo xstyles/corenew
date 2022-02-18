@@ -211,6 +211,9 @@ class Jet_Elements_Animated_Text extends Jet_Elements_Base {
 					'symbol' => esc_html__( 'Symbols', 'jet-elements' ),
 					'word'   => esc_html__( 'Words', 'jet-elements' ),
 				),
+				'condition' => array(
+					'animation_effect!' => 'fx12'
+				)
 			)
 		);
 

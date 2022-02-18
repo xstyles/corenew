@@ -334,6 +334,33 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 		);
 
 		$this->add_control(
+			'mobile_vertical_layout',
+			array(
+				'label'   => esc_html__( 'Mobile Devices Layout', 'jet-elements' ),
+				'type'    => Controls_Manager::CHOOSE,
+				'toggle'  => false,
+				'default' => 'chess',
+				'options' => array(
+					'top' => array(
+						'title' => esc_html__( 'Top', 'jet-elements' ),
+						'icon'  => 'eicon-v-align-top',
+					),
+					'chess' => array(
+						'title' => esc_html__( 'Chess', 'jet-elements' ),
+						'icon'  => 'eicon-v-align-middle',
+					),
+					'bottom' => array(
+						'title' => esc_html__( 'Bottom', 'jet-elements' ),
+						'icon'  => 'eicon-v-align-bottom',
+					),
+				),
+				'condition' => array(
+					'vertical_layout' => 'chess'
+				)
+			)
+		);
+
+		$this->add_control(
 			'horizontal_alignment',
 			array(
 				'label'   => esc_html__( 'Alignment', 'jet-elements' ),
@@ -354,6 +381,7 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 						'icon'  => 'eicon-h-align-right',
 					),
 				),
+				'classes' => 'jet-elements-text-align-control',
 			)
 		);
 
@@ -439,65 +467,6 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 				'label' => esc_html__( 'Cards', 'jet-elements' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
-		);
-
-		$this->_add_group_control(
-			Group_Control_Border::get_type(),
-			array(
-				'name'        => 'cards_border',
-				'label'       => esc_html__( 'Border', 'jet-elements' ),
-				'placeholder' => '1px',
-				'default'     => '1px',
-				'selector'    => '{{WRAPPER}} ' . $css_scheme['card'] . ', {{WRAPPER}} ' . $css_scheme['card_arrow'],
-			),
-			75
-		);
-
-		$this->_add_responsive_control(
-			'cards_border_radius',
-			array(
-				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['card'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-					'{{WRAPPER}} ' . $css_scheme['card_inner'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			),
-			75
-		);
-
-		$this->_add_responsive_control(
-			'cards_padding',
-			array(
-				'label'      => esc_html__( 'Padding', 'jet-elements' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['card_inner'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			),
-			25
-		);
-
-		$this->_add_responsive_control(
-			'cards_spacing',
-			array(
-				'label' => esc_html__( 'Spacing', 'jet-elements' ),
-				'type'  => Controls_Manager::SLIDER,
-				'range' => array(
-					'px' => array(
-						'min' => 0,
-						'max' => 100,
-					),
-				),
-				'selectors'  => array(
-					'{{WRAPPER}} .jet-hor-timeline-list--top ' . $css_scheme['card'] => 'margin-bottom: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .jet-hor-timeline-list--bottom ' . $css_scheme['card'] => 'margin-top: {{SIZE}}{{UNIT}};',
-				),
-				'separator' => 'after'
-			),
-			25
 		);
 
 		$this->_start_controls_tabs( 'cards_style_tabs' );
@@ -639,6 +608,66 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 
 		$this->_end_controls_tabs();
 
+		$this->_add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'        => 'cards_border',
+				'label'       => esc_html__( 'Border', 'jet-elements' ),
+				'placeholder' => '1px',
+				'default'     => '1px',
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['card'] . ', {{WRAPPER}} ' . $css_scheme['card_arrow'],
+				'separator'   => 'before',
+			),
+			75
+		);
+
+		$this->_add_responsive_control(
+			'cards_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['card'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+					'{{WRAPPER}} ' . $css_scheme['card_inner'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			),
+			75
+		);
+
+		$this->_add_responsive_control(
+			'cards_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['card_inner'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			),
+			25
+		);
+
+		$this->_add_responsive_control(
+			'cards_spacing',
+			array(
+				'label' => esc_html__( 'Spacing', 'jet-elements' ),
+				'type'  => Controls_Manager::SLIDER,
+				'range' => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors'  => array(
+					'{{WRAPPER}} .jet-hor-timeline-list--top ' . $css_scheme['card'] => 'margin-bottom: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .jet-hor-timeline-list--bottom ' . $css_scheme['card'] => 'margin-top: {{SIZE}}{{UNIT}};',
+				),
+				'separator' => 'before'
+			),
+			25
+		);
+
 		$this->_add_control(
 			'cards_arrow_heading',
 			array(
@@ -736,6 +765,7 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['card_inner'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -1052,73 +1082,6 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 			)
 		);
 
-		$this->_add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'     => 'meta_typography',
-				'selector' => '{{WRAPPER}} ' .  $css_scheme['item_meta'],
-			),
-			50
-		);
-
-		$this->_add_group_control(
-			Group_Control_Border::get_type(),
-			array(
-				'name'        => 'meta_border',
-				'label'       => esc_html__( 'Border', 'jet-elements' ),
-				'placeholder' => '1px',
-				'default'     => '1px',
-				'selector'    => '{{WRAPPER}} ' . $css_scheme['item_meta'],
-			),
-			75
-		);
-
-		$this->_add_control(
-			'meta_border_radius',
-			array(
-				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['item_meta'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow:hidden;',
-				),
-			),
-			75
-		);
-
-		$this->_add_responsive_control(
-			'meta_padding',
-			array(
-				'label'      => esc_html__( 'Padding', 'jet-elements' ),
-				'type'       => Controls_Manager::DIMENSIONS,
-				'size_units' => array( 'px', '%' ),
-				'selectors'  => array(
-					'{{WRAPPER}} ' . $css_scheme['item_meta'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				),
-			),
-			25
-		);
-
-		$this->_add_responsive_control(
-			'meta_spacing',
-			array(
-				'label' => esc_html__( 'Spacing', 'jet-elements' ),
-				'type'  => Controls_Manager::SLIDER,
-				'range' => array(
-					'px' => array(
-						'min' => 0,
-						'max' => 100,
-					),
-				),
-				'selectors' => array(
-					'{{WRAPPER}} .jet-hor-timeline-list--top ' . $css_scheme['item_meta'] => 'margin-bottom: {{SIZE}}{{UNIT}};',
-					'{{WRAPPER}} .jet-hor-timeline-list--bottom ' . $css_scheme['item_meta'] => 'margin-top: {{SIZE}}{{UNIT}};',
-				),
-				'separator' => 'after'
-			),
-			25
-		);
-
 		$this->_start_controls_tabs( 'meta_style_tabs' );
 
 		$this->_start_controls_tab(
@@ -1278,6 +1241,73 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 		$this->_end_controls_tab();
 
 		$this->_end_controls_tabs();
+
+		$this->_add_responsive_control(
+			'meta_spacing',
+			array(
+				'label' => esc_html__( 'Spacing', 'jet-elements' ),
+				'type'  => Controls_Manager::SLIDER,
+				'range' => array(
+					'px' => array(
+						'min' => 0,
+						'max' => 100,
+					),
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .jet-hor-timeline-list--top ' . $css_scheme['item_meta'] => 'margin-bottom: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .jet-hor-timeline-list--bottom ' . $css_scheme['item_meta'] => 'margin-top: {{SIZE}}{{UNIT}};',
+				),
+				'separator' => 'before',
+			),
+			25
+		);
+
+		$this->_add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'      => 'meta_typography',
+				'selector'  => '{{WRAPPER}} ' .  $css_scheme['item_meta'],
+			),
+			50
+		);
+
+		$this->_add_group_control(
+			Group_Control_Border::get_type(),
+			array(
+				'name'        => 'meta_border',
+				'label'       => esc_html__( 'Border', 'jet-elements' ),
+				'placeholder' => '1px',
+				'default'     => '1px',
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['item_meta'],
+			),
+			75
+		);
+
+		$this->_add_control(
+			'meta_border_radius',
+			array(
+				'label'      => esc_html__( 'Border Radius', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['item_meta'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}}; overflow:hidden;',
+				),
+			),
+			75
+		);
+
+		$this->_add_responsive_control(
+			'meta_padding',
+			array(
+				'label'      => esc_html__( 'Padding', 'jet-elements' ),
+				'type'       => Controls_Manager::DIMENSIONS,
+				'size_units' => array( 'px', '%' ),
+				'selectors'  => array(
+					'{{WRAPPER}} ' . $css_scheme['item_meta'] => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				),
+			),
+			25
+		);
 
 		$this->_end_controls_section();
 
@@ -1582,7 +1612,6 @@ class Jet_Elements_Horizontal_Timeline extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['item_point_content'] => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				),
-				'separator' => 'after',
 			),
 			75
 		);

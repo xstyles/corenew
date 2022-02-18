@@ -473,6 +473,7 @@ class Jet_Elements_Headline extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['first_part'] . ' .jet-headline__label' => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -956,6 +957,7 @@ class Jet_Elements_Headline extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['second_part'] . ' .jet-headline__label' => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			),
 			75
 		);
@@ -1925,7 +1927,11 @@ class Jet_Elements_Headline extends Jet_Elements_Base {
 			}
 		}
 
-		$title = sprintf( '%1$s%2$s%3$s%4$s', $deco_devider_left, $first_part, $second_part, $deco_devider_right );
+		if ( ! is_rtl() ) {
+			$title = sprintf( '%1$s%2$s%3$s%4$s', $deco_devider_left, $first_part, $second_part, $deco_devider_right );
+		} else {
+			$title = sprintf( '%1$s%2$s%3$s%4$s', $deco_devider_right, $first_part, $second_part, $deco_devider_left );
+		}
 
 		if ( ! empty( $settings['link']['url'] ) ) {
 

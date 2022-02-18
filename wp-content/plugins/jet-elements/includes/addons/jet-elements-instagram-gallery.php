@@ -397,12 +397,20 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 		$this->add_responsive_control(
 			'columns',
 			array(
-				'label'   => esc_html__( 'Columns', 'jet-elements' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 3,
-				'options' => jet_elements_tools()->get_select_range( 6 ),
-				'condition' => array(
+				'label'              => esc_html__( 'Columns', 'jet-elements' ),
+				'type'               => Controls_Manager::SELECT,
+				'default'            => 3,
+				'options'            => jet_elements_tools()->get_select_range( 6 ),
+				'condition'          => array(
 					'layout_type' => array( 'masonry', 'grid' ),
+				),
+				'frontend_available' => true,
+				'render_type'        => 'template',
+				'selectors'          => array(
+					'{{WRAPPER}} .salvattore-column' => 'width: calc(100% / {{VALUE}});',
+					'{{WRAPPER}} .jet-instagram-gallery__instance::before' => 'content: "{{VALUE}} .salvattore-column"',
+					'{{WRAPPER}} .jet-instagram-gallery__instance.layout-type-grid::before' => 'content: ""',
+					'{{WRAPPER}} .jet-instagram-gallery__instance.layout-type-grid .jet-instagram-gallery__item' => 'max-width: calc(100% / {{VALUE}});flex: 0 0 calc(100% / {{VALUE}});',
 				),
 			)
 		);
@@ -689,6 +697,7 @@ class Jet_Elements_Instagram_Gallery extends Jet_Elements_Base {
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['caption'] => 'text-align: {{VALUE}};',
 				),
+				'classes' => 'jet-elements-text-align-control',
 			)
 		);
 

@@ -44,6 +44,26 @@
 			elementor.hooks.addAction( 'frontend/element_ready/section', JetElements.elementorSection );
 		},
 
+		initElementsHandlers: function( $selector ) {
+			$selector.find( '[data-element_type]' ).each( function() {
+				var $this       = $( this ),
+					elementType = $this.data( 'element_type' );
+
+				if ( !elementType ) {
+					return;
+				}
+
+				if ( 'widget' === elementType ) {
+					elementType = $this.data( 'widget_type' );
+					window.elementorFrontend.hooks.doAction( 'frontend/element_ready/widget', $this, $ );
+				}
+
+				window.elementorFrontend.hooks.doAction( 'frontend/element_ready/global', $this, $ );
+				window.elementorFrontend.hooks.doAction( 'frontend/element_ready/' + elementType, $this, $ );
+
+			} );
+		},
+
 		widgetCountdown: function( $scope ) {
 
 			var timeInterval,
@@ -62,7 +82,7 @@
 					seconds: $countdown.find( '[data-value="seconds"]' )
 				};
 
-			JetElements.widgetCountdown.initClock = function() {
+			var initClock = function() {
 
 				switch( type ) {
 					case 'due_date':
@@ -71,7 +91,7 @@
 
 					case 'evergreen':
 						if ( evergreenInterval > 0 ) {
-							endTime = JetElements.widgetCountdown.getEvergreenDate();
+							endTime = getEvergreenDate();
 						}
 						break;
 
@@ -90,17 +110,17 @@
 						break;
 				}
 
-				JetElements.widgetCountdown.updateClock();
-				timeInterval = setInterval( JetElements.widgetCountdown.updateClock, 1000 );
+				updateClock();
+				timeInterval = setInterval( updateClock, 1000 );
 			};
 
-			JetElements.widgetCountdown.updateClock = function() {
+			var updateClock = function() {
 
 				if ( ! endTime ) {
 					return;
 				}
 
-				var timeRemaining = JetElements.widgetCountdown.getTimeRemaining(
+				var timeRemaining = getTimeRemaining(
 					endTime,
 					{
 						days:    elements.days.length,
@@ -121,11 +141,11 @@
 
 				if ( timeRemaining.total <= 0 ) {
 					clearInterval( timeInterval );
-					JetElements.widgetCountdown.runActions();
+					runActions();
 				}
 			};
 
-			JetElements.widgetCountdown.splitNum = function( num ) {
+			var splitNum = function( num ) {
 
 				var num    = num.toString(),
 					arr    = [],
@@ -144,7 +164,7 @@
 				return result;
 			};
 
-			JetElements.widgetCountdown.getTimeRemaining = function( endTime, visible ) {
+			var getTimeRemaining = function( endTime, visible ) {
 
 				var timeRemaining = endTime - new Date(),
 					seconds = Math.floor( ( timeRemaining / 1000 ) % 60 ),
@@ -174,15 +194,15 @@
 				return {
 					total: timeRemaining,
 					parts: {
-						days: JetElements.widgetCountdown.splitNum( days ),
-						hours: JetElements.widgetCountdown.splitNum( hours ),
-						minutes: JetElements.widgetCountdown.splitNum( minutes ),
-						seconds: JetElements.widgetCountdown.splitNum( seconds )
+						days: splitNum( days ),
+						hours: splitNum( hours ),
+						minutes: splitNum( minutes ),
+						seconds: splitNum( seconds )
 					}
 				};
 			};
 
-			JetElements.widgetCountdown.runActions = function() {
+			var runActions = function() {
 
 				$scope.trigger( 'jetCountdownTimerExpire', $scope );
 
@@ -214,14 +234,14 @@
 							endTime = new Date();
 							endTime = endTime.setSeconds( endTime.getSeconds() + restartInterval );
 
-							JetElements.widgetCountdown.updateClock();
-							timeInterval = setInterval( JetElements.widgetCountdown.updateClock, 1000 );
+							updateClock();
+							timeInterval = setInterval( updateClock, 1000 );
 							break;
 					}
 				} );
 			};
 
-			JetElements.widgetCountdown.getEvergreenDate = function() {
+			var getEvergreenDate = function() {
 				var id = $scope.data( 'id' ),
 					dueDateKey = 'jet_evergreen_countdown_due_date_' + id,
 					intervalKey = 'jet_evergreen_countdown_interval_' + id,
@@ -251,7 +271,7 @@
 				}
 			};
 
-			JetElements.widgetCountdown.initClock();
+			initClock();
 
 		},
 
@@ -298,7 +318,19 @@
 
 					marker = new google.maps.Marker( pinData );
 
-					if ( '' !== pin.desc ) {
+					if ( '' !== pin.desc || undefined !== pin.link_title ) {
+
+						if ( undefined !== pin.link_title ) {
+							var link_url               = pin.link.url,
+								link_is_external       = 'on' === pin.link.is_external ? 'target="_blank"': '',
+								link_nofollow          = 'on' === pin.link.nofollow ? 'rel="nofollow"': '',
+								link_custom_attributes = undefined !== parse_custom_attributes( pin.link.custom_attributes ) ? parse_custom_attributes( pin.link.custom_attributes ) : '',
+								link_layout;
+
+							link_layout = '<div class="jet-map-pin__wrapper"><a class="jet-map-pin__link" href="' + link_url + '" ' + link_is_external + link_nofollow + link_custom_attributes + '>' + pin.link_title + '</a></div>';
+							pin.desc += link_layout;
+						}
+
 						infowindow = new google.maps.InfoWindow({
 							content: pin.desc,
 							disableAutoPan: true
@@ -317,6 +349,35 @@
 				});
 			}
 
+			function parse_custom_attributes( attributes_string, delimiter = ',' ) {
+				var attributes = attributes_string.split( delimiter ),
+					result;
+
+				result = attributes.reduce(function( res, attribute ) {
+					var attr_key_value = attribute.split( '|' ),
+						attr_key       = attr_key_value[0].toLowerCase(),
+						attr_value     = '',
+						regex          = new RegExp(/[-_a-z0-9]+/);
+
+					if( !regex.test( attr_key ) ) {
+						return;
+					}
+
+					// Avoid Javascript events and unescaped href.
+					if ( 'href' === attr_key || 'on' === attr_key.substring( 0, 2 ) ) {
+						return;
+					}
+
+					if ( undefined !== attr_key_value[1] ) {
+						attr_value = attr_key_value[1].trim();
+					} else {
+						attr_value = '';
+					}
+					return res + attr_key + '="' + attr_value + '" ';
+				}, '');
+
+				return result;
+			}
 		},
 
 		prepareWaypointOptions: function( $scope, waypointOptions ) {
@@ -338,26 +399,60 @@
 				return;
 			}
 
-			var $value            = $progress.find( '.circle-progress__value' ),
-				$meter            = $progress.find( '.circle-progress__meter' ),
-				percent           = parseInt( $value.data( 'value' ) ),
-				progress          = percent / 100,
-				duration          = $scope.find( '.circle-progress-wrap' ).data( 'duration' ),
-				responsiveSizes   = $progress.data( 'responsive-sizes' ),
-				desktopSizes      = responsiveSizes.desktop,
-				tabletSizes       = responsiveSizes.tablet,
-				mobileSizes       = responsiveSizes.mobile,
-				currentDeviceMode = elementorFrontend.getCurrentDeviceMode(),
-				prevDeviceMode    = currentDeviceMode,
-				isAnimatedCircle  = false;
+			var $value              = $progress.find( '.circle-progress__value' ),
+				$meter              = $progress.find( '.circle-progress__meter' ),
+				percent             = parseInt( $value.data( 'value' ) ),
+				progress            = percent / 100,
+				duration            = $scope.find( '.circle-progress-wrap' ).data( 'duration' ),
+				currentDeviceMode   = elementorFrontend.getCurrentDeviceMode(),
+				isAnimatedCircle    = false,
+				breakpoints         = JetElementsTools.getElementorElementSettings( $scope ),
+				breakpointsSettings = [],
+				activeBreakpoints   = elementor.config.responsive.activeBreakpoints;
 
-			if ( 'tablet' === currentDeviceMode ) {
-				updateSvgSizes( tabletSizes.size, tabletSizes.viewBox, tabletSizes.center, tabletSizes.radius, tabletSizes.valStroke, tabletSizes.bgStroke, tabletSizes.circumference );
-			}
+			breakpointsSettings['desktop'] = [];
 
-			if ( 'mobile' === currentDeviceMode ) {
-				updateSvgSizes( mobileSizes.size, mobileSizes.viewBox, mobileSizes.center, mobileSizes.radius, mobileSizes.valStroke, mobileSizes.bgStroke, mobileSizes.circumference );
-			}
+			var breakpointSize        = breakpoints['circle_size']['size'] ? breakpoints['circle_size']['size'] : $progress[0].getAttribute( 'width' ),
+
+				breakpointStrokeValue = breakpoints['value_stroke']['size'] ? breakpoints['value_stroke']['size'] : $progress[0].getElementsByClassName( 'circle-progress__value' )[0].getAttribute( 'stroke-width' ),
+
+				breakpointStrokeBg    = breakpoints['bg_stroke']['size'] ? breakpoints['bg_stroke']['size'] : $progress[0].getElementsByClassName( 'circle-progress__meter' )[0].getAttribute( 'stroke-width' );
+
+			breakpointSizes( 'desktop', breakpointSize, breakpointStrokeValue, breakpointStrokeBg );
+
+			Object.keys( activeBreakpoints ).reverse().forEach( function( breakpointName, index ) {
+
+				if ( 'widescreen' === breakpointName ){
+					var breakpointSize        = breakpoints['circle_size_' + breakpointName]['size'] ? breakpoints['circle_size_' + breakpointName]['size'] : breakpoints['circle_size']['size'],
+
+						breakpointStrokeValue = breakpoints['value_stroke_' + breakpointName]['size'] ? breakpoints['value_stroke_' + breakpointName]['size'] : breakpoints['value_stroke']['size'],
+
+						breakpointStrokeBg    = breakpoints['bg_stroke_' + breakpointName]['size'] ? breakpoints['bg_stroke_' + breakpointName]['size'] : breakpoints['bg_stroke']['size'];
+
+					breakpointsSettings[breakpointName] = [];
+
+					breakpointSizes( breakpointName, breakpointSize, breakpointStrokeValue, breakpointStrokeBg );
+				} else {
+					var breakpointSize        = breakpoints['circle_size_' + breakpointName]['size'] ? breakpoints['circle_size_' + breakpointName]['size'] : $progress[0].getAttribute( 'width' ),
+
+						breakpointStrokeValue = breakpoints['value_stroke_' + breakpointName]['size'] ? breakpoints['value_stroke_' + breakpointName]['size'] : $progress[0].getElementsByClassName( 'circle-progress__value' )[0].getAttribute( 'stroke-width' ),
+
+						breakpointStrokeBg    = breakpoints['bg_stroke_' + breakpointName]['size'] ? breakpoints['bg_stroke_' + breakpointName]['size'] : $progress[0].getElementsByClassName( 'circle-progress__meter' )[0].getAttribute( 'stroke-width' );
+
+					breakpointsSettings[breakpointName] = [];
+
+					breakpointSizes( breakpointName, breakpointSize, breakpointStrokeValue, breakpointStrokeBg );
+				}
+			} );
+
+			updateSvgSizes( breakpointsSettings[currentDeviceMode]['size'],
+								breakpointsSettings[currentDeviceMode]['viewBox'],
+								breakpointsSettings[currentDeviceMode]['center'],
+								breakpointsSettings[currentDeviceMode]['radius'],
+								breakpointsSettings[currentDeviceMode]['valStroke'],
+								breakpointsSettings[currentDeviceMode]['bgStroke'],
+								breakpointsSettings[currentDeviceMode]['circumference']
+			);
 
 			elementorFrontend.waypoint( $scope, function() {
 
@@ -390,25 +485,34 @@
 					offset: 'bottom-in-view'
 			} ) );
 
-			$( window ).on( 'resize.jetCircleProgress orientationchange.jetCircleProgress', circleResizeHandler );
-
-			function circleResizeHandler( event ) {
+			$( window ).on( 'resize.jetCircleProgress orientationchange.jetCircleProgress', JetElementsTools.debounce( 50, function() {
 				currentDeviceMode = elementorFrontend.getCurrentDeviceMode();
 
-				if ( 'desktop' === currentDeviceMode && 'desktop' !== prevDeviceMode ) {
-					updateSvgSizes( desktopSizes.size, desktopSizes.viewBox, desktopSizes.center, desktopSizes.radius, desktopSizes.valStroke, desktopSizes.bgStroke, desktopSizes.circumference );
-					prevDeviceMode = 'desktop';
+				if ( breakpointsSettings[currentDeviceMode] ) {
+					updateSvgSizes( breakpointsSettings[currentDeviceMode]['size'],
+										breakpointsSettings[currentDeviceMode]['viewBox'],
+										breakpointsSettings[currentDeviceMode]['center'],
+										breakpointsSettings[currentDeviceMode]['radius'],
+										breakpointsSettings[currentDeviceMode]['valStroke'],
+										breakpointsSettings[currentDeviceMode]['bgStroke'],
+										breakpointsSettings[currentDeviceMode]['circumference']
+					);
 				}
+			} ) );
 
-				if ( 'tablet' === currentDeviceMode && 'tablet' !== prevDeviceMode ) {
-					updateSvgSizes( tabletSizes.size, tabletSizes.viewBox, tabletSizes.center, tabletSizes.radius, tabletSizes.valStroke, tabletSizes.bgStroke, tabletSizes.circumference );
-					prevDeviceMode = 'tablet';
-				}
+			function breakpointSizes( breakpointName, breakpointSize, breakpointStrokeValue, breakpointStrokeBg) {
+				var max,
+					radius;
 
-				if ( 'mobile' === currentDeviceMode && 'mobile' !== prevDeviceMode ) {
-					updateSvgSizes( mobileSizes.size, mobileSizes.viewBox, mobileSizes.center, mobileSizes.radius, mobileSizes.valStroke, mobileSizes.bgStroke, mobileSizes.circumference );
-					prevDeviceMode = 'mobile';
-				}
+				breakpointsSettings[breakpointName]['size']          = breakpointSize;
+				breakpointsSettings[breakpointName]['viewBox']       = `0 0 ${breakpointSize} ${breakpointSize}`;
+				breakpointsSettings[breakpointName]['center']        = breakpointSize / 2;
+				radius                                               = breakpointSize / 2;
+				max                                                  = ( breakpointStrokeValue >= breakpointStrokeBg ) ? breakpointStrokeValue : breakpointStrokeBg;
+				breakpointsSettings[breakpointName]['radius']        = radius - ( max / 2 );
+				breakpointsSettings[breakpointName]['circumference'] = 2 * Math.PI * breakpointsSettings[breakpointName]['radius'];
+				breakpointsSettings[breakpointName]['valStroke']     = breakpointStrokeValue;
+				breakpointsSettings[breakpointName]['bgStroke']      = breakpointStrokeBg;
 			}
 
 			function updateSvgSizes( size, viewBox, center, radius, valStroke, bgStroke, circumference ) {
@@ -452,10 +556,19 @@
 
 		widgetCarousel: function( $scope ) {
 
-			var $carousel = $scope.find( '.jet-carousel' );
+			var $carousel    = $scope.find( '.jet-carousel' ),
+				fraction_nav = $carousel.find('.jet-carousel__fraction-navigation');
 
 			if ( ! $carousel.length ) {
 				return;
+			}
+
+			if ( true === $carousel.data( 'slider_options' ).fractionNav ) {
+				$carousel.find( '.elementor-slick-slider' ).on( 'init reInit afterChange', function ( event, slick, currentSlide, nextSlide ) {
+					//currentSlide is undefined on init -- set it to 0 in this case (currentSlide is 0 based)
+					var i = ( currentSlide ? currentSlide : 0 ) + 1;
+					fraction_nav.html( '<span class="current">' + i + '</span>' + '<span class="separator">/</span>' + '<span class="total">' + slick.slideCount + '</span>');
+				} );
 			}
 
 			JetElements.initCarousel( $carousel.find( '.elementor-slick-slider' ), $carousel.data( 'slider_options' ) );
@@ -889,9 +1002,10 @@
 		},
 
 		widgetPortfolio: function( $scope ) {
-			var $target = $scope.find( '.jet-portfolio' ),
-				instance = null,
-				settings = {
+			var $target   = $scope.find( '.jet-portfolio' ),
+				instance  = null,
+				eSettings = JetElementsTools.getElementorElementSettings( $scope ),
+				settings  = {
 					id: $scope.data( 'id' )
 				};
 
@@ -899,7 +1013,7 @@
 				return;
 			}
 
-			settings = $.extend( {}, settings, $target.data( 'settings' ) );
+			settings = $.extend( {}, settings, $target.data( 'settings' ), eSettings );
 			instance = new jetPortfolio( $target, settings );
 			instance.init();
 		},
@@ -921,11 +1035,7 @@
 			 */
 			defaultSettings = {
 				layoutType: 'masonry',
-				columns: 3,
-				columnsTablet: 2,
-				columnsMobile: 1,
 			}
-
 			/**
 			 * Checking options, settings and options merging
 			 */
@@ -933,6 +1043,10 @@
 
 			if ( 'masonry' === settings.layoutType ) {
 				salvattore.init();
+
+				$( window ).on( 'resize orientationchange', function() {
+					salvattore.rescanMediaQueries();
+				} )
 			}
 		},
 
@@ -1107,9 +1221,12 @@
 		},
 
 		widgetSlider: function( $scope ) {
-			var $target        = $scope.find( '.jet-slider' ),
-				$imagesTagList = $( '.sp-image', $target ),
-				instance       = null,
+			var $target         = $scope.find( '.jet-slider' ),
+				$imagesTagList  = $( '.sp-image', $target ),
+				item            = $( '.jet-slider__item', $target ),
+				instance        = null,
+				item_url        = '',
+				item_url_target = '',
 				defaultSettings = {
 					imageScaleMode: 'cover',
 					slideDistance: { size: 10, unit: 'px' },
@@ -1121,8 +1238,6 @@
 					sliderFullScreen: true,
 					sliderFullscreenIcon: '',
 					sliderHeight: { size: 600, unit: 'px' },
-					sliderHeightTablet: { size: 400, unit: 'px' },
-					sliderHeightMobile: { size: 300, unit: 'px' },
 					sliderLoop: true,
 					sliderNaviOnHover: false,
 					sliderNavigation: true,
@@ -1135,47 +1250,128 @@
 					thumbnails: true,
 					rightToLeft: false,
 				},
-				instanceSettings = $target.data( 'settings' ) || {},
-				settings         = $.extend( {}, defaultSettings, instanceSettings );
+				instanceSettings    = $target.data( 'settings' ) || {},
+				breakpoints         = JetElementsTools.getElementorElementSettings( $scope ),
+				breakpointsSettings = {},
+				defaultHeight,
+				defaultThumbHeight,
+				defaultThumbWidth,
+				activeBreakpoints   = elementor.config.responsive.activeBreakpoints,
+				settings            = $.extend( {}, defaultSettings, instanceSettings ),
+				fraction_nav        = $target.find( '.jet-slider__fraction-pagination' );
 
 			if ( ! $target.length ) {
 				return;
 			}
 
-			var tabletHeight = '' !== settings['sliderHeightTablet']['size'] ? settings['sliderHeightTablet']['size'] + settings['sliderHeightTablet']['unit'] : settings['sliderHeight']['size'] + settings['sliderHeight']['unit'],
-				mobileHeight = '' !== settings['sliderHeightMobile']['size'] ? settings['sliderHeightMobile']['size'] + settings['sliderHeightMobile']['unit'] : tabletHeight,
+			item.each( function() {
+				var _this = $( this ).find( '.jet-slider__content' );
 
-				tabletThumbWidth = '' !== settings['thumbnailWidthTablet'] ? settings['thumbnailWidthTablet'] : settings['thumbnailWidth'],
-				mobileThumbWidth = '' !== settings['thumbnailWidthMobile'] ? settings['thumbnailWidthMobile'] : tabletThumbWidth,
+				if ( _this.data( 'slide-url' ) && !elementor.isEditMode() ) {
+					let clickXPos,
+						clickYPos;
 
-				tabletThumbHeight = '' !== settings['thumbnailHeightTablet'] ? settings['thumbnailHeightTablet'] : settings['thumbnailHeight'],
-				mobileThumbHeight = '' !== settings['thumbnailHeightMobile'] ? settings['thumbnailHeightMobile'] : tabletThumbWidth;
+					_this.on( 'mousedown touchstart', function( e ) {
+						window.XPos = e.pageX || e.originalEvent.changedTouches[0].pageX;
+						window.YPos = e.pageY || e.originalEvent.changedTouches[0].pageY;
+					} )
 
-			// Breakpoint Settings Start
-			var tabletBreakpoint = ( undefined !== elementor.config.breakpoints.lg ) ? elementor.config.breakpoints.lg - 1 : 1023,
-				mobileBreakpoint = ( undefined !== elementor.config.breakpoints.md ) ? elementor.config.breakpoints.md - 1 : 767,
-				breakpointsSettings = {};
+					_this.on( 'mouseup touchend', function( e ) {
+						item_url        = _this.data( 'slide-url' );
+						item_url_target = _this.data( 'slide-url-target' );
+						clickXPos       = e.pageX || e.originalEvent.changedTouches[0].pageX;
+						clickYPos       = e.pageY || e.originalEvent.changedTouches[0].pageY;
 
-			if ( elementor.isEditMode() ) {
-				mobileBreakpoint -= 17; // needed for fixed bug when the height of the slider does not work for the tablet in the editor mode
-			}
+						if ( window.XPos === clickXPos && window.YPos === clickYPos ) {
+							if ( '_blank' === item_url_target ) {
+								window.open( item_url );
+								return;
+							} else {
+								window.location = item_url;
+							}
+						}
+					} );
+				}
+			} );
 
-			breakpointsSettings[tabletBreakpoint] = {
-				height: tabletHeight,
-				thumbnailWidth: tabletThumbWidth,
-				thumbnailHeight: tabletThumbHeight
-			};
+			defaultHeight = ( breakpoints['slider_height'] && '' != breakpoints['slider_height']['size'] ) ? breakpoints['slider_height']['size'] + breakpoints['slider_height']['unit'] : '600px';
 
-			breakpointsSettings[mobileBreakpoint] = {
-				height: mobileHeight,
-				thumbnailWidth: mobileThumbWidth,
-				thumbnailHeight: mobileThumbHeight
-			};
-			// Breakpoint Settings End
+			defaultThumbHeight = ( breakpoints['thumbnail_height'] && '' != breakpoints['thumbnail_height']['size'] ) ? breakpoints['thumbnail_height']['size'] : 80;
+
+			defaultThumbWidth  = ( breakpoints['thumbnail_width'] && '' != breakpoints['thumbnail_width']['size'] ) ? breakpoints['thumbnail_width']['size'] : 120;
+
+			Object.keys( activeBreakpoints ).forEach( function( breakpointName ) {
+
+				if ( 'widescreen' === breakpointName ) {
+					var breakpoint = activeBreakpoints[breakpointName].value - 1,
+
+						breakpointHeight = '' != breakpoints['slider_height_' + breakpointName]['size'] ? breakpoints['slider_height_' + breakpointName]['size'] + breakpoints['slider_height_' + breakpointName]['unit'] : defaultHeight,
+
+						breakpointThumbHeight = '' != breakpoints['thumbnail_height_' + breakpointName] ? breakpoints['thumbnail_height_' + breakpointName] : defaultThumbHeight,
+
+						breakpointThumbWidth  = '' != breakpoints['thumbnail_width_' + breakpointName] ? breakpoints['thumbnail_width_' + breakpointName] : defaultThumbWidth,
+
+						desktopHeight      = '' != breakpoints['slider_height']['size'] ? breakpoints['slider_height']['size'] + breakpoints['slider_height']['unit'] : settings['sliderHeight']['size'] + settings['sliderHeight']['unit'],
+
+						desktopThumbHeight = '' != breakpoints['thumbnail_height'] ? breakpoints['thumbnail_height'] : settings['thumbnailHeight'],
+
+						desktopThumbWidth  = '' != breakpoints['thumbnail_width'] ? breakpoints['thumbnail_width'] : settings['thumbnailWidth'];
+
+					if ( breakpointHeight || breakpointThumbHeight || breakpointThumbWidth ) {
+						breakpointsSettings[breakpoint] = {};
+					} else {
+						return;
+					}
+
+					if ( breakpointHeight ) {
+						defaultHeight = breakpointHeight;
+
+						breakpointsSettings[breakpoint]['height'] = desktopHeight;
+					}
+
+					if ( breakpointThumbHeight ) {
+						defaultThumbHeight = breakpointThumbHeight;
+
+						breakpointsSettings[breakpoint]['thumbnailHeight'] = desktopThumbHeight;
+					}
+
+					if ( breakpointThumbWidth ) {
+						defaultThumbWidth = breakpointThumbWidth;
+
+						breakpointsSettings[breakpoint]['thumbnailWidth'] = desktopThumbWidth;
+					}
+
+				} else {
+					var breakpoint = activeBreakpoints[breakpointName].value - 1,
+
+						breakpointThumbHeight = breakpoints['thumbnail_height_' + breakpointName] ? breakpoints['thumbnail_height_' + breakpointName] : false,
+						breakpointThumbWidth  = breakpoints['thumbnail_width_' + breakpointName] ? breakpoints['thumbnail_width_' + breakpointName] : false;
+
+						breakpointHeight = breakpoints['slider_height_' + breakpointName]['size'] ? breakpoints['slider_height_' + breakpointName]['size'] + breakpoints['slider_height_' + breakpointName]['unit'] : false;
+
+					if ( breakpointHeight || breakpointThumbHeight || breakpointThumbWidth ) {
+						breakpointsSettings[breakpoint] = {};
+					} else {
+						return;
+					}
+
+					if ( breakpointHeight ) {
+						breakpointsSettings[breakpoint]['height'] = breakpointHeight;
+					}
+
+					if ( breakpointThumbHeight ) {
+						breakpointsSettings[breakpoint]['thumbnailHeight'] = breakpointThumbHeight;
+					}
+
+					if ( breakpointThumbWidth ) {
+						breakpointsSettings[breakpoint]['thumbnailWidth'] = breakpointThumbWidth;
+					}
+				}
+			} );
 
 			$( '.slider-pro', $target ).sliderPro( {
 				width: settings['sliderWidth']['size'] + settings['sliderWidth']['unit'],
-				height: settings['sliderHeight']['size'] + settings['sliderHeight']['unit'],
+				height: defaultHeight,
 				arrows: settings['sliderNavigation'],
 				fadeArrows: settings['sliderNaviOnHover'],
 				buttons: settings['sliderPagination'],
@@ -1188,12 +1384,11 @@
 				fade: settings['sliderFadeMode'],
 				slideDistance: ( 'string' !== typeof settings['slideDistance']['size'] ) ? settings['slideDistance']['size'] : 0,
 				slideAnimationDuration: +settings['slideDuration'],
-				//imageScaleMode: settings['imageScaleMode'],
 				imageScaleMode: 'exact',
 				waitForLayers: false,
 				grabCursor: false,
-				thumbnailWidth: settings['thumbnailWidth'],
-				thumbnailHeight: settings['thumbnailHeight'],
+				thumbnailWidth: defaultThumbWidth,
+				thumbnailHeight: defaultThumbHeight,
 				rightToLeft: settings['rightToLeft'],
 				touchSwipe: settings['touchswipe'],
 				init: function() {
@@ -1201,13 +1396,25 @@
 						arrowIconHtml      = $( '.' + settings['sliderNavigationIcon'] ).html();
 
 					$( '.sp-full-screen-button', $target ).html( fullscreenIconHtml );
-
 					$( '.sp-previous-arrow', $target ).html( arrowIconHtml );
 					$( '.sp-next-arrow', $target ).html( arrowIconHtml );
-
 					$( '.slider-pro', $target ).addClass( 'slider-loaded' );
 
 					this.resize();
+				},
+				gotoSlideComplete: function() {
+					if ( true === settings['fractionPag'] ) {
+						var i = ( this.getSelectedSlide() ? this.getSelectedSlide() : 0 ) + 1;
+
+						fraction_nav.html( '<span class="current">' + i + '</span>' + '<span class="separator">/</span>' + '<span class="total">' + this.getTotalSlides() + '</span>');
+					}
+				},
+				update: function() {
+					if ( true === settings['fractionPag'] ) {
+						var i = ( this.getSelectedSlide() ? this.getSelectedSlide() : 0 ) + 1;
+
+						fraction_nav.html( '<span class="current">' + i + '</span>' + '<span class="separator">/</span>' + '<span class="total">' + this.getTotalSlides() + '</span>');
+					}
 				},
 				breakpoints: breakpointsSettings
 			} );
@@ -1223,12 +1430,35 @@
 		widgetTestimonials: function( $scope ) {
 			var $target        = $scope.find( '.jet-testimonials__instance' ),
 				$imagesTagList = $( '.jet-testimonials__figure', $target ),
+				targetContent  = $( '.jet-testimonials__content', $target ),
 				instance       = null,
-				settings       = $target.data( 'settings' );
+				settings       = $target.data( 'settings' ),
+				ratingSettings = $target.data( 'rating-settings' );
 
 			if ( ! $target.length ) {
 				return;
 			}
+
+			targetContent.each( function() {
+				var ratingList = $( '.jet-testimonials__rating', this );
+
+				if ( ratingList ) {
+					var rating = ratingList.data('rating');
+
+					ratingList.each( function() {
+
+						$( 'i', this ).each( function( index ) {
+							if ( index <= rating - 1 ) {
+								var itemClass = $( this ).data( 'active-star' );
+								$( this ).addClass( itemClass );
+							} else {
+								var itemClass = $( this ).data( 'star' );
+								$( this ).addClass( itemClass );
+							}
+						} )
+					} )
+				}
+			} )
 
 			settings.adaptiveHeight = settings['adaptiveHeight'];
 
@@ -1298,51 +1528,136 @@
 				instance  = null,
 				editMode  = Boolean( elementor.isEditMode() );
 
-			if ( window.jetElements.hasOwnProperty( 'jetParallaxSections' ) || editMode ) {
 				instance = new jetSectionParallax( $target );
 				instance.init();
-			}
 		},
 
 		initCarousel: function( $target, options ) {
 
-			var tabletSlides, mobileSlides, defaultOptions, slickOptions;
+			var	defaultOptions,
+				slickOptions,
+				responsive        = [],
+				eTarget           = $target.closest( '.elementor-widget' ),
+				breakpoints       = JetElementsTools.getElementorElementSettings( eTarget ),
+				activeBreakpoints = elementor.config.responsive.activeBreakpoints,
+				prevDeviceToShowValue,
+				prevDeviceToScrollValue,
+				slidesCount,
+				dotsEnable = options.dots;
 
-			if ( options.slidesToShow.tablet ) {
-				tabletSlides = options.slidesToShow.tablet;
+			if ( $target.hasClass( 'jet-posts' ) && $target.parent().hasClass( 'jet-carousel' ) ) {
+				function renameKeys( obj, newKeys ) {
+					const keyValues = Object.keys( obj ).map( key => {
+						const newKey = newKeys[key] || key;
+						return { [newKey]: obj[key] };
+					} );
+					return Object.assign( {}, ...keyValues );
+				}
+
+				var newBreakpointsKeys = {
+					columns: "slides_to_show",
+					columns_widescreen: "slides_to_show_widescreen",
+					columns_laptop: "slides_to_show_laptop",
+					columns_tablet_extra: "slides_to_show_tablet_extra",
+					columns_tablet: "slides_to_show_tablet",
+					columns_mobile_extra: "slides_to_show_mobile_extra",
+					columns_mobile: "slides_to_show_mobile"
+				};
+
+				breakpoints = renameKeys( breakpoints, newBreakpointsKeys );
+				slidesCount = $( '> div.jet-posts__item', $target ).length;
 			} else {
-				tabletSlides = 1 === options.slidesToShow.desktop ? 1 : 2;
+				slidesCount = $( '> div', $target ).length;
 			}
 
-			if ( options.slidesToShow.mobile ) {
-				mobileSlides = options.slidesToShow.mobile;
-			} else {
-				mobileSlides = 1;
+			options.slidesToShow = +breakpoints.slides_to_show;
+
+			Object.keys( activeBreakpoints ).forEach( function( breakpointName ) {
+				if ( 'widescreen' === breakpointName ) {
+					options.slidesToShow = breakpoints.slides_to_show_widescreen ? +breakpoints.slides_to_show_widescreen : +breakpoints.slides_to_show;
+
+					if ( breakpoints.slides_to_scroll_widescreen ) {
+						options.slidesToScroll = '' != breakpoints.slides_to_scroll_widescreen ? +breakpoints.slides_to_scroll_widescreen : +breakpoints.slides_to_scroll;
+					} else {
+						options.slidesToScroll = 1;
+					}
+				}
+			} );
+
+			if ( options.slidesToShow >= slidesCount ) {
+				options.dots = false;
 			}
 
-			options.slidesToShow = options.slidesToShow.desktop;
+			prevDeviceToShowValue   = options.slidesToShow;
+			prevDeviceToScrollValue = options.slidesToScroll;
 
+			$target.on( 'init reInit', function() {
+				if ( options.infinite ) {
+					var $items        = $( this ),
+						$clonedSlides = $( '> .slick-list > .slick-track > .slick-cloned.jet-carousel__item', $items );
+
+					if ( !$clonedSlides.length ) {
+						return;
+					}
+
+					JetElements.initElementsHandlers( $clonedSlides );
+
+				}
+			} );
+
+			if ( $target.hasClass( 'slick-initialized' ) ) {
+				$target.slick( 'refresh', true );
+				return;
+			}
+
+			Object.keys( activeBreakpoints ).reverse().forEach( function( breakpointName ) {
+
+				if ( breakpoints['slides_to_show_' + breakpointName] || breakpoints['slides_to_scroll_' + breakpointName] ) {
+
+					var breakpointSetting = {
+						breakpoint: null,
+						settings: {}
+					}
+
+					breakpointSetting.breakpoint = 'widescreen' != breakpointName ? activeBreakpoints[breakpointName].value : activeBreakpoints[breakpointName].value - 1;
+
+					if ( 'widescreen' === breakpointName ) {
+						breakpointSetting.settings.slidesToShow   = +breakpoints['slides_to_show'];
+						breakpointSetting.settings.slidesToScroll = +breakpoints['slides_to_scroll'];
+					} else {
+						breakpointSetting.settings.slidesToShow = breakpoints['slides_to_show_' + breakpointName] ? +breakpoints['slides_to_show_' + breakpointName] : prevDeviceToShowValue;
+
+						breakpointSetting.settings.slidesToScroll = breakpoints['slides_to_scroll_' + breakpointName] ? +breakpoints['slides_to_scroll_' + breakpointName] : prevDeviceToScrollValue;
+					}
+
+					$target.on( 'init reInit', function( event, slick, currentSlide, nextSlide ) {
+						if ( breakpointSetting.settings.slidesToShow >= slick.slideCount ) {
+							breakpointSetting.settings.dots = false;
+						} else {
+							if ( dotsEnable ) {
+								breakpointSetting.settings.dots = true;
+							}
+						}
+					} );
+
+					prevDeviceToShowValue   = breakpointSetting.settings.slidesToShow;
+					prevDeviceToScrollValue = breakpointSetting.settings.slidesToScroll
+
+					responsive.push( breakpointSetting );
+				}
+			} );
+
+			options.responsive = responsive;
+
+			if ( options.slidesToShow >= slidesCount ) {
+				options.dots = false;
+			}
 
 			defaultOptions = {
 				customPaging: function(slider, i) {
 					return $( '<span />' ).text( i + 1 );
 				},
-				dotsClass: 'jet-slick-dots',
-				responsive: [
-					{
-						breakpoint: 1025,
-						settings: {
-							slidesToShow: tabletSlides,
-						}
-					},
-					{
-						breakpoint: 768,
-						settings: {
-							slidesToShow: mobileSlides,
-							slidesToScroll: 1
-						}
-					}
-				]
+				dotsClass: 'jet-slick-dots'
 			};
 
 			slickOptions = $.extend( {}, defaultOptions, options );
@@ -1378,6 +1693,37 @@
 			if ( $target.hasClass( 'jet-table--sorting' ) ) {
 				$target.tablesorter( options );
 			}
+
+			$( '.jet-table__body-row', $target ).each( function() {
+				var _this         = $( this ),
+					itemsCounter  = 0,
+					emptyContents = 0;
+
+				$( '.jet-table__cell', _this ).each( function() {
+					var image      = $( 'img', $( this ) ),
+						svg        = $( 'svg', $( this ) ),
+						icon       = $( 'i', $( this ) ),
+						itemImages = 0;
+
+					if ( 0 === svg.length && 0 === icon.length ) {
+						image.each( function() {
+							if ( '' != $( this ).attr( 'src' ) ) {
+								itemImages++;
+							}
+						} )
+
+						if ( 0 === $( this ).text().length && 0 === itemImages ) {
+							emptyContents++;
+						}
+					}
+
+					itemsCounter++;
+				} )
+
+				if( emptyContents === itemsCounter ) {
+					_this.remove();
+				}
+			} )
 		},
 
 		widgetDropbar: function( $scope ) {
@@ -1497,6 +1843,10 @@
 						hasOverlay = false;
 					}
 				} );
+
+				if ( autoplay ) {
+					$overlay.remove();
+				}
 			}
 
 			if ( $mejsPlaer[0] ) {
@@ -1526,7 +1876,7 @@
 		widgetAudio: function( $scope ) {
 			var $wrapper    = $scope.find( '.jet-audio' ),
 				$player     = $scope.find( '.jet-audio-player' ),
-				settings    = $wrapper.data( 'settings' ),
+				settings    = $wrapper.data( 'audio-settings' ),
 				unmuted     = 0,
 				hasVolume   = false,
 				startVolume;
@@ -1565,7 +1915,7 @@
 						}
 					}, false );
 
-					if ( hasVolume && 'yes' === settings['hasVolumeBar'] ) {
+					if ( hasVolume && 'yes' === settings['hasVolumeBar'] && !settings['hideVolumeOnTouchDevices']) {
 						media.setVolume( startVolume );
 						media.addEventListener( 'volumechange', function() {
 							var volumeBar          = 'horizontal' === settings['audioVolume'] ? $scope.find( '.mejs-horizontal-volume-current' ) : $scope.find( '.mejs-volume-current' ),
@@ -1597,7 +1947,7 @@
 								}
 							} )
 						}, false );
-					} else if ( hasVolume ) {
+					} else if ( hasVolume && !settings['hideVolumeOnTouchDevices'] ) {
 						muteBtn.on( 'click', function() {
 							media.setVolume( startVolume );
 						} )
@@ -1673,18 +2023,6 @@
 					'left': !isRTL ? ( firstPointLeftPos + pointWidth/2 ) : ( lastPointLeftPos + pointWidth/2 ),
 					'width': Math.abs( lastPointLeftPos - firstPointLeftPos )
 				} );
-
-				// var $progressLine   = $scope.find( '.jet-hor-timeline__line-progress' ),
-				// 	$lastActiveItem = $scope.find( '.jet-hor-timeline-list--middle .jet-hor-timeline-item.is-active:last' );
-				//
-				// if ( $lastActiveItem[0] ) {
-				// 	var $lastActiveItemPointWrap = $lastActiveItem.find( '.jet-hor-timeline-item__point' ),
-				// 		progressLineWidth        = $lastActiveItemPointWrap.position().left + $lastActiveItemPointWrap.outerWidth() - firstPointLeftPos - pointWidth / 2;
-				//
-				// 	$progressLine.css( {
-				// 		'width': progressLineWidth
-				// 	} );
-				// }
 			}
 
 			// Arrows Navigation Type
@@ -1693,12 +2031,16 @@
 			}
 
 			if ( $arrows[0] ) {
+				var slidesScroll      = slidesToScroll[ currentDeviceMode ],
+					xPos              = 0,
+					yPos              = 0,
+					diffpos;
+
 				$arrows.on( 'click.jetHorTimeline', function( event ){
 					var $this             = $( this ),
-						direction         = $this.hasClass( 'jet-next-arrow' ) ? 'next' : 'prev',
-						dirMultiplier     = !isRTL ? -1 : 1,
 						currentDeviceMode = elementorFrontend.getCurrentDeviceMode(),
-						slidesScroll      = slidesToScroll[ currentDeviceMode ];
+						direction         = $this.hasClass( 'jet-next-arrow' ) ? 'next' : 'prev',
+						dirMultiplier     = !isRTL ? -1 : 1;
 
 					if ( slidesScroll > columns[ currentDeviceMode ] ) {
 						slidesScroll = columns[ currentDeviceMode ];
@@ -1742,6 +2084,94 @@
 						'transform': 'translateX(' + dirMultiplier * currentTransform + '%)'
 					});
 
+				} );
+
+				$( $items ).on( 'touchstart', function( e ) {
+					var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+
+					xPos = touch.pageX;
+				} );
+
+				$( $items ).on( 'touchend', function( e ) {
+					var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+
+					yPos    = touch.pageX;
+					diffpos = yPos - xPos;
+
+					if ( diffpos < -50 ) {
+						var dirMultiplier     = !isRTL ? -1 : 1;
+
+						if ( slidesScroll > columns[ currentDeviceMode ] ) {
+							slidesScroll = columns[ currentDeviceMode ];
+						}
+
+						if ( currentPosition < maxPosition[ currentDeviceMode ] ) {
+							currentPosition += slidesScroll;
+
+							if ( currentPosition > maxPosition[ currentDeviceMode ] ) {
+								currentPosition = maxPosition[ currentDeviceMode ];
+							}
+						}
+
+						if ( currentPosition > 0 ) {
+							$prevArrow.removeClass( 'jet-arrow-disabled' );
+						} else {
+							$prevArrow.addClass( 'jet-arrow-disabled' );
+						}
+
+						if ( currentPosition === maxPosition[ currentDeviceMode ] ) {
+							$nextArrow.addClass( 'jet-arrow-disabled' );
+						} else {
+							$nextArrow.removeClass( 'jet-arrow-disabled' );
+						}
+
+						if ( currentPosition === 0 ) {
+							currentTransform = 0;
+						} else {
+							currentTransform = currentPosition * transform[ currentDeviceMode ];
+						}
+
+						$timelineTrack.css( {
+							'transform': 'translateX(' + dirMultiplier * currentTransform + '%)'
+						} );
+
+					} else if ( diffpos > 50 ) {
+						var dirMultiplier     = !isRTL ? -1 : 1;
+
+						if ( slidesScroll > columns[ currentDeviceMode ] ) {
+							slidesScroll = columns[ currentDeviceMode ];
+						}
+
+						if ( currentPosition > 0 ) {
+							currentPosition -= slidesScroll;
+
+							if ( currentPosition < 0 ) {
+								currentPosition = 0;
+							}
+						}
+
+						if ( currentPosition > 0 ) {
+							$prevArrow.removeClass( 'jet-arrow-disabled' );
+						} else {
+							$prevArrow.addClass( 'jet-arrow-disabled' );
+						}
+
+						if ( currentPosition === maxPosition[ currentDeviceMode ] ) {
+							$nextArrow.addClass( 'jet-arrow-disabled' );
+						} else {
+							$nextArrow.removeClass( 'jet-arrow-disabled' );
+						}
+
+						if ( currentPosition === 0 ) {
+							currentTransform = 0;
+						} else {
+							currentTransform = currentPosition * transform[ currentDeviceMode ];
+						}
+
+						$timelineTrack.css( {
+							'transform': 'translateX(' + dirMultiplier * currentTransform + '%)'
+						} );
+					}
 				} );
 			}
 
@@ -1848,7 +2278,10 @@
 
 			var $chart        = $scope.find( '.jet-bar-chart-container' ),
 				$chart_canvas = $chart.find( '.jet-bar-chart' ),
-				settings      = $chart.data( 'settings' );
+				settings      = $chart.data( 'settings' ),
+				tooltip_prefix    = $chart.data( 'tooltip-prefix' ) || '',
+				tooltip_suffix    = $chart.data( 'tooltip-suffix' ) || '',
+				tooltip_separator = $chart.data( 'tooltip-separator' ) || '';
 
 				if ( true === settings.options.tooltips.enabled ) {
 					settings.options.tooltips.callbacks = {
@@ -1860,6 +2293,15 @@
 
 			if ( ! $chart.length ) {
 				return;
+			}
+
+			if ( true === settings.options.tooltips.enabled ) {
+				settings.options.tooltips.callbacks = {
+					label: function( tooltipItem, data ) {
+						var value = '' != tooltip_separator ? JetElementsTools.addThousandCommaSeparator( data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index], tooltip_separator) : data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+						return ' ' + data.labels[tooltipItem.index] + ': ' + tooltip_prefix + value + tooltip_suffix;
+					}
+				};
 			}
 
 			elementorFrontend.waypoint( $chart_canvas, function() {
@@ -1879,7 +2321,10 @@
 				previous_label      = $line_chart.data( 'previous-label' ),
 				current_label       = $line_chart.data( 'current-label' ),
 				settings            = $line_chart.data( 'settings' ),
-				compare_labels_type = $line_chart.data( 'compare-labels-type' );
+				compare_labels_type = $line_chart.data( 'compare-labels-type' ),
+				tooltip_prefix      = $line_chart.data( 'tooltip-prefix' ) || '',
+				tooltip_suffix      = $line_chart.data( 'tooltip-suffix' ) || '',
+				tooltip_separator   = $line_chart.data( 'tooltip-separator' ) || '';
 
 			if ( ! $line_chart.length ) {
 				return;
@@ -1893,7 +2338,8 @@
 
 					myLineChart.options.tooltips = {
 						enabled:   false,
-						mode:      'point',
+						mode:      'x-axis',
+						intersect: false,
 						callbacks: {
 							label: function( tooltipItem, data ) {
 								var colorBox = data.datasets[tooltipItem.datasetIndex].borderColor;
@@ -1902,23 +2348,23 @@
 								if ( true === $compare ) {
 									var currentLabel    = 'custom' === compare_labels_type ? current_label : data.labels[tooltipItem.index],
 										title           = data.datasets[tooltipItem.datasetIndex].label,
-										currentVal      = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index],
-										current         = '<div class="jet-line-chart-tooltip-compare-current">' + currentLabel + ' : ' + currentVal + '</div>',
+										currentVal      = '' != tooltip_separator ? JetElementsTools.addThousandCommaSeparator( data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index], tooltip_separator ) : data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index],
+										current         = '<div class="jet-line-chart-tooltip-compare-current">' + currentLabel + ' : ' + tooltip_prefix + currentVal + tooltip_suffix + '</div>',
 										previous        = '',
 										compareColorBox = data.datasets[tooltipItem.datasetIndex].borderColor,
 										compareColorBox = compareColorBox.replace( /"/g, '"' );
 
 									if ( typeof (data.labels[tooltipItem.index - 1]) != "undefined" && data.labels[tooltipItem.index - 1] !== null ) {
 										var previousLabel = 'custom' === compare_labels_type ? previous_label : data.labels[tooltipItem.index - 1],
-											previousVal   = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index - 1],
-											previous      = '<div class="jet-line-chart-tooltip-compare-previous">' + previousLabel + ' : ' + previousVal + '</div>';
+											previousVal   = '' != tooltip_separator ? JetElementsTools.addThousandCommaSeparator( data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index - 1], tooltip_separator ) : data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index - 1],
+											previous      = '<div class="jet-line-chart-tooltip-compare-previous">' + previousLabel + ' : ' + tooltip_prefix + previousVal + tooltip_suffix + '</div>';
 									}
 
 									return '<div class="jet-line-chart-tooltip-title"><span class="jet-line-chart-tooltip-color-box" style="background:' + compareColorBox + '"></span>' + title + '</div><div class="jet-line-chart-tooltip-body">' + current + previous + '</div>';
 								} else {
 									var label = data.datasets[tooltipItem.datasetIndex].label,
-										val   = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-									return '<div class="jet-line-chart-tooltip-body"><span class="jet-line-chart-tooltip-color-box" style="background:' + colorBox + '"></span>' + label + ' : ' + val + '</div>';
+										val   = '' != tooltip_separator ? JetElementsTools.addThousandCommaSeparator( data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index], tooltip_separator ) : data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+									return '<div class="jet-line-chart-tooltip-body"><span class="jet-line-chart-tooltip-color-box" style="background:' + colorBox + '"></span>' + label + ' : ' + tooltip_prefix + val + tooltip_suffix + '</div>';
 								}
 							},
 						},
@@ -2025,7 +2471,7 @@
 			options = {
 				container: $lottieElem[0],
 				renderer:  settings.renderer,
-				loop:      settings.loop,
+				loop:      '' === settings.loop_times ? settings.loop : settings.loop_times,
 				autoplay:  false,
 				path:      settings.path,
 				name:      'jet-lottie'
@@ -2203,9 +2649,8 @@
 
 		widgetPricingTable: function( $scope ) {
 			var $target         = $scope.find( '.pricing-table' ),
-				$tooltips       = $( '.pricing-feature .pricing-feature__inner[title]', $target ),
+				$tooltips       = $( '.pricing-feature .pricing-feature__inner[data-tippy-content]', $target ),
 				settings        = $target.data( 'tooltips-settings' ),
-
 				$fold_target    = $scope.find( '.pricing-table__fold-mask' ),
 				$fold_button    = $scope.find( '.pricing-table__fold-button' ),
 				$fold_mask      = $fold_target,
@@ -2229,16 +2674,18 @@
 					}
 
 					tippy( [ itemSelector ], {
-						arrow: settings['tooltipArrow'],
-						arrowType: settings['tooltipArrowType'],
-						arrowTransform: settings['tooltipArrowSize'],
+						arrow: settings['tooltipArrow'] ? true : false,
 						duration: [ settings['tooltipShowDuration']['size'], settings['tooltipHideDuration']['size'] ],
-						distance: settings['tooltipDistance']['size'],
+						delay: settings['tooltipDelay']['size'],
 						placement: settings['tooltipPlacement'],
 						trigger: settings['tooltipTrigger'],
 						animation: settings['tooltipAnimation'],
-						flipBehavior: 'clockwise',
 						appendTo: itemSelector,
+						offset: [ 0, settings['tooltipDistance']['size'] ],
+						allowHTML: true,
+						popperOptions: {
+							strategy: 'fixed',
+						},
 					} );
 
 				} );
@@ -2422,6 +2869,58 @@
 			(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) check = true;})(navigator.userAgent||navigator.vendor||window.opera);
 
 			return check;
+		},
+
+		addThousandCommaSeparator: function ( nStr, separator ) {
+			var nStr = nStr + '',
+				x    = nStr.split('.'),
+				x1   = x[0],
+				x2   = x.length > 1 ? '.' + x[1] : '',
+				rgx  = /(\d+)(\d{3})/;
+
+			while ( rgx.test(x1) ) {
+				x1 = x1.replace(rgx, '$1' + separator + '$2');
+			}
+
+			return x1 + x2;
+		},
+
+		getElementorElementSettings: function( $scope ) {
+
+			if ( window.elementorFrontend && window.elementorFrontend.isEditMode() && $scope.hasClass( 'elementor-element-edit-mode' ) ) {
+				return JetElementsTools.getEditorElementSettings( $scope );
+			}
+
+			return $scope.data( 'settings' ) || {};
+		},
+
+		getEditorElementSettings: function( $scope ) {
+			var modelCID = $scope.data( 'model-cid' ),
+				elementData;
+
+			if ( ! modelCID ) {
+				return {};
+			}
+
+			if ( ! elementor.hasOwnProperty( 'config' ) ) {
+				return {};
+			}
+
+			if ( ! elementor.config.hasOwnProperty( 'elements' ) ) {
+				return {};
+			}
+
+			if ( ! elementor.config.elements.hasOwnProperty( 'data' ) ) {
+				return {};
+			}
+
+			elementData = elementor.config.elements.data[ modelCID ];
+
+			if ( ! elementData ) {
+				return {};
+			}
+
+			return elementData.toJSON();
 		}
 	}
 
@@ -2812,6 +3311,7 @@
 			$instanceList   = $( '.jet-images-layout__list', $instance ),
 			$itemsList      = $( '.jet-images-layout__item', $instance ),
 			defaultSettings = {},
+			editMode        = Boolean( elementor.isEditMode() ),
 			settings        = settings || {};
 
 		/*
@@ -2819,9 +3319,6 @@
 		 */
 		defaultSettings = {
 			layoutType: 'masonry',
-			columns: 3,
-			columnsTablet: 2,
-			columnsMobile: 1,
 			justifyHeight: 300
 		}
 
@@ -3366,7 +3863,8 @@
 		self.init = function() {
 
 			if ( ! editMode ) {
-				settings = jetElements[ 'jetParallaxSections' ][ sectionId ] || false;
+				settings = $target.data('settings') || false;
+				settings = false != settings ? settings['jet_parallax_layout_list'] : false;
 			} else {
 				settings = self.generateEditorSettings( sectionId );
 			}
@@ -3377,7 +3875,7 @@
 
 			self.generateLayouts();
 
-			//$window.on( 'scroll.jetSectionParallax resize.jetSectionParallax', JetElementsTools.debounce( 5, self.scrollHandler ) );
+			$window.on( 'resize.jetSectionParallax orientationchange.jetSectionParallax', JetElementsTools.debounce( 30, self.generateLayouts ) );
 
 			if ( 0 !== scrollLayoutList.length ) {
 				$window.on( 'scroll.jetSectionParallax resize.jetSectionParallax', self.scrollHandler );
@@ -3436,12 +3934,13 @@
 			$( '.jet-parallax-section__layout', $target ).remove();
 
 			$.each( settings, function( index, layout ) {
-
 				var imageData      = layout['jet_parallax_layout_image'],
 					speed          = layout['jet_parallax_layout_speed']['size'] || 50,
 					zIndex         = layout['jet_parallax_layout_z_index'],
-					bgSize         = layout['jet_parallax_layout_bg_size'] || 'auto',
 					animProp       = layout['jet_parallax_layout_animation_prop'] || 'bgposition',
+					deviceMode     = elementorFrontend.getCurrentDeviceMode(),
+					activeBreakpoints = elementor.config.responsive.activeBreakpoints,
+					activeBreakpointsArray = [],
 					bgX            = layout['jet_parallax_layout_bg_x'],
 					bgY            = layout['jet_parallax_layout_bg_y'],
 					type           = layout['jet_parallax_layout_type'] || 'none',
@@ -3449,15 +3948,81 @@
 					fxDirection    = layout['jet_parallax_layout_fx_direction'] || 'fade-in',
 					device         = layout['jet_parallax_layout_on'] || ['desktop', 'tablet'],
 					_id            = layout['_id'],
-					isDynamicImage = layout.hasOwnProperty( '__dynamic__' ) && layout.__dynamic__.hasOwnProperty( 'jet_parallax_layout_image' ),
 					$layout        = null,
 					layoutData     = {},
 					safariClass    = isSafari ? ' is-safari' : '',
 					macClass       = 'MacIntel' == platform ? ' is-mac' : '';
 
-				if ( '' === imageData['url'] && ! isDynamicImage ) {
+				if ( -1 === device.indexOf( deviceMode ) ) {
 					return false;
 				}
+			
+				
+				for ( var [key, value] of Object.entries( activeBreakpoints ) ) {
+					if ( 'widescreen' === key ) {
+						activeBreakpointsArray.push( 'desktop' );
+						activeBreakpointsArray.push( key );
+					} else {
+						activeBreakpointsArray.push( key );
+					}
+					
+				}
+
+				if ( -1 === activeBreakpointsArray.indexOf( 'widescreen' ) ) {
+					activeBreakpointsArray.push( 'desktop' );
+				}
+
+				activeBreakpointsArray = activeBreakpointsArray.reverse();
+
+				var breakpoints = [ 'widescreen', 'desktop', 'laptop', 'tablet_extra', 'tablet', 'mobile_extra', 'mobile'],
+					i = 0,
+					prevDevice,
+					layoutBreakpoinntsSettings = [];
+
+				breakpoints.forEach( function( item ) {
+
+					if ( -1 != activeBreakpointsArray.indexOf( item ) ) {
+
+						layoutBreakpoinntsSettings[i] = [];
+
+						if ( 'widescreen' === item ) {
+							layoutBreakpoinntsSettings[i][item] = {
+								'bgX' : '' != layout['jet_parallax_layout_bg_x_' + item] ? layout['jet_parallax_layout_bg_x'] : 0,
+
+								'bgY' : '' != layout['jet_parallax_layout_bg_y_' + item] ? layout['jet_parallax_layout_bg_y'] : 0,
+
+								'layoutImageData' : '' != layout['jet_parallax_layout_image_' + item] ? layout['jet_parallax_layout_image_' + item] : ''
+							};
+						} else if ( 'desktop' === item ) {
+							layoutBreakpoinntsSettings[i][item] = {
+								'bgX' : '' != layout['jet_parallax_layout_bg_x'] ? layout['jet_parallax_layout_bg_x'] : 0,
+
+								'bgY' : '' != layout['jet_parallax_layout_bg_y'] ? layout['jet_parallax_layout_bg_y'] : 0,
+
+								'layoutImageData' : imageData['url'] || layout['jet_parallax_layout_image']['url']
+							};
+						} else {
+							layoutBreakpoinntsSettings[i][item] = {
+								'bgX': ( layout['jet_parallax_layout_bg_x_' + item] && '' != layout['jet_parallax_layout_bg_x_' + item] ) ? layout['jet_parallax_layout_bg_x_' + item] : layoutBreakpoinntsSettings[i-1][prevDevice].bgX,
+
+								'bgY' : ( layout['jet_parallax_layout_bg_y_' + item] && '' != layout['jet_parallax_layout_bg_y_' + item] ) ? layout['jet_parallax_layout_bg_y_' + item] : layoutBreakpoinntsSettings[i-1][prevDevice].bgY,
+
+								'layoutImageData' : ( layout['jet_parallax_layout_image_' + item] && '' != layout['jet_parallax_layout_image_' + item]['url'] ) ? layout['jet_parallax_layout_image_' + item]['url'] : layoutBreakpoinntsSettings[i-1][prevDevice].layoutImageData
+							};
+						}
+
+						if ( deviceMode === item ) {
+							bgX    = layoutBreakpoinntsSettings[i][item].bgX;
+							bgY    = layoutBreakpoinntsSettings[i][item].bgY;
+							imageData = layoutBreakpoinntsSettings[i][item].layoutImageData;
+						}
+
+						prevDevice = item;
+
+						i++;
+					}
+
+				} );
 
 				if ( ! $target.hasClass( 'jet-parallax-section' ) ) {
 					$target.addClass( 'jet-parallax-section' );
@@ -3465,26 +4030,20 @@
 
 				$layout = $( '<div class="jet-parallax-section__layout elementor-repeater-item-' + _id + ' jet-parallax-section__' + type +'-layout' + macClass + '"><div class="jet-parallax-section__image"></div></div>' )
 					.prependTo( $target )
-					.css({
+					.css( {
 						'z-index': zIndex
-					});
+					} );
 
 				var imageCSS = {
-					'background-size': bgSize,
 					'background-position-x': bgX + '%',
-					'background-position-y': bgY + '%'
+					'background-position-y': bgY + '%',
+					'background-image': 'url(' + imageData + ')'
 				};
-
-				if ( '' !== imageData['url'] ) {
-					imageCSS['background-image'] = 'url(' + imageData['url'] + ')';
-				}
 
 				$( '> .jet-parallax-section__image', $layout ).css( imageCSS );
 
 				layoutData = {
 					selector: $layout,
-					image: imageData['url'],
-					size: bgSize,
 					prop: animProp,
 					type: type,
 					device: device,
@@ -3505,7 +4064,7 @@
 					}
 				}
 
-			});
+			} );
 
 		};
 
@@ -3625,9 +4184,6 @@
 				}
 
 			} );
-
-			//requesScroll = requestAnimationFrame( self.scrollUpdate );
-			//requestAnimationFrame( self.scrollUpdate );
 		};
 
 		self.mouseMoveHandler = function( event ) {
@@ -3639,7 +4195,7 @@
 				dy           = event.clientY - cy;
 
 			tiltx = -1 * ( dx / cx );
-			tilty = -1 * ( dy / cy);
+			tilty = -1 * ( dy / cy );
 
 			self.mouseMoveUpdate();
 		};
@@ -3694,11 +4250,15 @@
 
 				switch( prop ) {
 					case 'bgposition':
+
+						var bgPosX = layout.xPos + ( posX / $image[0].offsetWidth ) * 100,
+							bgPosY = layout.yPos + ( posY / $image[0].offsetHeight ) * 100;
+
 						TweenMax.to(
 							$image[0],
 							1, {
-								backgroundPositionX: 'calc(' + layout.xPos + '% + ' + posX + 'px)',
-								backgroundPositionY: 'calc(' + layout.yPos + '% + ' + posY + 'px)',
+								backgroundPositionX: bgPosX,
+								backgroundPositionY: bgPosY,
 								ease:Power2.easeOut
 							}
 						);
@@ -3753,17 +4313,17 @@
 			filterData      = {},
 			currentFilter   = 'all',
 			activeSlug      = [],
+			isRTL           = JetElementsTools.isRTL(),
+			editMode        = Boolean( elementor.isEditMode() ),
 			defaultSettings = {
 				layoutType: 'masonry',
 				columns: 3,
-				columnsTablet: 2,
-				columnsMobile: 1,
 				perPage: 6
 			},
 			masonryOptions = {
 				itemSelector: '.jet-portfolio__item',
 				percentPosition: true,
-				//isAnimated: true
+				isOriginLeft : true === isRTL ? false : true
 			},
 			settings        = $.extend( defaultSettings, settings ),
 			$masonryInstance,
@@ -3774,6 +4334,13 @@
 		 */
 		self.init = function() {
 			self.layoutBuild();
+
+			if ( editMode && $masonryInstance.get(0) ) {
+
+				$(window).on( 'resize', JetElementsTools.debounce( 50, function() {
+					$masonryInstance.masonry('layout');
+				}));
+			}
 		}
 
 		/**
@@ -4211,13 +4778,6 @@
 				mx,
 				my;
 
-			/*if ( canvas.offsetParent !== undefined ) {
-				do {
-					offsetX += canvas.offsetLeft;
-					offsetY += canvas.offsetTop;
-				} while ( ( canvas = canvas.offsetParent ) );
-			}*/
-
 			mx = ( e.pageX || e.touches[0].clientX ) - offsetX;
 			my = ( e.pageY || e.touches[0].clientY ) - offsetY;
 
@@ -4245,15 +4805,19 @@
 
 			e.preventDefault();
 
-			var currentPoint = getMouse( e, canvas ),
-				dist         = distanceBetween( lastPoint, currentPoint ),
-				angle        = angleBetween( lastPoint, currentPoint ),
-				x            = 0,
-				y            = 0;
+			var currentPoint      = getMouse( e, canvas ),
+				dist              = distanceBetween( lastPoint, currentPoint ),
+				angle             = angleBetween( lastPoint, currentPoint ),
+				x                 = 0,
+				y                 = 0,
+				userAgent         = navigator.userAgent || navigator.vendor || window.opera,
+				isIos             = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream,
+				isMobileDevice    = JetElementsTools.mobileAndTabletcheck(),
+				yScroll           = ( isMobileDevice && !isIos ) ? window.scrollY : 0;
 
 			for ( var i = 0; i < dist; i++ ) {
 				x = lastPoint.x + ( Math.sin( angle ) * i ) - 40;
-				y = lastPoint.y + ( Math.cos( angle ) * i ) - 40;
+				y = lastPoint.y + ( Math.cos( angle ) * i ) - 40 + yScroll;
 				ctx.globalCompositeOperation = 'destination-out';
 				ctx.drawImage( brush, x, y, 80, 80 );
 			}

@@ -69,7 +69,7 @@ class Jet_Elements_Lottie extends Jet_Elements_Base {
 				'options' => array(
 					'json_file' => array(
 						'title' => esc_html__( 'JSON file', 'jet-elements' ),
-						'icon'  => 'far fa-file',
+						'icon'  => 'fas fa-file',
 					),
 					'external_url' => array(
 						'title' => esc_html__( 'External URL', 'jet-elements' ),
@@ -234,6 +234,21 @@ class Jet_Elements_Lottie extends Jet_Elements_Base {
 				'type'      => Controls_Manager::SWITCHER,
 				'default'   => 'yes',
 				'condition' => array(
+					'action_start!' => 'on_scroll',
+				),
+			)
+		);
+
+		$this->add_control(
+			'loop_times',
+			array(
+				'label'       => esc_html__( 'Loop Times', 'jet-elements' ),
+				'type'        => Controls_Manager::NUMBER,
+				'min'         => 1,
+				'step'        => 1,
+				'default'     => '',
+				'condition'   => array(
+					'loop'          => 'yes',
 					'action_start!' => 'on_scroll',
 				),
 			)
@@ -502,8 +517,9 @@ class Jet_Elements_Lottie extends Jet_Elements_Base {
 			'delay'            => $settings['delay'],
 			'on_hover_out'     => $settings['on_hover_out'],
 			'redirect_timeout' => $settings['redirect_timeout'],
-			'viewport'         => $settings['viewport']['sizes'],
+			'viewport'         => isset( $settings['viewport'] ) ? $settings['viewport']['sizes'] : '',
 			'loop'             => filter_var( $settings['loop'], FILTER_VALIDATE_BOOLEAN ),
+			'loop_times'       => ! empty( $settings['loop_times'] ) ? $settings['loop_times'] : '',
 			'reversed'         => filter_var( $settings['reversed'], FILTER_VALIDATE_BOOLEAN ),
 			'play_speed'       => $settings['play_speed'],
 		);

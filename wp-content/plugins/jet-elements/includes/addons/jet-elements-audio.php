@@ -1551,8 +1551,8 @@ class Jet_Elements_Audio extends Jet_Elements_Base {
 		$this->add_render_attribute(
 			'wrapper',
 			array(
-				'class'         => 'jet-audio',
-				'data-settings' => esc_attr( json_encode( $data_settings ) ),
+				'class'               => 'jet-audio',
+				'data-audio-settings' => esc_attr( json_encode( $data_settings ) ),
 			)
 		);
 

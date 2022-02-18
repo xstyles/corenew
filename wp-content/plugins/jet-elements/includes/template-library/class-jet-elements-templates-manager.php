@@ -21,10 +21,16 @@ if ( ! class_exists( 'Jet_Elements_Templates_Manager' ) ) {
 		private static $instance = null;
 
 		/**
-		 * Template option name
+		 * Categories option name
 		 * @var string
 		 */
 		protected $option = 'jet_elements_categories';
+
+		/**
+		 * Templates option name
+		 * @var string
+		 */
+		protected $templates_option = 'jet_elements_templates';
 
 		/**
 		 * JetImpex templates API server
@@ -67,6 +73,10 @@ if ( ! class_exists( 'Jet_Elements_Templates_Manager' ) ) {
 			} else {
 				add_action( 'wp_ajax_elementor_get_template_data', array( $this, 'force_jet_template_source' ), 0 );
 			}
+
+			if ( defined( 'ELEMENTOR_VERSION' ) && version_compare( ELEMENTOR_VERSION, '3.5.0', '>=' ) ) {
+				add_filter( 'option_' . Elementor\Api::LIBRARY_OPTION_KEY, array( $this, 'prepend_templates' ) );
+			}
 		}
 
 		/**
@@ -90,6 +100,10 @@ if ( ! class_exists( 'Jet_Elements_Templates_Manager' ) ) {
 		 */
 		public function transient_key() {
 			return $this->option . '_' . jet_elements()->get_version();
+		}
+
+		public function templates_transient_key() {
+			return $this->templates_option . '_' . jet_elements()->get_version();
 		}
 
 		/**
@@ -149,6 +163,59 @@ if ( ! class_exists( 'Jet_Elements_Templates_Manager' ) ) {
 				return $library_data;
 			}
 
+		}
+
+		public function prepend_templates( $library_data ) {
+
+			$templates = $this->get_templates();
+
+			if ( ! empty( $templates ) ) {
+				$library_data['templates'] = array_merge( $library_data['templates'], $templates );
+			}
+
+			return $library_data;
+		}
+
+		public function get_templates() {
+
+			$templates = get_transient( $this->templates_transient_key() );
+
+			if ( ! $templates ) {
+				$source    = Elementor\Plugin::instance()->templates_manager->get_source( 'jet-templates' );
+				$templates = $source->get_items();
+
+				if ( ! empty( $templates ) ) {
+
+					$templates = array_map( function ( $template ) {
+
+						$template['id'] = $template['template_id'];
+						$template['tmpl_created'] = $template['date'];
+						$template['tags'] = json_encode( $template['tags'] );
+						$template['is_pro'] = $template['isPro'];
+						$template['access_level'] = $template['accessLevel'];
+						$template['popularity_index'] = $template['popularityIndex'];
+						$template['trend_index'] = $template['trendIndex'];
+						$template['has_page_settings'] = $template['hasPageSettings'];
+
+						unset( $template['template_id'] );
+						unset( $template['date'] );
+						unset( $template['isPro'] );
+						unset( $template['accessLevel'] );
+						unset( $template['popularityIndex'] );
+						unset( $template['trendIndex'] );
+						unset( $template['hasPageSettings'] );
+
+						return $template;
+					}, $templates );
+
+					set_transient( $this->templates_transient_key(), $templates, WEEK_IN_SECONDS );
+
+				} else {
+					$templates = array();
+				}
+			}
+
+			return $templates;
 		}
 
 		/**

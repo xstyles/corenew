@@ -351,6 +351,24 @@ class Jet_Elements_Bar_Chart extends Jet_Elements_Base {
 		);
 
 		$this->add_control(
+			'chart_legend_alignment',
+			array(
+				'label'     => esc_html__( 'Alignment', 'jet-elements' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'center',
+				'options'   => array(
+					'start'  => esc_html__( 'Start', 'jet-elements' ),
+					'center' => esc_html__( 'Center', 'jet-elements' ),
+					'end'    => esc_html__( 'End', 'jet-elements' ),
+				),
+				'render_type' => 'template',
+				'condition'   => array(
+					'chart_legend_display' => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
 			'chart_legend_reverse',
 			array(
 				'label'        => esc_html__( 'Revers', 'jet-elements' ),
@@ -360,6 +378,55 @@ class Jet_Elements_Bar_Chart extends Jet_Elements_Base {
 				'return_value' => 'true',
 				'condition'    => array(
 					'chart_legend_display'  => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
+			'chart_tooltips_heading',
+			array(
+				'label'     => esc_html__( 'Tooltips', 'jet-elements' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+				'condition' => array(
+					'chart_tooltip_enabled'  => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
+			'chart_tooltip_prefix',
+			array(
+				'label'     => esc_html__( 'Prefix', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'chart_tooltip_enabled'  => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
+			'chart_tooltip_suffix',
+			array(
+				'label'     => esc_html__( 'Suffix', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'chart_tooltip_enabled'  => 'true',
+				),
+			)
+		);
+
+		$this->add_control(
+			'chart_tooltip_separator',
+			array(
+				'label'     => esc_html__( 'Thousand Separator', 'jet-elements' ),
+				'type'      => Controls_Manager::TEXT,
+				'default'   => '',
+				'dynamic'   => array( 'active' => true ),
+				'condition' => array(
+					'chart_tooltip_enabled'  => 'true',
 				),
 			)
 		);
@@ -755,11 +822,14 @@ class Jet_Elements_Bar_Chart extends Jet_Elements_Base {
 	protected function render() {
 		$this->_context = 'render';
 		$this->_open_wrap();
-		
-		$settings     = $this->get_settings_for_display();
-		$data_chart   = $this->get_chart_data();
-		$data_options = $this->get_chart_options();
-		
+
+		$settings          = $this->get_settings_for_display();
+		$data_chart        = $this->get_chart_data();
+		$data_options      = $this->get_chart_options();
+		$tooltip_prefix    = isset( $settings['chart_tooltip_prefix'] ) ? $settings['chart_tooltip_prefix'] : '';
+		$tooltip_suffix    = isset( $settings['chart_tooltip_suffix'] ) ? $settings['chart_tooltip_suffix'] : '';
+		$tooltip_separator = isset( $settings['chart_tooltip_separator'] ) ? $settings['chart_tooltip_separator'] : '';
+
 		$this->add_render_attribute( [
 				'container' => array(
 					'class'         => 'jet-bar-chart-container',
@@ -771,7 +841,10 @@ class Jet_Elements_Bar_Chart extends Jet_Elements_Base {
 								'datasets' => $data_chart,
 							),
 							'options' => $data_options
-						) ) )
+						) ) ),
+					'data-tooltip-prefix'    => $tooltip_prefix,
+					'data-tooltip-suffix'    => $tooltip_suffix,
+					'data-tooltip-separator' => $tooltip_separator,
 				),
 				'canvas' => array(
 					'class' => 'jet-bar-chart',
@@ -835,6 +908,7 @@ class Jet_Elements_Bar_Chart extends Jet_Elements_Base {
 				'display'  => $legend_display,
 				'position' => ! empty( $settings['chart_legend_position'] ) ? $settings['chart_legend_position'] : 'top',
 				'reverse'  => filter_var( $settings['chart_legend_reverse'], FILTER_VALIDATE_BOOLEAN ),
+				'align'    => ! empty( $settings['chart_legend_alignment'] ) ? $settings['chart_legend_alignment'] : 'center',
 			),
 			'maintainAspectRatio' => false,
 		);

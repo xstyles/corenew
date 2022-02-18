@@ -12,8 +12,8 @@ use Elementor\Group_Control_Border;
 use Elementor\Group_Control_Box_Shadow;
 use Elementor\Group_Control_Typography;
 use Elementor\Repeater;
-use Elementor\Scheme_Color;
-use Elementor\Scheme_Typography;
+use Elementor\Core\Schemes\Color as Scheme_Color;
+use Elementor\Core\Schemes\Typography as Scheme_Typography;
 use Elementor\Widget_Base;
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -76,52 +76,55 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 				'label'   => esc_html__( 'Label', 'jet-tabs' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => esc_html__( 'Disable', 'jet-tabs' ),
-				'dynamic' => [
+				'dynamic' => array(
 					'active' => true,
-				],
+				),
 			)
 		);
 
 		$this->add_control(
 			'disable_content_type',
-			[
+			array(
 				'label'       => esc_html__( 'Content Type', 'jet-tabs' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => 'template',
-				'options'     => [
+				'options'     => array(
 					'template' => esc_html__( 'Template', 'jet-tabs' ),
 					'editor'   => esc_html__( 'Editor', 'jet-tabs' ),
-				],
+				),
 				'label_block' => 'true',
-			]
+			)
 		);
 
 		$this->add_control(
 			'disable_template_id',
 			array(
 				'label'       => esc_html__( 'Template', 'jet-tabs' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
-				'condition'   => [
+				'edit_button' => array(
+					'active' => true,
+					'label'  => esc_html__( 'Edit Template', 'jet-tabs' ),
+				),
+				'condition'   => array(
 					'disable_content_type' => 'template',
-				]
+				)
 			)
 		);
 
 		$this->add_control(
 			'disable_item_editor_content',
-			[
-				'label'      => __( 'Content', 'jet-tabs' ),
+			array(
+				'label'      => esc_html__( 'Content', 'jet-tabs' ),
 				'type'       => Controls_Manager::WYSIWYG,
-				'default'    => __( 'Tab Item Content', 'jet-tabs' ),
-				'dynamic' => [
+				'default'    => esc_html__( 'Tab Item Content', 'jet-tabs' ),
+				'dynamic'    => array(
 					'active' => true,
-				],
-				'condition'   => [
+				),
+				'condition'   => array(
 					'disable_content_type' => 'editor',
-				]
-			]
+				)
+			)
 		);
 
 		$this->end_controls_tab();
@@ -139,52 +142,55 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 				'label'   => esc_html__( 'Label', 'jet-tabs' ),
 				'type'    => Controls_Manager::TEXT,
 				'default' => esc_html__( 'Enable', 'jet-tabs' ),
-				'dynamic' => [
+				'dynamic' => array(
 					'active' => true,
-				],
+				),
 			)
 		);
 
 		$this->add_control(
 			'enable_content_type',
-			[
+			array(
 				'label'       => esc_html__( 'Content Type', 'jet-tabs' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => 'template',
-				'options'     => [
+				'options'     => array(
 					'template' => esc_html__( 'Template', 'jet-tabs' ),
 					'editor'   => esc_html__( 'Editor', 'jet-tabs' ),
-				],
+				),
 				'label_block' => 'true',
-			]
+			)
 		);
 
 		$this->add_control(
 			'enable_template_id',
 			array(
 				'label'       => esc_html__( 'Template', 'jet-tabs' ),
-				'label_block' => 'true',
 				'type'        => 'jet-query',
 				'query_type'  => 'elementor_templates',
-				'condition'   => [
+				'edit_button' => array(
+					'active' => true,
+					'label'  => esc_html__( 'Edit Template', 'jet-tabs' ),
+				),
+				'condition'   => array(
 					'enable_content_type' => 'template',
-				]
+				)
 			)
 		);
 
 		$this->add_control(
 			'enable_item_editor_content',
-			[
-				'label'      => __( 'Content', 'jet-tabs' ),
+			array(
+				'label'      => esc_html__( 'Content', 'jet-tabs' ),
 				'type'       => Controls_Manager::WYSIWYG,
-				'default'    => __( 'Tab Item Content', 'jet-tabs' ),
-				'dynamic' => [
+				'default'    => esc_html__( 'Tab Item Content', 'jet-tabs' ),
+				'dynamic' => array(
 					'active' => true,
-				],
-				'condition'   => [
+				),
+				'condition'   => array(
 					'enable_content_type' => 'editor',
-				]
-			]
+				)
+			)
 		);
 
 		$this->end_controls_tab();
@@ -272,12 +278,12 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_control_height',
 			array(
-				'label'   => esc_html__( 'Height', 'jet-tabs' ),
-				'type'    => Controls_Manager::NUMBER,
-				'default' => 60,
-				'min'     => 10,
-				'max'     => 100,
-				'step'    => 1,
+				'label'      => esc_html__( 'Height', 'jet-tabs' ),
+				'type'       => Controls_Manager::NUMBER,
+				'default'    => 60,
+				'min'        => 10,
+				'max'        => 100,
+				'step'       => 1,
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['control'] => 'height: {{VALUE}}px',
 				),
@@ -288,16 +294,16 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_handler_width',
 			array(
-				'label'   => esc_html__( 'Handler Width', 'jet-tabs' ),
-				'type'    => Controls_Manager::NUMBER,
-				'default' => 60,
-				'min'     => 1,
-				'max'     => 300,
-				'step'    => 1,
+				'label'     => esc_html__( 'Handler Width', 'jet-tabs' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 60,
+				'min'       => 1,
+				'max'       => 300,
+				'step'      => 1,
 				'condition' => array(
 					'switcher_preset' => 'preset-2',
 				),
-				'selectors'  => array(
+				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['control'] . ' .jet-switcher__control-handler' => 'width: {{VALUE}}px',
 					'{{WRAPPER}} ' . $css_scheme['enable_control'] . ' .jet-switcher__control-handler' => 'left: calc(100% - {{VALUE}}px)',
 				),
@@ -307,7 +313,7 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_container_margin',
 			array(
-				'label'      => __( 'Margin', 'jet-tabs' ),
+				'label'      => esc_html__( 'Margin', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -332,7 +338,7 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_container_border_radius',
 			array(
-				'label'      => __( 'Border Radius', 'jet-tabs' ),
+				'label'      => esc_html__( 'Border Radius', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -364,12 +370,12 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_handler_offset',
 			array(
-				'label'   => esc_html__( 'Handler Offset', 'jet-tabs' ),
-				'type'    => Controls_Manager::NUMBER,
-				'default' => 3,
-				'min'     => 0,
-				'max'     => 20,
-				'step'    => 1,
+				'label'      => esc_html__( 'Handler Offset', 'jet-tabs' ),
+				'type'       => Controls_Manager::NUMBER,
+				'default'    => 3,
+				'min'        => 0,
+				'max'        => 20,
+				'step'       => 1,
 				'selectors'  => array(
 					'{{WRAPPER}} ' . $css_scheme['control'] . ' .jet-switcher__control-handler span' => 'margin: {{VALUE}}px',
 				),
@@ -418,8 +424,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_disable_background_color',
 			array(
-				'label' => esc_html__( 'Control Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Control Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['disable_control'] . ' .jet-switcher__control-instance' => 'background-color: {{VALUE}}',
 				),
@@ -430,8 +436,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_handler_disable_background_color',
 			array(
-				'label' => esc_html__( 'Handler Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Handler Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['disable_control'] . ' .jet-switcher__control-handler span' => 'background-color: {{VALUE}}',
 				),
@@ -442,8 +448,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_disable_state_disable_label_color',
 			array(
-				'label' => esc_html__( 'Disable Label Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Disable Label Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['disable_control'] . ' .jet-switcher__control--disable' => 'color: {{VALUE}}',
 				),
@@ -454,8 +460,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_disable_state_enable_label_color',
 			array(
-				'label' => esc_html__( 'Enable Label Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Enable Label Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['disable_control'] . ' .jet-switcher__control--enable' => 'color: {{VALUE}}',
 				),
@@ -475,8 +481,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_enable_background_color',
 			array(
-				'label' => esc_html__( 'Control Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Control Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['enable_control'] . ' .jet-switcher__control-instance' => 'background-color: {{VALUE}}',
 				),
@@ -487,8 +493,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_handler_enable_background_color',
 			array(
-				'label' => esc_html__( 'Handler Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Handler Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['enable_control'] . ' .jet-switcher__control-handler span' => 'background-color: {{VALUE}}',
 				),
@@ -499,8 +505,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_enable_state_disable_label_color',
 			array(
-				'label' => esc_html__( 'Disable Label Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Disable Label Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['enable_control'] . ' .jet-switcher__control--disable' => 'color: {{VALUE}}',
 				),
@@ -511,8 +517,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'control_enable_state_enable_label_color',
 			array(
-				'label' => esc_html__( 'Enable Label Color', 'jet-tabs' ),
-				'type' => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Enable Label Color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['enable_control'] . ' .jet-switcher__control--enable' => 'color: {{VALUE}}',
 				),
@@ -550,8 +556,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_control(
 			'tabs_content_text_color',
 			array(
-				'label' => esc_html__( 'Text color', 'jet-tabs' ),
-				'type'  => Controls_Manager::COLOR,
+				'label'     => esc_html__( 'Text color', 'jet-tabs' ),
+				'type'      => Controls_Manager::COLOR,
 				'selectors' => array(
 					'{{WRAPPER}} ' . $css_scheme['content'] => 'color: {{VALUE}};',
 				),
@@ -571,7 +577,7 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_content_padding',
 			array(
-				'label'      => __( 'Padding', 'jet-tabs' ),
+				'label'      => esc_html__( 'Padding', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -588,7 +594,7 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 				'label'       => esc_html__( 'Border', 'jet-tabs' ),
 				'placeholder' => '1px',
 				'default'     => '1px',
-				'selector'  => '{{WRAPPER}} ' . $css_scheme['content_wrapper'],
+				'selector'    => '{{WRAPPER}} ' . $css_scheme['content_wrapper'],
 			),
 			50
 		);
@@ -596,7 +602,7 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 		$this->__add_responsive_control(
 			'swither_content_radius',
 			array(
-				'label'      => __( 'Border Radius', 'jet-tabs' ),
+				'label'      => esc_html__( 'Border Radius', 'jet-tabs' ),
 				'type'       => Controls_Manager::DIMENSIONS,
 				'size_units' => array( 'px', '%' ),
 				'selectors'  => array(
@@ -653,8 +659,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 			?></div>
 			<div class="jet-switcher__content-wrapper"><?php
 				$this->add_render_attribute( 'jet_switcher_content_disable', array(
-					'id'    => 'jet-switcher-content-disable-' . $this->get_id(),
-					'class' => array(
+					'id'          => 'jet-switcher-content-disable-' . $this->get_id(),
+					'class'       => array(
 						'jet-switcher__content',
 						'jet-switcher__content--disable',
 						! $initial_state ? 'active-content' : '',
@@ -675,8 +681,8 @@ class Jet_Switcher_Widget extends Jet_Tabs_Base {
 				echo sprintf( '<div %1$s>%2$s</div>', $this->get_render_attribute_string( 'jet_switcher_content_disable' ), $disable_content_html );
 
 				$this->add_render_attribute( 'jet_switcher_content_enable', array(
-					'id'    => 'jet-switcher-content-enable-' . $this->get_id(),
-					'class' => array(
+					'id'          => 'jet-switcher-content-enable-' . $this->get_id(),
+					'class'       => array(
 						'jet-switcher__content',
 						'jet-switcher__content--enable',
 						$initial_state ? 'active-content' : '',

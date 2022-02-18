@@ -18,6 +18,7 @@ if ( filter_var( $settings['show_on_hover'], FILTER_VALIDATE_BOOLEAN ) ) {
 
 if ( 'masonry' === $settings['layout_type'] ) {
 	$attr_array[] = 'data-columns';
+	$class_array[] = 'salvattore';
 	$this->add_script_depends( 'jet-salvattore' );
 }
 

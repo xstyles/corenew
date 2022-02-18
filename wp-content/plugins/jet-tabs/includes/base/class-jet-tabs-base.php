@@ -652,4 +652,23 @@ abstract class Jet_Tabs_Base extends Widget_Base {
 		printf( $format, $icon_html );
 	}
 
+	/**
+	 * Return available html tag list
+	 * @return array
+	 */
+	public function get_available_item_html_tags() {
+
+		return array(
+			'h1'   => esc_html__( 'H1', 'jet-tabs' ),
+			'h2'   => esc_html__( 'H2', 'jet-tabs' ),
+			'h3'   => esc_html__( 'H3', 'jet-tabs' ),
+			'h4'   => esc_html__( 'H4', 'jet-tabs' ),
+			'h5'   => esc_html__( 'H5', 'jet-tabs' ),
+			'h6'   => esc_html__( 'H6', 'jet-tabs' ),
+			'div'  => esc_html__( 'div', 'jet-tabs' ),
+			'span' => esc_html__( 'span', 'jet-tabs' ),
+			'p'    => esc_html__( 'p', 'jet-tabs' ),
+		);
+
+	}
 }

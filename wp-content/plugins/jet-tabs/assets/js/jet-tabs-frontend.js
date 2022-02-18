@@ -34,15 +34,45 @@
 				$contentWrapper = $( '.jet-tabs__content-wrapper', $target ).first(),
 				$controlList    = $( '> .jet-tabs__control', $controlWrapper ),
 				$contentList    = $( '> .jet-tabs__content', $contentWrapper ),
-				settings        = $target.data( 'settings' ) || {},
+				settings        = $.extend( $target.data( 'settings' ) || {}, JetTabs.getElementorElementSettings( $scope ) ),
 				anchorSelectors = [],
 				toogleEvents    = 'mouseenter mouseleave',
 				scrollOffset,
 				autoSwitchInterval = null,
 				curentHash      = window.location.hash || false,
-				tabsArray       = curentHash ? curentHash.replace( '#', '' ).split( '&' ) : false;
+				tabsArray       = curentHash ? curentHash.replace( '#', '' ).split( '&' ) : false,
+				$tabsPosition = settings['tabsPosition'],
+				$tabsPositionClassList = [],
+				$tabsPositionBreakpoints = [],
+				prevDevice,
+				currentDeviceMode   = elementorFrontend.getCurrentDeviceMode(),
+				activeBreakpoints = elementor.config.responsive.activeBreakpoints;
 
+			prevDevice = 'desktop';
 
+			$tabsPositionBreakpoints['desktop'] = '' != settings['tabs_position'] ? settings['tabs_position'] : 'top';
+			$tabsPositionClassList['desktop']   = "jet-tabs-position-" + $tabsPositionBreakpoints['desktop'];
+
+			Object.keys( activeBreakpoints ).reverse().forEach( function( breakpointName ) {
+
+				if ( 'widescreen' === breakpointName ) {
+					$tabsPositionBreakpoints[breakpointName] = ( settings['tabs_position_' + breakpointName] && '' != settings['tabs_position_' + breakpointName] ) ? settings['tabs_position_' + breakpointName] : 'top';
+					$tabsPositionClassList[breakpointName]   =  "jet-tabs-position-" + $tabsPositionBreakpoints[breakpointName];
+				} else {
+					$tabsPositionBreakpoints[breakpointName] = ( settings['tabs_position_' + breakpointName] && '' != settings['tabs_position_' + breakpointName] ) ? settings['tabs_position_' + breakpointName] : $tabsPositionBreakpoints[prevDevice];
+					$tabsPositionClassList[breakpointName]   = "jet-tabs-position-" + $tabsPositionBreakpoints[breakpointName];
+
+					prevDevice = breakpointName;
+				}
+			} );
+
+			if ( !$target.hasClass( $tabsPositionClassList[currentDeviceMode] ) ) {
+				for ( const [key, value] of Object.entries( $tabsPositionClassList ) ) {
+					$target.removeClass( value );
+				}
+
+				$target.addClass( $tabsPositionClassList[currentDeviceMode] );
+			}
 
 			if ( 'click' === settings['event'] ) {
 				addClickEvent();
@@ -77,9 +107,15 @@
 				ajaxLoadTemplate( settings['activeIndex'] );
 			}
 
-			$( window ).on( 'resize.jetTabs orientationchange.jetTabs', function() {
-				$contentWrapper.css( { 'height': 'auto' } );
-			} );
+			$( window ).on( 'resize.jetTabs orientationchange.jetTabs', JetTabs.debounce( 50, function() {
+				currentDeviceMode = elementorFrontend.getCurrentDeviceMode();
+
+				for ( const [key, value] of Object.entries( $tabsPositionClassList ) ) {
+					$target.removeClass( value );
+				}
+
+				$target.addClass( $tabsPositionClassList[currentDeviceMode] );
+			} ) );
 
 			/**
 			 * [addClickEvent description]
@@ -150,12 +186,13 @@
 			 * @return {[type]}             [description]
 			 */
 			function switchTab( curentIndex ) {
-				var $activeControl      = $controlList.eq( curentIndex ),
-					$activeContent      = $contentList.eq( curentIndex ),
-					activeContentHeight = 'auto',
-					timer;
-
-				$contentWrapper.css( { 'height': $contentWrapper.outerHeight( true ) } );
+				var $activeControl        = $controlList.eq( curentIndex ),
+					$activeContent        = $contentList.eq( curentIndex ),
+					activeContentHeight   = 'auto',
+					timer,
+					$controlWrapperHeight = $controlWrapper.outerHeight( true ),
+					currentDeviceMode     = elementorFrontend.getCurrentDeviceMode(),
+					scrollingDeviceArray  = [ 'tablet_extra', 'tablet', 'mobile_extra', 'mobile'];
 
 				$controlList.removeClass( 'active-tab' );
 				$activeControl.addClass( 'active-tab' );
@@ -171,7 +208,15 @@
 				$contentList.attr( 'aria-hidden', 'true' );
 				$activeContent.attr( 'aria-hidden', 'false' );
 
-				$contentWrapper.css( { 'height': activeContentHeight } );
+				if ( 'left' === $tabsPositionBreakpoints[currentDeviceMode] || 'right' === $tabsPositionBreakpoints[currentDeviceMode] ) {
+					if ( activeContentHeight < $controlWrapperHeight ) {
+						$contentWrapper.css( { 'height': $controlWrapperHeight } );
+					} else if ( activeContentHeight > $contentWrapper.outerHeight( true ) ){
+						$contentWrapper.css( { 'height': activeContentHeight } );
+					}
+				} else {
+					$contentWrapper.css( { 'height': activeContentHeight } );
+				}
 
 				$window.trigger( 'jet-tabs/tabs/show-tab-event/before', {
 					target: $target,
@@ -189,6 +234,12 @@
 					} );
 
 					$contentWrapper.css( { 'height': 'auto' } );
+
+					if ( scrollingDeviceArray.includes( currentDeviceMode ) && true === settings['switchScrolling'] ) {
+						$( 'html, body' ).animate( {
+							scrollTop: $contentWrapper.offset().top
+						}, 300 );
+					}
 				}, 500 );
 			}
 
@@ -203,7 +254,7 @@
 					templateId     = $contentHolder.data( 'template-id' ),
 					loader         = $( '.jet-tabs-loader', $contentHolder );
 
-				if ( templateLoaded ) {
+				if ( templateLoaded || false === templateId ) {
 					return false;
 				}
 
@@ -401,16 +452,24 @@
 		},
 
 		accordionInit: function( $scope ) {
-			var $target         = $( '.jet-accordion', $scope ).first(),
-				$widgetId       = $target.data( 'id' ),
-				$window         = $( window ),
-				$controlsList   = $( '> .jet-accordion__inner > .jet-toggle > .jet-toggle__control', $target ),
-				settings        = $target.data( 'settings' ),
-				$toggleList     = $( '> .jet-accordion__inner > .jet-toggle', $target ),
-				anchorSelectors = [],
+			var $target              = $( '.jet-accordion', $scope ).first(),
+				$widgetId            = $target.data( 'id' ),
+				$window              = $( window ),
+				$controlsList        = $( '> .jet-accordion__inner > .jet-toggle > .jet-toggle__control', $target ),
+				settings             = $target.data( 'settings' ),
+				$toggleList          = $( '> .jet-accordion__inner > .jet-toggle', $target ),
+				anchorSelectors      = [],
 				timer, timer2,
-				curentHash      = window.location.hash || false,
-				togglesArray    = curentHash ? curentHash.replace( '#', '' ).split( '&' ) : false;
+				curentHash           = window.location.hash || false,
+				togglesArray         = curentHash ? curentHash.replace( '#', '' ).split( '&' ) : false,
+				scrollingDeviceArray = [ 'tablet_extra', 'tablet', 'mobile_extra', 'mobile'];
+
+			$toggleList.each( function() {
+				if ( $( this ).hasClass( 'active-toggle' ) && settings['ajaxTemplate'] ) {
+					var activeIndex = $( this ).find( '.jet-toggle__control' ).data( 'toggle' ) - 1;
+					ajaxLoadTemplate( activeIndex );
+				}
+			} );
 
 			$( window ).on( 'resize.jetAccordion orientationchange.jetAccordion', function() {
 				var activeToggle        = $( '> .jet-accordion__inner > .active-toggle', $target ),
@@ -420,9 +479,10 @@
 			} );
 
 			$controlsList.on( 'click.jetAccordion', function() {
-				var $this       = $( this ),
-					$toggle     = $this.closest( '.jet-toggle' ),
-					toggleIndex = +$this.data( 'toggle' ) - 1;
+				var $this               = $( this ),
+					$toggle             = $this.closest( '.jet-toggle' ),
+					toggleIndex         = +$this.data( 'toggle' ) - 1,
+					currentDeviceMode   = elementorFrontend.getCurrentDeviceMode();
 
 				if ( settings['collapsible'] ) {
 
@@ -463,6 +523,12 @@
 									} );
 
 									$toggleContent.css( { 'height': 'auto' } );
+
+									if ( scrollingDeviceArray.includes( currentDeviceMode ) && true === settings['switchScrolling'] ) {
+										$( 'html, body' ).animate( {
+											scrollTop: $toggleContent.offset().top
+										}, 300 );
+									}
 								}, 300 );
 
 							} else {
@@ -485,7 +551,7 @@
 						} );
 					}
 				} else {
-					var $toggleContent = $( '> .jet-toggle__content', $toggle ),
+					var $toggleContent       = $( '> .jet-toggle__content', $toggle ),
 						$toggleContentHeight = $( '> .jet-toggle__content > .jet-toggle__content-inner', $toggle ).outerHeight();
 
 					$toggleContentHeight += parseInt( $toggleContent.css( 'border-top-width' ) ) + parseInt( $toggleContent.css( 'border-bottom-width' ) );
@@ -518,6 +584,12 @@
 							} );
 
 							$toggleContent.css( { 'height': 'auto' } );
+
+							if ( scrollingDeviceArray.includes( currentDeviceMode ) && true === settings['switchScrolling'] ) {
+								$( 'html, body' ).animate( {
+									scrollTop: $toggleContent.offset().top
+								}, 300 );
+							}
 						}, 300 );
 
 					} else {
@@ -551,7 +623,7 @@
 					templateId     = $contentHolder.data( 'template-id' ),
 					loader         = $( '.jet-tabs-loader', $contentHolderInner );
 
-				if ( templateLoaded ) {
+				if ( templateLoaded || false === templateId ) {
 					return false;
 				}
 
@@ -731,6 +803,61 @@
 				}
 			} );
 
+		},
+
+		getElementorElementSettings: function( $scope ) {
+
+			if ( window.elementorFrontend && window.elementorFrontend.isEditMode() && $scope.hasClass( 'elementor-element-edit-mode' ) ) {
+				return JetTabs.getEditorElementSettings( $scope );
+			}
+
+			return $scope.data( 'settings' ) || {};
+		},
+
+		getEditorElementSettings: function( $scope ) {
+			var modelCID = $scope.data( 'model-cid' ),
+				elementData;
+
+			if ( ! modelCID ) {
+				return {};
+			}
+
+			if ( ! elementor.hasOwnProperty( 'config' ) ) {
+				return {};
+			}
+
+			if ( ! elementor.config.hasOwnProperty( 'elements' ) ) {
+				return {};
+			}
+
+			if ( ! elementor.config.elements.hasOwnProperty( 'data' ) ) {
+				return {};
+			}
+
+			elementData = elementor.config.elements.data[ modelCID ];
+
+			if ( ! elementData ) {
+				return {};
+			}
+
+			return elementData.toJSON();
+		},
+
+		debounce: function( threshold, callback ) {
+			var timeout;
+
+			return function debounced( $event ) {
+				function delayed() {
+					callback.call( this, $event );
+					timeout = null;
+				}
+
+				if ( timeout ) {
+					clearTimeout( timeout );
+				}
+
+				timeout = setTimeout( delayed, threshold );
+			};
 		}
 
 	};
