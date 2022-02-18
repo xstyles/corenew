@@ -1,0 +1,64 @@
+p.cw_class-guide {
+  width: 25em;
+  padding: 0 1em;
+}
+.cw_class-list-terms li.cw_class-term span.cw_class-term-name {
+  font-weight: bold;
+}
+
+.cw_class-list-terms li.cw_class-term {
+  width: 25em;
+  padding: 1em;
+  margin-bottom: 0.3em;
+  overflow: hidden;
+  clear: both;
+  line-height: 20px;
+}
+
+.cw_class-list-terms li.rdv-select-term {
+  border: outset 2px #1e8cbe;
+}
+
+.cw_class-list-terms li.cw_class-term a:before {
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  font: normal 20px/1 'dashicons';
+  vertical-align: middle;
+}
+
+.cw_class-list-terms li.cw_class-term a:focus {
+  outline: none;
+  color: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.cw_class-list-terms li.cw_class-term span.cw_class-term-actions {
+  display: inline-block;
+  float: right;
+  height: 100%;
+}
+
+.cw_class-list-terms li.cw_class-term a.cw_class-edit-item {
+  color: #c1c1c1;
+}
+
+.cw_class-list-terms li.rdv-select-term a.cw_class-edit-item {
+  color: #0074a2;
+}
+
+.cw_class-list-terms li.cw_class-term a.cw_class-edit-item:before {
+  content: '\f464';
+}
+
+.cw_class-list-terms li.cw_class-term a.cw_class-delete-item {
+  color: #a00;
+}
+
+.cw_class-list-terms li.cw_class-term a.cw_class-delete-item:hover {
+  color: #f00;
+}
+
+.cw_class-list-terms li.cw_class-term a.cw_class-delete-item:before {
+  content: '\f182';
+}
