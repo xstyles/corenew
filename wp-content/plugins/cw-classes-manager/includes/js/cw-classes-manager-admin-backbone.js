@@ -82,13 +82,14 @@ window.wp = window.wp || {}
       return resp
     },
 
-    insertTerm: function (name, options) {
+    insertTerm: function (name, subscriptionId, options) {
       model = this
       options = options || {}
 
       return wp.ajax
         .post('cw_class_insert_term', {
           cw_class_type_name: name,
+          cw_class_subscription_id: subscriptionId,
           nonce: cwcm_admin.vars.nonce,
         })
         .done(function (resp, status, xhr) {
@@ -144,6 +145,23 @@ window.wp = window.wp || {}
   cwcm_admin.Views = {}
 
   // Form to add new cw_class types
+  cwcm_admin.Views.Form = wp.Backbone.Form.extend({
+    tagName: 'form',
+    current_term: 0,
+    subs: [],
+
+    initialize: function () {
+      this.getSubs()
+    },
+
+    getSubs: function () {
+      return wp.ajax.get('cw_class_ajax_get_subs')
+      .done(function (res) {
+        this.
+      })
+    },
+  })
+
   cwcm_admin.Views.Form = cwcm_admin.View.extend({
     tagName: 'input',
     className: 'rdv-new-term regular-text',
@@ -185,7 +203,7 @@ window.wp = window.wp || {}
           this.addingTermFailed
         )
 
-        this.collection.insertTerm(type)
+        this.collection.insertTerm(type, subscriptionId)
 
         // Edit an existing term
       } else {
