@@ -41,17 +41,17 @@ function cw_class_get_item($id = 0)
 function cw_class_get_items($args = array())
 {
   $defaults = array(
-    'attendees'       => array(), // one or more user ids who may attend to the rendez vous
-    'organizer'        => false,   // the author id of the rendez vous
-    'per_page'        => 20,
-    'page'          => 1,
-    'search'          => false,
-    'exclude'      => false,   // comma separated list or array of rendez vous ids.
-    'orderby'       => 'modified',
-    'order'           => 'DESC',
-    'group_id'        => false,
-    'type'            => '',
-    'no_cache'        => false,
+    'attendees' => array(),      // one or more user ids who may attend to the rendez vous
+    'organizer' => false,        // the author id of the rendez vous
+    'per_page'  => 20,
+    'page'      => 1,
+    'search'    => false,
+    'exclude'   => false,        // comma separated list or array of rendez vous ids.
+    'orderby'   => 'modified',
+    'order'     => 'DESC',
+    'group_id'  => false,
+    'type'      => '',
+    'no_cache'  => false,
   );
 
   $r = bp_parse_args($args, $defaults, 'cw_class_get_items_args');
@@ -62,16 +62,16 @@ function cw_class_get_items($args = array())
 
   if (empty($cw_classes)) {
     $cw_classes = cw_class_Item::get(array(
-      'attendees'       => (array) $r['attendees'],
-      'organizer'        => (int) $r['organizer'],
-      'per_page'        => $r['per_page'],
-      'page'          => $r['page'],
-      'search'          => $r['search'],
-      'exclude'      => $r['exclude'],
-      'orderby'       => $r['orderby'],
-      'order'           => $r['order'],
-      'group_id'        => $r['group_id'],
-      'type'            => $r['type'],
+      'attendees' => (array) $r['attendees'],
+      'organizer' => (int) $r['organizer'],
+      'per_page'  => $r['per_page'],
+      'page'      => $r['page'],
+      'search'    => $r['search'],
+      'exclude'   => $r['exclude'],
+      'orderby'   => $r['orderby'],
+      'order'     => $r['order'],
+      'group_id'  => $r['group_id'],
+      'type'      => $r['type'],
     ));
 
     if (!$r['no_cache']) {
@@ -107,9 +107,9 @@ function cw_class_prepare_user_for_js($users)
 {
 
   $response = array(
-    'id'           => intval($users->ID),
-    'name'         => $users->display_name,
-    'avatar'       => htmlspecialchars_decode(bp_core_fetch_avatar(
+    'id'     => intval($users->ID),
+    'name'   => $users->display_name,
+    'avatar' => htmlspecialchars_decode(bp_core_fetch_avatar(
       array(
         'item_id' => $users->ID,
         'object'  => 'user',
@@ -924,4 +924,14 @@ function cw_class_delete_term($term_id, $args = array(), $taxonomy = 'cw_class_t
   restore_current_blog();
 
   return $retval;
+}
+
+
+function cw_class_get_all_class_subs()
+{
+  return wc_get_products([
+    'type' => 'subscription',
+    'category' => 'subjects',
+    'post_status' => 'publish',
+  ]);
 }

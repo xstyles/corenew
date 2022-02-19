@@ -13,14 +13,14 @@
 if (!defined('ABSPATH')) exit;
 
 /**
- * cw_class_Component class
+ * CW_Class_Component class
  *
  * @package cw_class
  * @subpackage Component
  *
  * @since CW Class (1.0.0)
  */
-class cw_class_Component extends BP_Component
+class CW_Class_Component extends BP_Component
 {
 
   /**
@@ -66,30 +66,30 @@ class cw_class_Component extends BP_Component
 
     // Files to include
     $includes = array(
-      'cw_class-filters.php',
-      'cw_class-screens.php',
-      'cw_class-editor.php',
-      'cw_class-classes.php',
-      'cw_class-ajax.php',
-      'cw_class-parts.php',
-      'cw_class-template.php',
-      'cw_class-functions.php',
+      'cw-classes-manager-filters.php',
+      'cw-classes-manager-screens.php',
+      'cw-classes-manager-editor.php',
+      'cw-classes-manager-classes.php',
+      'cw-classes-manager-ajax.php',
+      'cw-classes-manager-parts.php',
+      'cw-classes-manager-template.php',
+      'cw-classes-manager-functions.php',
     );
 
     if (bp_is_active('notifications')) {
-      $includes[] = 'cw_class-notifications.php';
+      $includes[] = 'cw-classes-manager-notifications.php';
     }
 
     if (bp_is_active('activity')) {
-      $includes[] = 'cw_class-activity.php';
+      $includes[] = 'cw-classes-manager-activity.php';
     }
 
     if (bp_is_active('groups')) {
-      $includes[] = 'cw_class-groups.php';
+      $includes[] = 'cw-classes-manager-groups.php';
     }
 
     if (is_admin()) {
-      $includes[] = 'cw_class-admin.php';
+      $includes[] = 'cw-classes-manager-admin.php';
     }
 
     parent::includes($includes);
@@ -254,7 +254,7 @@ class cw_class_Component extends BP_Component
   {
     // Set up some labels for the post type
     $manager_labels = array(
-      'name'               => __('cw_class',                                                     'cw_class'),
+      'name'               => __('cw_class',                                                  'cw_class'),
       'singular'           => _x('cw_class',                   'cw_class singular',           'cw_class'),
       'menu_name'          => _x('cw_class',                   'cw_class menu name',          'cw_class'),
       'all_items'          => _x('All cw_class',               'cw_class all items',          'cw_class'),
@@ -317,5 +317,5 @@ function cw_classes_manager_load_component()
 {
   $bp = buddypress();
 
-  $bp->cw_class = new cw_class_Component;
+  $bp->cw_class = new CW_Class_Component;
 }
