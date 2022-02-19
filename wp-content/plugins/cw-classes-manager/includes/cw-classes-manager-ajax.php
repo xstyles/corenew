@@ -227,6 +227,10 @@ function cw_class_ajax_insert_term()
     wp_send_json_error();
   }
 
+  if (!isset($_POST['cw_class_subscription_id'])) {
+    wp_send_json_error();
+  }
+
   check_ajax_referer('cw_class-admin', 'nonce');
 
   if (!current_user_can('manage_options')) {
@@ -353,8 +357,9 @@ function cw_class_ajax_update_term()
 
   $term_id   = intval($_POST['cw_class_type_id']);
   $term_name = esc_html($_POST['cw_class_type_name']);
+  $subscription_id = esc_html($_POST['cw_class_subscription_id']);
 
-  $updated = cw_class_update_term($term_id, array('name' => $term_name));
+  $updated = cw_class_update_term($term_id, ['name' => $term_name, 'subscription' => $subscription_id]);
 
   if (empty($updated) || is_wp_error($updated)) {
     wp_send_json_error();
@@ -363,3 +368,28 @@ function cw_class_ajax_update_term()
   wp_send_json_success();
 }
 add_action('wp_ajax_cw_class_update_term', 'cw_class_ajax_update_term');
+
+
+/**
+ * Get all subject subscription products to show to admin
+ *
+ * @package CW Class
+ * @subpackage Ajax
+ *
+ * @since CW Class (1.2.0)
+ *
+ * @return void
+ */
+function cw_class_ajax_get_subs()
+{
+  if (!current_user_can('manage_options')) {
+    wp_send_json_error();
+  }
+
+  $subs = cw_class_get_all_class_subs();
+
+  if (!count($subs)) wp_send_json_error();
+
+  wp_send_json_success($subs);
+}
+add_action('wp_ajax_cw_class_get_subs', 'cw_class_ajax_get_subs');
