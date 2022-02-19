@@ -26,10 +26,10 @@ class GiftSubscriptionForStudents
   }
 
   /**
-   * TODO: 
+   * TODO:
    * 1. replace 2 dropdowns from form id 5 with 1 text input and 1 (image) radio button input
    * 2. loop over each child and create duplicates of form (id: 5) inputs:
-   *     2.1 set text input to child email address, 
+   *     2.1 set text input to child email address,
    *     2.2 set radio button label to include child name `Choose a course for {student}`
    * 3. use the fields from step 2 in new form
    * 4. add afterSubmit hook for new form that adds recipients for each product chosen
@@ -56,9 +56,9 @@ class GiftSubscriptionForStudents
 
     //List column testing form for student purchase hooks
 
-    // 
+    //
     // TESTING AREA
-    // 
+    //
     // Setting column1 to dropdown for emails
     add_filter( 'gform_column_input_' . $this->list_form_id . '_1_1', [$this, 'set_column1'], 10, 5 );
 
@@ -71,9 +71,9 @@ class GiftSubscriptionForStudents
 
   function set_column1( $input_info, $field, $column, $value, $form_id ) {
     // return array( 'type' => 'select', 'choices' => 'First Choice,Second Choice' );
-    return array( 
-      'type' => 'select', 
-      // 'choices' => 'First Choice,Second Choice' 
+    return array(
+      'type' => 'select',
+      // 'choices' => 'First Choice,Second Choice'
       'choices' => [
         [
           'text' => 'First Choice',
@@ -89,9 +89,9 @@ class GiftSubscriptionForStudents
 
   function set_column2( $input_info, $field, $column, $value, $form_id ) {
     // return array( 'type' => 'select', 'choices' => 'First Choice,Second Choice' );
-    return array( 
-      'type' => 'select', 
-      // 'choices' => 'First Choice,Second Choice' 
+    return array(
+      'type' => 'select',
+      // 'choices' => 'First Choice,Second Choice'
       'choices' => [
         [
           'text' => 'First Product',
@@ -109,7 +109,7 @@ class GiftSubscriptionForStudents
     //build field name, must match List field syntax to be processed correctly
     $tabindex = GFCommon::get_tabindex();
     // $new_input = '<textarea name="' . $input_field_name . '" ' . $tabindex . ' class="textarea medium" cols="50" rows="10">' . $value . '</textarea>';
-    
+
     $unique_id = str_replace( '-', '', wp_generate_uuid4());
 
     $new_input = '';
@@ -139,7 +139,7 @@ class GiftSubscriptionForStudents
   public function check_results ($result)
   {
       $res = unserialize($result[1000][0][1]);
-      
+
       return $result;
   }
 
@@ -279,6 +279,7 @@ class GiftSubscriptionForStudents
     $subscriptions = wc_get_products([
       'type' => 'subscription',
       'category' => 'subjects',
+      'post_status' => 'publish',
     ]);
 
     $subjects = array_map(function ($subscription) {
