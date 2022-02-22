@@ -416,7 +416,7 @@ add_action('cw_class_attend', 'cw_class_remove_all_attend_notifications');
 function cw_class_remove_current_attend_notifications()
 {
 
-  if (!isset($_GET['rdv']) || !isset($_GET['n'])) {
+  if (!isset($_GET['cls']) || !isset($_GET['n'])) {
     return;
   }
 
@@ -425,7 +425,7 @@ function cw_class_remove_current_attend_notifications()
   /**
    * Removing all for the current user & current cw_class
    */
-  bp_notifications_mark_notifications_by_item_id(bp_loggedin_user_id(), $_GET['rdv'], buddypress()->cw_class->id, false);
+  bp_notifications_mark_notifications_by_item_id(bp_loggedin_user_id(), $_GET['cls'], buddypress()->cw_class->id, false);
 }
 
 add_action('cw_class_single_screen', 'cw_class_remove_current_attend_notifications');

@@ -1,4 +1,4 @@
-var rdv = rdv || {}
+var cls = cls || {}
 
 /**
  * CW Class Editor
@@ -6,19 +6,19 @@ var rdv = rdv || {}
 ;(function ($) {
   var media
 
-  rdv.media = media = {}
+  cls.media = media = {}
 
-  rdv.strings = _wpMediaViewsL10n.cw_class_strings
+  cls.strings = _wpMediaViewsL10n.cw_class_strings
 
-  media.RdvSettings = {
-    id: 'rdv_settings',
+  media.ClassSettings = {
+    id: 'cls_settings',
     fields: _wpMediaViewsL10n.cw_class_fields,
     datestrings: _wpMediaViewsL10n.cw_class_date_strings,
   }
 
   _.extend(media, { model: {}, view: {}, controller: {}, frames: {} })
 
-  rendezvousField = rdv.media.model.rendezvousField = Backbone.Model.extend({
+  rendezvousField = cls.media.model.rendezvousField = Backbone.Model.extend({
     defaults: {
       id: 0,
       type: '',
@@ -30,7 +30,7 @@ var rdv = rdv || {}
     },
   })
 
-  rendezvousDay = rdv.media.model.rendezvousDay = Backbone.Model.extend({
+  rendezvousDay = cls.media.model.rendezvousDay = Backbone.Model.extend({
     defaults: {
       id: 0,
       day: '',
@@ -40,7 +40,7 @@ var rdv = rdv || {}
     },
   })
 
-  rendezvousUser = rdv.media.model.rendezvousUser = Backbone.Model.extend({
+  rendezvousUser = cls.media.model.rendezvousUser = Backbone.Model.extend({
     defaults: {
       id: 0,
       avatar: '',
@@ -48,7 +48,7 @@ var rdv = rdv || {}
     },
   })
 
-  rendezvousUsers = rdv.media.model.rendezvousUsers =
+  rendezvousUsers = cls.media.model.rendezvousUsers =
     Backbone.Collection.extend({
       model: rendezvousUser,
 
@@ -95,16 +95,16 @@ var rdv = rdv || {}
       },
     })
 
-  rendezvousDays = rdv.media.model.rendezvousDays = Backbone.Collection.extend({
+  rendezvousDays = cls.media.model.rendezvousDays = Backbone.Collection.extend({
     model: rendezvousDay,
   })
 
-  rendezvousFields = rdv.media.model.rendezvousFields =
+  rendezvousFields = cls.media.model.rendezvousFields =
     Backbone.Collection.extend({
       model: rendezvousField,
 
       initialize: function () {
-        var settings = rdv.media.RdvSettings,
+        var settings = cls.media.ClassSettings,
           _this = this
 
         _.each(settings.fields, function (field, id) {
@@ -114,7 +114,7 @@ var rdv = rdv || {}
     })
 
   media.view.RendezVousField = wp.media.View.extend({
-    className: 'rdv-fields',
+    className: 'cls-fields',
     tagName: 'li',
     template: wp.media.template('what'),
 
@@ -134,7 +134,7 @@ var rdv = rdv || {}
   })
 
   media.view.RendezVousFields = wp.media.View.extend({
-    className: 'list-rdv-fields',
+    className: 'list-cls-fields',
     tagName: 'ul',
 
     render: function () {
@@ -157,7 +157,7 @@ var rdv = rdv || {}
   })
 
   media.view.RendezVousDay = wp.media.View.extend({
-    className: 'rdv-days',
+    className: 'cls-days',
     tagName: 'li',
     template: wp.media.template('when'),
 
@@ -168,7 +168,7 @@ var rdv = rdv || {}
   })
 
   media.view.RendezVousDays = wp.media.View.extend({
-    className: 'list-rdv-days',
+    className: 'list-cls-days',
     tagName: 'ul',
 
     initialize: function () {
@@ -229,17 +229,17 @@ var rdv = rdv || {}
   })
 
   media.view.RendezVousCalendar = wp.media.View.extend({
-    className: 'rdv-calendar',
+    className: 'cls-calendar',
     tagName: 'div',
 
     render: function () {
       _this = this
       this.$el.datepicker({
-        dayNames: media.RdvSettings.datestrings.daynames,
-        monthNames: media.RdvSettings.datestrings.monthnames,
-        dayNamesMin: media.RdvSettings.datestrings.daynamesmin,
-        dateFormat: media.RdvSettings.datestrings.format,
-        firstDay: media.RdvSettings.datestrings.firstday,
+        dayNames: media.ClassSettings.datestrings.daynames,
+        monthNames: media.ClassSettings.datestrings.monthnames,
+        dayNamesMin: media.ClassSettings.datestrings.daynamesmin,
+        dateFormat: media.ClassSettings.datestrings.format,
+        firstDay: media.ClassSettings.datestrings.firstday,
         onSelect: function (dateText, inst) {
           var date = new Date(
             inst.selectedYear,
@@ -255,7 +255,7 @@ var rdv = rdv || {}
             _this.collection.add({
               id: date.getTime(),
               day:
-                media.RdvSettings.datestrings.daynames[date.getDay()] +
+                media.ClassSettings.datestrings.daynames[date.getDay()] +
                 ' ' +
                 dateText,
               mysql:
@@ -266,7 +266,7 @@ var rdv = rdv || {}
                 inst.selectedDay,
             })
           } else {
-            alert(media.RdvSettings.datestrings.alert)
+            alert(media.ClassSettings.datestrings.alert)
           }
         },
       })
@@ -427,10 +427,10 @@ var rdv = rdv || {}
     tagName: 'div',
 
     events: {
-      'blur .rdv-input-what': 'storeWhatInput',
-      'click .rdv-check-what': 'storeWhatInput',
-      'change .rdv-select-what': 'storeWhatInput',
-      'blur .rdv-input-when': 'storeWhenInput',
+      'blur .cls-input-what': 'storeWhatInput',
+      'click .cls-check-what': 'storeWhatInput',
+      'change .cls-select-what': 'storeWhatInput',
+      'blur .cls-input-when': 'storeWhenInput',
       'click .trashday': 'trashDay',
     },
 
@@ -464,33 +464,33 @@ var rdv = rdv || {}
 
       switch (this.options.tab.id) {
         case 'what':
-          content = this.rdvfields = new media.view.RendezVousFields({
+          content = this.clsfields = new media.view.RendezVousFields({
             controller: this.controller,
-            collection: this.model.get('rdvfields'),
+            collection: this.model.get('clsfields'),
             model: this.model,
             tab: this.options.tab,
           })
-          contentWhen = this.rdvdays = new media.view.RendezVousDays({
+          contentWhen = this.clsdays = new media.view.RendezVousDays({
             controller: this.controller,
-            collection: this.model.get('rdvdays'),
+            collection: this.model.get('clsdays'),
             model: this.model,
             tab: this.options.tab,
           })
           break
 
         case 'when':
-          content = this.rdvdays = new media.view.RendezVousDays({
+          content = this.clsdays = new media.view.RendezVousDays({
             controller: this.controller,
-            collection: this.model.get('rdvdays'),
+            collection: this.model.get('clsdays'),
             model: this.model,
             tab: this.options.tab,
           })
           break
 
         case 'who':
-          content = this.rdvusers = new media.view.RendezVousUsers({
+          content = this.clsusers = new media.view.RendezVousUsers({
             controller: this.controller,
-            collection: this.model.get('rdvusers'),
+            collection: this.model.get('clsusers'),
             model: this.model,
             tab: this.options.tab,
           })
@@ -510,8 +510,8 @@ var rdv = rdv || {}
         value = $(event.target).val()
       }
 
-      // console.log('this.model.get("rdvfields")', this.model.get("rdvfields"))
-      this.model.get('rdvfields').get(event.target.id).set('value', value)
+      // console.log('this.model.get("clsfields")', this.model.get("clsfields"))
+      this.model.get('clsfields').get(event.target.id).set('value', value)
     },
 
     storeWhenInput: function (event) {
@@ -521,15 +521,15 @@ var rdv = rdv || {}
       id = Number(toparse[0])
       index = toparse[1]
 
-      this.model.get('rdvdays').get(id).set(index, $(event.target).val())
+      this.model.get('clsdays').get(id).set(index, $(event.target).val())
     },
 
     trashDay: function (event) {
       event.preventDefault()
 
       var toremove = $(event.target).data('id')
-      model = this.model.get('rdvdays').get(toremove)
-      this.model.get('rdvdays').remove(model)
+      model = this.model.get('clsdays').get(toremove)
+      this.model.get('clsdays').remove(model)
     },
 
     createSidebar: function () {
@@ -545,7 +545,7 @@ var rdv = rdv || {}
         'calendar',
         new media.view.RendezVousCalendar({
           controller: this.controller,
-          collection: this.model.get('rdvdays'),
+          collection: this.model.get('clsdays'),
           parents: this.views,
           priority: 80,
         })
@@ -563,18 +563,18 @@ var rdv = rdv || {}
         'search',
         new media.view.RendezVousUsersSearch({
           controller: this.controller,
-          collection: this.model.get('rdvusers'),
+          collection: this.model.get('clsusers'),
           model: this.model,
           priority: 80,
         })
       )
 
-      if (!_.isUndefined(wp.media.view.settings.rdvMemberTypes)) {
+      if (!_.isUndefined(wp.media.view.settings.clsMemberTypes)) {
         this.sidebar.set(
           'typeFilter',
           new media.view.RendezVousTypeFilter({
             controller: this.controller,
-            collection: this.model.get('rdvusers'),
+            collection: this.model.get('clsusers'),
             model: this.model,
             priority: -60,
           }).render()
@@ -595,7 +595,7 @@ var rdv = rdv || {}
           next: {
             id: 'wm-next',
             style: 'secondary',
-            text: rdv.strings.rdvNextBtn,
+            text: cls.strings.clsNextBtn,
             priority: -60,
             click: function () {
               this.controller.state().nextPage()
@@ -604,7 +604,7 @@ var rdv = rdv || {}
           prev: {
             id: 'wm-prev',
             style: 'secondary',
-            text: rdv.strings.rdvPrevBtn,
+            text: cls.strings.clsPrevBtn,
             priority: -80,
             click: function () {
               this.controller.state().prevPage()
@@ -615,13 +615,13 @@ var rdv = rdv || {}
 
       wp.media.view.Toolbar.prototype.initialize.apply(this, arguments)
 
-      this.controller.state().get('rdvusers').on('sync', this.refresh, this)
+      this.controller.state().get('clsusers').on('sync', this.refresh, this)
     },
 
     refresh: function () {
       var hasmore = (hasprev = false),
-        total = this.controller.state().get('rdvusers').options.total_page,
-        current = this.controller.state().get('rdvusers').options.current_page
+        total = this.controller.state().get('clsusers').options.total_page,
+        current = this.controller.state().get('clsusers').options.current_page
 
       if (this.controller.state().get('content') == 'who' && total > 0) {
         hasmore = Number(total) - Number(current) > 0 ? true : false
@@ -636,7 +636,7 @@ var rdv = rdv || {}
   media.view.RendezVousUsersSearch = wp.media.view.Search.extend({
     attributes: {
       type: 'search',
-      placeholder: rdv.strings.rdvSrcPlaceHolder,
+      placeholder: cls.strings.clsSrcPlaceHolder,
     },
 
     events: {
@@ -665,7 +665,7 @@ var rdv = rdv || {}
     createFilters: function () {
       var filters = {}
       _.each(
-        wp.media.view.settings.rdvMemberTypes || {},
+        wp.media.view.settings.clsMemberTypes || {},
         function (value, index) {
           filters[index] = {
             text: value.text,
@@ -676,7 +676,7 @@ var rdv = rdv || {}
         }
       )
       filters.all = {
-        text: wp.media.view.settings.rdvMemberTypesAll,
+        text: wp.media.view.settings.clsMemberTypesAll,
         props: {
           type: false,
         },
@@ -757,7 +757,7 @@ var rdv = rdv || {}
 
       element
         .find('.selection-info .count')
-        .html(rdv.strings.invited.replace('%d', collection.length))
+        .html(cls.strings.invited.replace('%d', collection.length))
 
       collection.each(function (model) {
         var avatar = model.get('avatar')
@@ -786,23 +786,23 @@ var rdv = rdv || {}
       menu: 'default',
       content: 'what',
       router: 'steps',
-      toolbar: 'rdv_insert',
+      toolbar: 'cls_insert',
       tabs: {
         what: {
           tpl: 'what',
-          text: rdv.strings.whatTab,
+          text: cls.strings.whatTab,
           priority: 20,
           id: 'what',
         },
         when: {
           tpl: 'when',
-          text: rdv.strings.whenTab,
+          text: cls.strings.whenTab,
           priority: 40,
           id: 'when',
         },
         // who: {
         // 	tpl:'who',
-        // 	text : rdv.strings.whoTab,
+        // 	text : cls.strings.whoTab,
         // 	priority:60,
         // 	id:'who'
         // }
@@ -822,18 +822,18 @@ var rdv = rdv || {}
 
       this.props.on('change:selection', this.observeChanges, this)
 
-      if (!this.get('rdvfields')) this.set('rdvfields', new rendezvousFields())
-      if (!this.get('rdvdays')) this.set('rdvdays', new rendezvousDays())
+      if (!this.get('clsfields')) this.set('clsfields', new rendezvousFields())
+      if (!this.get('clsdays')) this.set('clsdays', new rendezvousDays())
 
-      if (!this.get('rdvusers')) this.set('rdvusers', new rendezvousUsers())
+      if (!this.get('clsusers')) this.set('clsusers', new rendezvousUsers())
 
-      this.get('rdvusers').on('add', this.fillMirror, this)
+      this.get('clsusers').on('add', this.fillMirror, this)
     },
 
     activate: function () {
-      var rdvfields = this.get('rdvfields')
-      var rdvdays = this.get('rdvdays')
-      var wmusers = this.get('rdvusers')
+      var clsfields = this.get('clsfields')
+      var clsdays = this.get('clsdays')
+      var wmusers = this.get('clsusers')
 
       this.frame.on('content:render:what', this.manageWhatTab, this)
       this.frame.on('content:render:when', this.manageWhenTab, this)
@@ -841,8 +841,8 @@ var rdv = rdv || {}
 
       this.frame.on('close', this.resetAll, this)
 
-      rdvfields.on('change', this.observeChanges, this)
-      rdvdays.on('change', this.observeChanges, this)
+      clsfields.on('change', this.observeChanges, this)
+      clsdays.on('change', this.observeChanges, this)
     },
 
     fillMirror: function (model, collection, options) {
@@ -852,8 +852,8 @@ var rdv = rdv || {}
     },
 
     resetAll: function () {
-      this.resetFields('rdvfields')
-      this.resetFields('rdvdays')
+      this.resetFields('clsfields')
+      this.resetFields('clsdays')
     },
 
     resetFields: function (key) {
@@ -872,12 +872,12 @@ var rdv = rdv || {}
     },
 
     nextPage: function () {
-      this.get('rdvusers').options.current_page += 1
+      this.get('clsusers').options.current_page += 1
       this.trigger('change:pagination')
     },
 
     prevPage: function () {
-      this.get('rdvusers').options.current_page -= 1
+      this.get('clsusers').options.current_page -= 1
       this.trigger('change:pagination')
     },
 
@@ -895,12 +895,12 @@ var rdv = rdv || {}
       this.frame.toolbar.get().refresh()
     },
 
-    rdvInsert: function () {
+    clsInsert: function () {
       var users, dates, fields, postdata
 
       users = _.pluck(this.props.get('_all').get('selection').models, 'id')
-      dates = _.pluck(this.get('rdvdays').models, 'attributes')
-      fields = _.pluck(this.get('rdvfields').models, 'attributes')
+      dates = _.pluck(this.get('clsdays').models, 'attributes')
+      fields = _.pluck(this.get('clsfields').models, 'attributes')
 
       postdata = {
         json: true,
@@ -935,12 +935,12 @@ var rdv = rdv || {}
         items: {
           // See wp.media.view.Button
           inserter: {
-            id: 'rdv-button',
+            id: 'cls-button',
             style: 'primary',
-            text: rdv.strings.saveButton,
+            text: cls.strings.saveButton,
             priority: 80,
             click: function () {
-              this.controller.state().rdvInsert()
+              this.controller.state().clsInsert()
             },
           },
         },
@@ -967,7 +967,7 @@ var rdv = rdv || {}
         fields = [],
         days = false
 
-      _.each(this.controller.state().get('rdvfields').models, function (model) {
+      _.each(this.controller.state().get('clsfields').models, function (model) {
         if (model.attributes.class == 'required') {
           if (model.attributes.value.length > 1) fields.push(model.id)
           else fields = []
@@ -977,7 +977,7 @@ var rdv = rdv || {}
       disabled = !fields.length > 0
 
       if (!disabled) {
-        _.each(this.controller.state().get('rdvdays').models, function (model) {
+        _.each(this.controller.state().get('clsdays').models, function (model) {
           if (
             (
               model.attributes.hour1 +
@@ -1033,7 +1033,7 @@ var rdv = rdv || {}
           _tabs,
           states = [
             new media.controller.RendezVous({
-              title: rdv.strings.rdvMainTitle,
+              title: cls.strings.clsMainTitle,
               id: 'cw_class',
             }),
           ]
@@ -1051,7 +1051,7 @@ var rdv = rdv || {}
             for (tab in item.attributes.tabs) {
               _this._frame.on(
                 'content:render:' + tab,
-                _.bind(_this.rdvContentRender, this, item.attributes.tabs[tab])
+                _.bind(_this.clsContentRender, this, item.attributes.tabs[tab])
               )
             }
           }
@@ -1066,8 +1066,8 @@ var rdv = rdv || {}
           _.bind(this.stepsRouter, this, _tabs)
         )
         this._frame.on(
-          'toolbar:create:rdv_insert',
-          _.bind(this.rdvToolbarCreate, this, _tabs)
+          'toolbar:create:cls_insert',
+          _.bind(this.clsToolbarCreate, this, _tabs)
         )
 
         return this._frame
@@ -1093,9 +1093,9 @@ var rdv = rdv || {}
         view.set(tabs)
       },
 
-      rdvContentRender: function (tab) {
+      clsContentRender: function (tab) {
         media.frame().content.set(
-          new rdv.media.view.RendezVous({
+          new cls.media.view.RendezVous({
             controller: media.frame(),
             model: media.frame().state(),
             tab: tab,
@@ -1103,8 +1103,8 @@ var rdv = rdv || {}
         )
       },
 
-      rdvToolbarCreate: function (tabs, toolbar) {
-        toolbar.view = new rdv.media.view.ToolbarRendezVous({
+      clsToolbarCreate: function (tabs, toolbar) {
+        toolbar.view = new cls.media.view.ToolbarRendezVous({
           controller: media.frame(),
           tab: tabs,
         })

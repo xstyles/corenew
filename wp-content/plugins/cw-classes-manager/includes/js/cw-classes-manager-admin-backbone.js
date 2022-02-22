@@ -164,7 +164,7 @@ window.wp = window.wp || {}
 
   cwcm_admin.Views.Form = cwcm_admin.View.extend({
     tagName: 'input',
-    className: 'rdv-new-term regular-text',
+    className: 'cls-new-term regular-text',
     current_term: 0,
 
     attributes: {
@@ -348,10 +348,10 @@ window.wp = window.wp || {}
       displayed_term = $(this.el).find('a').first().data('term_id')
 
       if (1 == model.get('editing') && displayed_term == model.get('id')) {
-        $(this.el).addClass('rdv-select-term')
+        $(this.el).addClass('cls-select-term')
       } else {
         $(this.el).find('.cw_class-term-name').first().html(model.get('name'))
-        $(this.el).removeClass('rdv-select-term')
+        $(this.el).removeClass('cls-select-term')
       }
     },
   })

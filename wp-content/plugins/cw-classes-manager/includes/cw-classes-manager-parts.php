@@ -278,7 +278,7 @@ function cw_class_edit_content()
 
     <p>
       <label for="cw_class-edit-duration"><?php esc_html_e('Duration', 'cw_class'); ?></label>
-      <input type="text" placeholder="00:00" name="_cw_class_edit[duration]" id="cw_class-edit-duration" value="<?php cw_class_single_the_duration(); ?>" class="rdv-duree" />
+      <input type="text" placeholder="00:00" name="_cw_class_edit[duration]" id="cw_class-edit-duration" value="<?php cw_class_single_the_duration(); ?>" class="cls-duree" />
     </p>
     <p>
       <label for="cw_class-edit-status"><?php esc_html_e('Restrict this cw_class to the selected attendees', 'cw_class'); ?>

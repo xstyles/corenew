@@ -15,7 +15,7 @@ p.cw_class-guide {
   line-height: 20px;
 }
 
-.cw_class-list-terms li.rdv-select-term {
+.cw_class-list-terms li.cls-select-term {
   border: outset 2px #1e8cbe;
 }
 
@@ -43,7 +43,7 @@ p.cw_class-guide {
   color: #c1c1c1;
 }
 
-.cw_class-list-terms li.rdv-select-term a.cw_class-edit-item {
+.cw_class-list-terms li.cls-select-term a.cw_class-edit-item {
   color: #0074a2;
 }
 

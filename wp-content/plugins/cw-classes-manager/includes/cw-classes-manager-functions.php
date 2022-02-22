@@ -269,7 +269,7 @@ function cw_class_get_single_link($id = 0, $organizer_id = 0)
     return false;
 
   $link = trailingslashit(bp_core_get_user_domain($organizer_id) . buddypress()->cw_class->slug . '/schedule');
-  $link = add_query_arg(array('rdv' => $id), $link);
+  $link = add_query_arg(array('cls' => $id), $link);
 
   return apply_filters('cw_class_get_single_link', $link, $id, $organizer_id);
 }
@@ -288,7 +288,7 @@ function cw_class_get_edit_link($id = 0, $organizer_id = 0)
     return false;
 
   $link = trailingslashit(bp_core_get_user_domain($organizer_id) . buddypress()->cw_class->slug . '/schedule');
-  $link = add_query_arg(array('rdv' => $id, 'action' => 'edit'), $link);
+  $link = add_query_arg(array('cls' => $id, 'action' => 'edit'), $link);
 
   return apply_filters('cw_class_get_edit_link', $link, $id, $organizer_id);
 }
@@ -308,7 +308,7 @@ function cw_class_get_delete_link($id = 0, $organizer_id = 0)
   }
 
   $link = trailingslashit(bp_core_get_user_domain($organizer_id) . buddypress()->cw_class->slug . '/schedule');
-  $link = add_query_arg(array('rdv' => $id, 'action' => 'delete'), $link);
+  $link = add_query_arg(array('cls' => $id, 'action' => 'delete'), $link);
   $link = wp_nonce_url($link, 'cw_class_delete');
 
   return apply_filters('cw_class_get_delete_link', $link, $id, $organizer_id);
@@ -353,11 +353,11 @@ function cw_class_handle_actions()
   $screen = '';
 
   // Edit template
-  if (!empty($_GET['action']) && 'edit' == $_GET['action'] && !empty($_GET['rdv'])) {
+  if (!empty($_GET['action']) && 'edit' == $_GET['action'] && !empty($_GET['cls'])) {
 
-    $redirect = remove_query_arg(array('rdv', 'action', 'n'), wp_get_referer());
+    $redirect = remove_query_arg(array('cls', 'action', 'n'), wp_get_referer());
 
-    $cw_class_id = absint($_GET['rdv']);
+    $cw_class_id = absint($_GET['cls']);
 
     $cw_class = cw_class_get_item($cw_class_id);
 
@@ -378,11 +378,11 @@ function cw_class_handle_actions()
   }
 
   // Display single
-  if (!empty($_GET['rdv']) && (empty($action) || !in_array($action, array('edit', 'delete')))) {
+  if (!empty($_GET['cls']) && (empty($action) || !in_array($action, array('edit', 'delete')))) {
 
-    $redirect = remove_query_arg(array('rdv', 'n', 'action'), wp_get_referer());
+    $redirect = remove_query_arg(array('cls', 'n', 'action'), wp_get_referer());
 
-    $cw_class_id = absint($_GET['rdv']);
+    $cw_class_id = absint($_GET['cls']);
 
     $cw_class = cw_class_get_item($cw_class_id);
 
@@ -415,7 +415,7 @@ function cw_class_handle_actions()
 
     check_admin_referer('cw_class_update');
 
-    $redirect = remove_query_arg(array('rdv', 'n', 'action'), wp_get_referer());
+    $redirect = remove_query_arg(array('cls', 'n', 'action'), wp_get_referer());
 
     if (!current_user_can('edit_cw_class', absint($_POST['_cw_class_edit']['id']))) {
       bp_core_add_message(__('Editing this cw_class is not allowed.', 'cw_class'), 'error');
@@ -449,7 +449,7 @@ function cw_class_handle_actions()
       bp_core_add_message(__('Editing this cw_class failed.', 'cw_class'), 'error');
     } else {
       bp_core_add_message(__('cw_class successfully edited.', 'cw_class'));
-      $redirect = add_query_arg('rdv', $id, $redirect);
+      $redirect = add_query_arg('cls', $id, $redirect);
 
       // cw_class is edited or published, let's handle notifications & activity
       do_action("cw_class_after_{$action}", $id, $args, $notify, $activity);
@@ -505,13 +505,13 @@ function cw_class_handle_actions()
   }
 
   // Delete
-  if (!empty($_GET['action']) && 'delete' == $_GET['action'] && !empty($_GET['rdv'])) {
+  if (!empty($_GET['action']) && 'delete' == $_GET['action'] && !empty($_GET['cls'])) {
 
     check_admin_referer('cw_class_delete');
 
-    $redirect = remove_query_arg(array('rdv', 'action', 'n'), wp_get_referer());
+    $redirect = remove_query_arg(array('cls', 'action', 'n'), wp_get_referer());
 
-    $cw_class_id = absint($_GET['rdv']);
+    $cw_class_id = absint($_GET['cls']);
 
     if (empty($cw_class_id) || !current_user_can('delete_cw_class', $cw_class_id)) {
       bp_core_add_message(__('cw_class could not be found', 'cw_class'), 'error');
@@ -547,7 +547,7 @@ function cw_class_download_ical()
 {
   $ical_page = array(
     'is'  => (bool) bp_is_current_action('schedule') && 'ical' == bp_action_variable(0),
-    'rdv' => (int)  bp_action_variable(1),
+    'cls' => (int)  bp_action_variable(1),
   );
 
   apply_filters('cw_class_download_ical', (array) $ical_page);
@@ -559,12 +559,12 @@ function cw_class_download_ical()
   $redirect    = wp_get_referer();
   $user_attend = trailingslashit(bp_loggedin_user_domain() . buddypress()->cw_class->slug . '/attend');
 
-  if (empty($ical_page['rdv'])) {
+  if (empty($ical_page['cls'])) {
     bp_core_add_message(__('The cw_class was not found.', 'cw_class'), 'error');
     bp_core_redirect($redirect);
   }
 
-  $cw_class = cw_class_get_item($ical_page['rdv']);
+  $cw_class = cw_class_get_item($ical_page['cls']);
 
   // Redirect the user to the login form
   if (!is_user_logged_in()) {
@@ -577,19 +577,19 @@ function cw_class_download_ical()
 
   // Redirect if no rendez vous found
   if (empty($cw_class->organizer) || empty($cw_class->attendees)) {
-    bp_core_add_message(__('The cw_class was not found.', 'cw_class'), 'error');
+    bp_core_add_message(__('The class was not found.', 'cw_class'), 'error');
     bp_core_redirect($user_attend);
   }
 
   // Redirect if not an attendee
   if ($cw_class->organizer != bp_loggedin_user_id() && !in_array(bp_loggedin_user_id(), $cw_class->attendees)) {
-    bp_core_add_message(__('You are not attending this cw_class.', 'cw_class'), 'error');
+    bp_core_add_message(__('You are not attending this class.', 'cw_class'), 'error');
     bp_core_redirect($user_attend);
   }
 
   // Redirect if def date is not set
   if (empty($cw_class->def_date)) {
-    bp_core_add_message(__('the cw_class is not set yet.', 'cw_class'), 'error');
+    bp_core_add_message(__('The class is not set yet.', 'cw_class'), 'error');
     bp_core_redirect($redirect);
   }
 
