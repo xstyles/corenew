@@ -215,7 +215,7 @@ class cw_class_Item
         'post_status'   => !empty($this->privacy) ? 'private' : $this->status
       );
 
-      // The report is saved once the rendez vous date is past
+      // The report is saved once the class date is past
       if (!empty($this->report)) {
         $wp_update_post_args['post_content'] = $this->report;
       }
@@ -377,12 +377,12 @@ class cw_class_Item
   {
 
     $defaults = array(
-      'attendees' => array(), // one or more user ids who may attend to the rendez vous
-      'organizer' => false,   // the author id of the rendez vous
+      'attendees' => array(), // one or more user ids who may attend to the class
+      'organizer' => false,   // the author id of the class
       'per_page'  => 20,
       'page'      => 1,
       'search'    => false,
-      'exclude'   => false,   // comma separated list or array of rendez vous ids.
+      'exclude'   => false,   // comma separated list or array of class ids.
       'orderby'   => 'modified',
       'order'     => 'DESC',
       'group_id'  => false,

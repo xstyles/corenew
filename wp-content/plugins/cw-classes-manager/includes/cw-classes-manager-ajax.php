@@ -74,7 +74,7 @@ function cw_class_ajax_get_users()
 add_action('wp_ajax_cw_class_get_users', 'cw_class_ajax_get_users');
 
 /**
- * Create a rendez vous in draft mode
+ * Create a class in draft mode
  *
  * @package CW Class
  * @subpackage Ajax

@@ -89,7 +89,7 @@ function cw_class_screen_notification_settings()
 add_action('bp_notification_settings', 'cw_class_screen_notification_settings');
 
 /**
- * Send a screen notifications & email one when a rendez vous is published
+ * Send a screen notifications & email one when a class is published
  *
  * @package CW Class
  * @subpackage Notifications
@@ -133,9 +133,9 @@ function cw_class_published_notification($id = 0, $args = array(), $notify = 0)
   $bp_email_args = array(
     'tokens' => array(
       'organizer.name'     => $organizer_name,
-      'rendezvous.content' => $cw_class_content,
-      'rendezvous.url'     => esc_url($cw_class_link),
-      'rendezvous.title'   => $cw_class->title,
+      'cw_class.content' => $cw_class_content,
+      'cw_class.url'     => esc_url($cw_class_link),
+      'cw_class.title'   => $cw_class->title,
     ),
   );
 
@@ -200,7 +200,7 @@ function cw_class_maybe_notify_updates($args = array(), $notify = 0)
 add_action('cw_class_before_update', 'cw_class_maybe_notify_updates', 10, 2);
 
 /**
- * Send a screen notifications & email one when a rendez vous is updated
+ * Send a screen notifications & email one when a class is updated
  *
  * Date set or report created
  *
@@ -289,10 +289,10 @@ function cw_class_updated_notification($id = 0, $args = array(), $notify = 0)
   $bp_email_args = array(
     'tokens' => array(
       'organizer.name'     => $organizer_name,
-      'rendezvous.action'  => $manager_updated_action,
-      'rendezvous.content' => $cw_class_content,
-      'rendezvous.url'     => esc_url($cw_class_link),
-      'rendezvous.title'   => $cw_class->title,
+      'cw_class.action'  => $manager_updated_action,
+      'cw_class.content' => $cw_class_content,
+      'cw_class.url'     => esc_url($cw_class_link),
+      'cw_class.title'   => $cw_class->title,
     ),
   );
 
@@ -369,9 +369,9 @@ function cw_class_notify_organizer($args = array(), $attendee_id = 0, $cw_class 
   bp_send_email('cw_class-preference-set', (int) $cw_class->organizer, array(
     'tokens' => array(
       'attendee.name'     => $attendee_name,
-      'rendezvous.content' => $cw_class_content,
-      'rendezvous.url'     => esc_url($cw_class_link),
-      'rendezvous.title'   => $cw_class_title,
+      'cw_class.content' => $cw_class_content,
+      'cw_class.url'     => esc_url($cw_class_link),
+      'cw_class.title'   => $cw_class_title,
     ),
   ));
 }
@@ -649,22 +649,22 @@ function cw_class_get_emails()
       'description' => __('A member invited members to a new cw_class', 'cw_class'),
       'term_id'     => 0,
       'post_title'   => __('[{{{site.name}}}] {{organizer.name}} invited you to the next class', 'cw_class'),
-      'post_content' => __("{{organizer.name}} is scheduling a new cw_class: {{{rendezvous.content}}}\n\nTo help him fix the date, please log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>.", 'cw_class'),
-      'post_excerpt' => __("{{organizer.name}} is scheduling a new cw_class: {{rendezvous.content}}\n\nTo help him fix the date, please log in and visit: \n\n{{{rendezvous.url}}}.", 'cw_class'),
+      'post_content' => __("{{organizer.name}} is scheduling a new cw_class: {{{cw_class.content}}}\n\nTo help him fix the date, please log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>.", 'cw_class'),
+      'post_excerpt' => __("{{organizer.name}} is scheduling a new cw_class: {{cw_class.content}}\n\nTo help him fix the date, please log in and visit: \n\n{{{cw_class.url}}}.", 'cw_class'),
     ),
     'cw_class-item-edited'    => array(
       'description' => __('A member updated a cw_class', 'cw_class'),
       'term_id'     => 0,
       'post_title'   => __('[{{{site.name}}}] {{organizer.name}} updated a cw_class', 'cw_class'),
-      'post_content' => __("{{organizer.name}} {{rendezvous.action}} for the cw_class: {{{rendezvous.content}}}\n\nTo view details, log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>.", 'cw_class'),
-      'post_excerpt' => __("{{organizer.name}} {{rendezvous.action}} for the cw_class: {{rendezvous.content}}\n\nTo view details, log in and visit: \n\n{{{rendezvous.url}}}.", 'cw_class'),
+      'post_content' => __("{{organizer.name}} {{cw_class.action}} for the cw_class: {{{cw_class.content}}}\n\nTo view details, log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>.", 'cw_class'),
+      'post_excerpt' => __("{{organizer.name}} {{cw_class.action}} for the cw_class: {{cw_class.content}}\n\nTo view details, log in and visit: \n\n{{{cw_class.url}}}.", 'cw_class'),
     ),
     'cw_class-preference-set' => array(
       'description' => __('A member selected date(s) for a cw_class', 'cw_class'),
       'term_id'     => 0,
       'post_title'   => __('[{{{site.name}}}] {{attendee.name}} selected date(s) for a cw_class', 'cw_class'),
-      'post_content' => __("{{attendee.name}} set their preferences for the cw_class: {{{rendezvous.content}}}\n\nTo view details, log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>.", 'cw_class'),
-      'post_excerpt' => __("{{attendee.name}} set their preferences for the cw_class: {{rendezvous.content}}\n\nTo view details, log in and visit: \n\n{{{rendezvous.url}}}.", 'cw_class'),
+      'post_content' => __("{{attendee.name}} set their preferences for the cw_class: {{{cw_class.content}}}\n\nTo view details, log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>.", 'cw_class'),
+      'post_excerpt' => __("{{attendee.name}} set their preferences for the cw_class: {{cw_class.content}}\n\nTo view details, log in and visit: \n\n{{{cw_class.url}}}.", 'cw_class'),
     ),
   ));
 }

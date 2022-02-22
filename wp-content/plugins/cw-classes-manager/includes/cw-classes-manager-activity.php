@@ -93,7 +93,7 @@ function cw_class_format_activity_action($action, $activity)
 
   $cw_class_title = bp_activity_get_meta($activity->id, 'cw_class_title');
 
-  // Should only be empty at the time of rendez vous creation
+  // Should only be empty at the time of class creation
   if (empty($cw_class_title)) {
 
     $cw_class = cw_class_get_item($cw_class_id);

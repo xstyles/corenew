@@ -182,7 +182,7 @@ function cw_class_map_meta_caps($caps = array(), $cap = '', $user_id = 0, $args 
           $attendees           = !empty($post_meta_attendees) ? (array) $post_meta_attendees : array();
           $caps                = array();
 
-          // Allow author to edit his rendez vous
+          // Allow author to edit his class
           if ($user_id == $_post->post_author || in_array($user_id, $attendees)) {
             $caps[] = 'exist';
 
@@ -260,7 +260,7 @@ function cw_class_map_meta_caps($caps = array(), $cap = '', $user_id = 0, $args 
           $post_type = get_post_type_object($_post->post_type);
           $caps      = array();
 
-          // Allow author to edit his rendez vous
+          // Allow author to edit his class
           if ($user_id == $_post->post_author) {
             $caps[] = 'exist';
 
@@ -290,7 +290,7 @@ function cw_class_map_meta_caps($caps = array(), $cap = '', $user_id = 0, $args 
           $post_type = get_post_type_object($_post->post_type);
           $caps      = array();
 
-          // Allow author to edit his rendez vous
+          // Allow author to edit his class
           if ($user_id == $_post->post_author) {
             $caps[] = 'exist';
 

@@ -1028,7 +1028,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
      */
     public function format_activity_action($action = '', $activity = null)
     {
-      // Bail if not a rendez vous activity posted in a group
+      // Bail if not a class activity posted in a group
       if (buddypress()->groups->id != $activity->component || empty($action)) {
         return $action;
       }
