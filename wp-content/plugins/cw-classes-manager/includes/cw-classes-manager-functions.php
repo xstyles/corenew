@@ -41,12 +41,12 @@ function cw_class_get_item($id = 0)
 function cw_class_get_items($args = array())
 {
   $defaults = array(
-    'attendees' => array(),      // one or more user ids who may attend to the rendez vous
-    'organizer' => false,        // the author id of the rendez vous
+    'attendees' => array(),      // one or more user ids who may attend to the class
+    'organizer' => false,        // the author id of the class
     'per_page'  => 20,
     'page'      => 1,
     'search'    => false,
-    'exclude'   => false,        // comma separated list or array of rendez vous ids.
+    'exclude'   => false,        // comma separated list or array of class ids.
     'orderby'   => 'modified',
     'order'     => 'DESC',
     'group_id'  => false,
@@ -575,7 +575,7 @@ function cw_class_download_ical()
     return;
   }
 
-  // Redirect if no rendez vous found
+  // Redirect if no class found
   if (empty($cw_class->organizer) || empty($cw_class->attendees)) {
     bp_core_add_message(__('The class was not found.', 'cw_class'), 'error');
     bp_core_redirect($user_attend);

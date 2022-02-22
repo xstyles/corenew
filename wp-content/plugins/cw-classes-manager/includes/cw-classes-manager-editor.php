@@ -63,7 +63,7 @@ function cw_class_enqueue_editor($args = array())
     'captions'  => !apply_filters('disable_captions', ''),
     'nonce'     => array(
       'sendToEditor' => wp_create_nonce('media-send-to-editor'),
-      'rendezvous'   => wp_create_nonce('cw_class-editor')
+      'cw_class'   => wp_create_nonce('cw_class-editor')
     ),
     'post'    => array(
       'id' => 0,
@@ -399,7 +399,7 @@ function cw_class_plupload_settings()
  * @subpackage Editor
  * @since CW Class (1.0.0)
  */
-function rendezvous_media_templates()
+function cw_class_media_templates()
 {
 ?>
   <script type="text/html" id="tmpl-what">
@@ -518,4 +518,4 @@ function rendezvous_media_templates()
   </script>
 <?php
 }
-add_action('print_media_templates', 'rendezvous_media_templates');
+add_action('print_media_templates', 'cw_class_media_templates');

@@ -169,7 +169,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#. translators: This is a would-be plural string used in the media manager. 		 
+#. translators: This is a would-be plural string used in the media manager.
 #.  If there is not a word you can use in your language to avoid issues with
 #. the 		   lack of plural support here, turn it into "selected: %d" then
 #. translate it.
@@ -793,18 +793,18 @@ msgstr ""
 
 #: includes/rendez-vous-notifications.php:639
 msgid ""
-"{{organizer.name}} is scheduling a new rendez-vous: {{{rendezvous.content}}}\n"
+"{{organizer.name}} is scheduling a new rendez-vous: {{{cw_class.content}}}\n"
 "\n"
-"To help him fix the date, please log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>."
+"To help him fix the date, please log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>."
 msgstr ""
 
 #: includes/rendez-vous-notifications.php:640
 msgid ""
-"{{organizer.name}} is scheduling a new rendez-vous: {{rendezvous.content}}\n"
+"{{organizer.name}} is scheduling a new rendez-vous: {{cw_class.content}}\n"
 "\n"
 "To help him fix the date, please log in and visit: \n"
 "\n"
-"{{{rendezvous.url}}}."
+"{{{cw_class.url}}}."
 msgstr ""
 
 #: includes/rendez-vous-notifications.php:643
@@ -817,18 +817,18 @@ msgstr ""
 
 #: includes/rendez-vous-notifications.php:646
 msgid ""
-"{{organizer.name}} {{rendezvous.action}} for the rendez-vous: {{{rendezvous.content}}}\n"
+"{{organizer.name}} {{cw_class.action}} for the rendez-vous: {{{cw_class.content}}}\n"
 "\n"
-"To view details, log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>."
+"To view details, log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>."
 msgstr ""
 
 #: includes/rendez-vous-notifications.php:647
 msgid ""
-"{{organizer.name}} {{rendezvous.action}} for the rendez-vous: {{rendezvous.content}}\n"
+"{{organizer.name}} {{cw_class.action}} for the rendez-vous: {{cw_class.content}}\n"
 "\n"
 "To view details, log in and visit: \n"
 "\n"
-"{{{rendezvous.url}}}."
+"{{{cw_class.url}}}."
 msgstr ""
 
 #: includes/rendez-vous-notifications.php:650
@@ -841,18 +841,18 @@ msgstr ""
 
 #: includes/rendez-vous-notifications.php:653
 msgid ""
-"{{attendee.name}} set their preferences for the rendez-vous: {{{rendezvous.content}}}\n"
+"{{attendee.name}} set their preferences for the rendez-vous: {{{cw_class.content}}}\n"
 "\n"
-"To view details, log in and visit: <a href=\"{{{rendezvous.url}}}\">{{rendezvous.title}}</a>."
+"To view details, log in and visit: <a href=\"{{{cw_class.url}}}\">{{cw_class.title}}</a>."
 msgstr ""
 
 #: includes/rendez-vous-notifications.php:654
 msgid ""
-"{{attendee.name}} set their preferences for the rendez-vous: {{rendezvous.content}}\n"
+"{{attendee.name}} set their preferences for the rendez-vous: {{cw_class.content}}\n"
 "\n"
 "To view details, log in and visit: \n"
 "\n"
-"{{{rendezvous.url}}}."
+"{{{cw_class.url}}}."
 msgstr ""
 
 #: includes/rendez-vous-parts.php:169

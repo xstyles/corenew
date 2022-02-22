@@ -4,11 +4,11 @@
  * Plugin Name:     CoreWeapons Classes Manager
  * Description:     Schedule and Attend CoreWeapons classes. Limit students to only attend classes of purchased subscriptions.
  * Author:          Giridhar
- * Text Domain:     cw-rendezvous
+ * Text Domain:     cw-cw_class
  * Domain Path:     /languages
  * Version:         0.1.0
  *
- * @package         Cw_Rendezvous
+ * @package         cw-classes-manager
  */
 
 // Exit if accessed directly
@@ -215,21 +215,21 @@ if (!class_exists('CW_ClassesManager')) :
       wp_register_script('cw-classes-manager-modal', $this->plugin_js . "cw-classes-manager-backbone$suffix.js", array('cw-classes-manager-media-editor', 'jquery-ui-datepicker'), $this->version, 1);
 
       // Allow themes to override modal style
-      $modal_style = apply_filters('cw_classes_manager_modal_css', $this->plugin_css . "rendezvous-editor$suffix.css", $suffix);
+      $modal_style = apply_filters('cw_classes_manager_modal_css', $this->plugin_css . "cw_class-editor$suffix.css", $suffix);
       wp_register_style('cw-classes-manager-modal-style', $modal_style, array('media-views'), $this->version);
 
       // Allow themes to override global style
       $global_style = apply_filters(
         'cw_classes_manager_global_css',
         array(
-          'style' => $this->plugin_css . "rendezvous$suffix.css",
+          'style' => $this->plugin_css . "cw_class$suffix.css",
           'deps'  =>  array('dashicons'),
         ),
         $suffix
       );
 
       wp_enqueue_style('cw-classes-manager-style', $global_style['style'], (array) $global_style['deps'], $this->version);
-      wp_enqueue_script('cw-classes-manager-script', $this->plugin_js . "rendezvous$suffix.js", array('jquery'), $this->version, 1);
+      wp_enqueue_script('cw-classes-manager-script', $this->plugin_js . "cw_class$suffix.js", array('jquery'), $this->version, 1);
       wp_localize_script('cw-classes-manager-script', 'cw_classes_manager_vars', array(
         'confirm'  => esc_html__('Are you sure you want to cancel this class ?', 'cw-classes-manager'),
         'noaccess' => esc_html__('You do not have access to this class.', 'cw-classes-manager'),

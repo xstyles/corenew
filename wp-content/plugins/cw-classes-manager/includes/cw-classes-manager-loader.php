@@ -306,7 +306,7 @@ class CW_Class_Component extends BP_Component
 }
 
 /**
- * Loads rendez vous component into the $bp global
+ * Loads class component into the $bp global
  *
  * @package cw_class
  * @subpackage Component

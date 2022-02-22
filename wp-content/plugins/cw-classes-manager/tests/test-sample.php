@@ -3,7 +3,7 @@
 /**
  * Class SampleTest
  *
- * @package Cw_Rendezvous
+ * @package cw-classes-manager
  */
 
 /**

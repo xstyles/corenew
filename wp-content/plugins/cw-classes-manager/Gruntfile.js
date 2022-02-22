@@ -7,7 +7,7 @@ module.exports = function (grunt) {
 
     addtextdomain: {
       options: {
-        textdomain: 'cw-rendezvous',
+        textdomain: 'cw_class',
       },
       update_all_domains: {
         options: {
@@ -37,8 +37,8 @@ module.exports = function (grunt) {
         options: {
           domainPath: '/languages',
           exclude: ['.git/*', 'bin/*', 'node_modules/*', 'tests/*'],
-          mainFile: 'cw-rendezvous.php',
-          potFilename: 'cw-rendezvous.pot',
+          mainFile: 'cw-cw_class.php',
+          potFilename: 'cw-cw_class.pot',
           potHeaders: {
             poedit: true,
             'x-poedit-keywordslist': true,

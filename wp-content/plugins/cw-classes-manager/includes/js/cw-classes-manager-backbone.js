@@ -18,7 +18,7 @@ var cls = cls || {}
 
   _.extend(media, { model: {}, view: {}, controller: {}, frames: {} })
 
-  rendezvousField = cls.media.model.rendezvousField = Backbone.Model.extend({
+  cw_classField = cls.media.model.cw_classField = Backbone.Model.extend({
     defaults: {
       id: 0,
       type: '',
@@ -30,7 +30,7 @@ var cls = cls || {}
     },
   })
 
-  rendezvousDay = cls.media.model.rendezvousDay = Backbone.Model.extend({
+  cw_classDay = cls.media.model.cw_classDay = Backbone.Model.extend({
     defaults: {
       id: 0,
       day: '',
@@ -40,7 +40,7 @@ var cls = cls || {}
     },
   })
 
-  rendezvousUser = cls.media.model.rendezvousUser = Backbone.Model.extend({
+  cw_classUser = cls.media.model.cw_classUser = Backbone.Model.extend({
     defaults: {
       id: 0,
       avatar: '',
@@ -48,9 +48,9 @@ var cls = cls || {}
     },
   })
 
-  rendezvousUsers = cls.media.model.rendezvousUsers =
+  cw_classUsers = cls.media.model.cw_classUsers =
     Backbone.Collection.extend({
-      model: rendezvousUser,
+      model: cw_classUser,
 
       initialize: function () {
         this.options = { current_page: 1, total_page: 0 }
@@ -68,7 +68,7 @@ var cls = cls || {}
               group_id: wp.media.view.settings.group_id,
               member_type: media.frame().state().get('member_type'),
             },
-            _wpnonce: wp.media.view.settings.nonce.rendezvous,
+            _wpnonce: wp.media.view.settings.nonce.cw_class,
           })
 
           return wp.ajax.send(options)
@@ -95,13 +95,13 @@ var cls = cls || {}
       },
     })
 
-  rendezvousDays = cls.media.model.rendezvousDays = Backbone.Collection.extend({
-    model: rendezvousDay,
+  cw_classDays = cls.media.model.cw_classDays = Backbone.Collection.extend({
+    model: cw_classDay,
   })
 
-  rendezvousFields = cls.media.model.rendezvousFields =
+  cw_classFields = cls.media.model.cw_classFields =
     Backbone.Collection.extend({
-      model: rendezvousField,
+      model: cw_classField,
 
       initialize: function () {
         var settings = cls.media.ClassSettings,
@@ -822,10 +822,10 @@ var cls = cls || {}
 
       this.props.on('change:selection', this.observeChanges, this)
 
-      if (!this.get('clsfields')) this.set('clsfields', new rendezvousFields())
-      if (!this.get('clsdays')) this.set('clsdays', new rendezvousDays())
+      if (!this.get('clsfields')) this.set('clsfields', new cw_classFields())
+      if (!this.get('clsdays')) this.set('clsdays', new cw_classDays())
 
-      if (!this.get('clsusers')) this.set('clsusers', new rendezvousUsers())
+      if (!this.get('clsusers')) this.set('clsusers', new cw_classUsers())
 
       this.get('clsusers').on('add', this.fillMirror, this)
     },
@@ -907,7 +907,7 @@ var cls = cls || {}
         attendees: users,
         maydates: dates,
         desc: fields,
-        nonce: wp.media.view.settings.nonce.rendezvous,
+        nonce: wp.media.view.settings.nonce.cw_class,
       }
 
       if (wp.media.view.settings.group_id) {
