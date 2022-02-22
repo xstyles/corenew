@@ -122,8 +122,8 @@ body.cw_class #buddypress .standard-form label.normal {
   font-weight: normal;
 }
 
-body.cw_class .standard-form input.rdv-duree,
-body.cw_class #buddypress .standard-form input.rdv-duree {
+body.cw_class .standard-form input.cls-duree,
+body.cw_class #buddypress .standard-form input.cls-duree {
   width: 50px;
 }
 

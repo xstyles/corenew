@@ -829,7 +829,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
       }
 
       $link = add_query_arg(
-        array('rdv' => $id, 'action' => 'edit'),
+        array('cls' => $id, 'action' => 'edit'),
         $group_link
       );
 
@@ -864,7 +864,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
       }
 
       $link = add_query_arg(
-        array('rdv' => $id),
+        array('cls' => $id),
         $group_link
       );
 
@@ -899,7 +899,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
         return $link;
       }
 
-      $link = add_query_arg(array('rdv' => $id, 'action' => 'delete'), $group_link);
+      $link = add_query_arg(array('cls' => $id, 'action' => 'delete'), $group_link);
       $link = wp_nonce_url($link, 'cw_class_delete');
 
       return $link;

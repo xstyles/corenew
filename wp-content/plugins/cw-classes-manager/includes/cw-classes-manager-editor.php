@@ -84,9 +84,9 @@ function cw_class_enqueue_editor($args = array())
   $cw_class_member_types = array();
   $member_types = bp_get_member_types(array(), 'objects');
   if (!empty($member_types) && is_array($member_types)) {
-    $cw_class_member_types['rdvMemberTypesAll'] = esc_html__('All member types', 'cw_class');
+    $cw_class_member_types['clsMemberTypesAll'] = esc_html__('All member types', 'cw_class');
     foreach ($member_types as $type_key => $type) {
-      $cw_class_member_types['rdvMemberTypes'][] = array('type' => $type_key, 'text' => esc_html($type->labels['singular_name']));
+      $cw_class_member_types['clsMemberTypes'][] = array('type' => $type_key, 'text' => esc_html($type->labels['singular_name']));
     }
   }
 
@@ -143,14 +143,14 @@ function cw_class_enqueue_editor($args = array())
 
   $cw_class_strings = apply_filters('cw_class_view_strings', array(
     // RendezVous
-    'rdvMainTitle'      => _x('cw_class', 'RendezVous editor main title', 'cw_class'),
+    'clsMainTitle'      => _x('cw_class', 'RendezVous editor main title', 'cw_class'),
     'whatTab'           => _x('What?', 'RendezVous editor tab what name', 'cw_class'),
     'whenTab'           => _x('When?', 'RendezVous editor tab when name', 'cw_class'),
     'whoTab'            => _x('Who?', 'RendezVous editor tab who name', 'cw_class'),
-    'rdvInsertBtn'      => __('Add to invites', 'cw_class'),
-    'rdvNextBtn'        => __('Next', 'cw_class'),
-    'rdvPrevBtn'        => __('Prev', 'cw_class'),
-    'rdvSrcPlaceHolder' => __('Search', 'cw_class'),
+    'clsInsertBtn'      => __('Add to invites', 'cw_class'),
+    'clsNextBtn'        => __('Next', 'cw_class'),
+    'clsPrevBtn'        => __('Prev', 'cw_class'),
+    'clsSrcPlaceHolder' => __('Search', 'cw_class'),
     'invited'           => __('%d to invite', 'cw_class'),
     'removeInviteBtn'   => __('Remove Invite', 'cw_class'),
     'saveButton'        => __('Save cw_class', 'cw_class'),
@@ -406,29 +406,29 @@ function rendezvous_media_templates()
     <# if ( 'text'===data.type ) { #>
       <p>
         <label for="{{data.id}}">{{data.label}}</label>
-        <input type="text" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="rdv-input-what {{data.class}}" />
+        <input type="text" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="cls-input-what {{data.class}}" />
       </p>
       <# } else if ( 'time'===data.type ) { #>
         <p>
           <label for="{{data.id}}">{{data.label}}</label>
-          <input type="time" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="rdv-input-what {{data.class}}" />
+          <input type="time" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="cls-input-what {{data.class}}" />
         </p>
         <# } else if ( 'duree'===data.type ) { #>
           <p>
             <label for="{{data.id}}">{{data.label}}</label>
-            <input type="text" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="rdv-input-what duree {{data.class}}" />
+            <input type="text" id="{{data.id}}" placeholder="{{data.placeholder}}" value="{{data.value}}" class="cls-input-what duree {{data.class}}" />
           </p>
           <# } else if ( 'checkbox'===data.type ) { #>
             <p>
               <label for="{{data.id}}">{{data.label}} </label>
-              <input type="checkbox" id="{{data.id}}" value="1" class="rdv-check-what {{data.class}}" <# if ( data.value==1 ) { #>checked<# } #>/> {{data.placeholder}}
+              <input type="checkbox" id="{{data.id}}" value="1" class="cls-check-what {{data.class}}" <# if ( data.value==1 ) { #>checked<# } #>/> {{data.placeholder}}
             </p>
             <# } else if ( 'timezone'===data.type || 'hidden'===data.type ) { #>
-              <input type="hidden" id="{{data.id}}" value="{{data.value}}" class="rdv-hidden-what" />
+              <input type="hidden" id="{{data.id}}" value="{{data.value}}" class="cls-hidden-what" />
               <# } else if ( 'textarea'===data.type ) { #>
                 <p>
                   <label for="{{data.id}}">{{data.label}}</label>
-                  <textarea id="{{data.id}}" placeholder="{{data.placeholder}}" class="rdv-input-what {{data.class}}">{{data.value}}</textarea>
+                  <textarea id="{{data.id}}" placeholder="{{data.placeholder}}" class="cls-input-what {{data.class}}">{{data.value}}</textarea>
                 </p>
 
                 <# } else if ( 'selectbox'===data.type ) { #>
@@ -437,7 +437,7 @@ function rendezvous_media_templates()
 
                     <p>
                       <label for="{{data.id}}">{{data.label}} </label>
-                      <select id="{{data.id}}" class="rdv-select-what">
+                      <select id="{{data.id}}" class="cls-select-what">
                         <option value="">---</option>
                         <# for ( i in data.placeholder ) { #>
                           <option value="{{data.choices[i]}}" <# if ( data.value==data.choices[i] ) { #>selected<# } #>>{{data.placeholder[i]}}</option>
@@ -465,14 +465,14 @@ function rendezvous_media_templates()
           <div class="daytd">
             <label for="{{data.id}}-hour1"><?php esc_html_e('Define 1 to 3 hours for this day, please respect the format HH:MM', 'cw_class'); ?></label>
 
-            <!-- <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">&nbsp;
-						<input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
-						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+            <!-- <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="cls-input-when">&nbsp;
+						<input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="cls-input-when">&nbsp;
+						<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="cls-input-when">&nbsp; -->
             <div style="display: flex; flex-direction: row; justify-items: space-between;">
-              <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="rdv-input-when">
+              <input type="time" value="{{data.hour1}}" id="{{data.id}}-hour1" placeholder="00:00" class="cls-input-when">
               <!-- &nbsp; -->
-              <!-- <input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="rdv-input-when">&nbsp;
-							<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp; -->
+              <!-- <input type="time" value="{{data.hour2}}" id="{{data.id}}-hour2" placeholder="00:00" class="cls-input-when">&nbsp;
+							<input type="time" value="{{data.hour3}}" id="{{data.id}}-hour3" placeholder="00:00" class="cls-input-when">&nbsp; -->
             </div>
           </div>
         </fieldset>
@@ -480,7 +480,7 @@ function rendezvous_media_templates()
   </script>
 
   <script type="text/html" id="tmpl-when-add-slot">
-    <input type="time" value="{{data.hour}}" id="{{data.id}}-hour3" placeholder="00:00" class="rdv-input-when">&nbsp;
+    <input type="time" value="{{data.hour}}" id="{{data.id}}-hour3" placeholder="00:00" class="cls-input-when">&nbsp;
   </script>
 
   <script type="text/html" id="tmpl-cw_class">
