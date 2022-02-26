@@ -845,6 +845,30 @@ function cw_class_get_term($term, $output = OBJECT, $filter = 'raw', $taxonomy =
 }
 
 /**
+ * Get all subscriptions for a class type by taxonomy.
+ *
+ * @param int|object $term If integer, will get from database. If object will apply filters and return $term.
+ * @param string $output Constant OBJECT, ARRAY_A, or ARRAY_N
+ * @param string $filter Optional, default is raw or no WordPress defined filter will applied.
+ * @param string $taxonomy Taxonomy name that $term is part of.
+ * @return mixed|null|WP_Error Subscriptions for the database. Will return null if $term is empty.
+ * If taxonomy does not exist then WP_error will be returned.
+ */
+function cw_class_subscriptions_for_term($term, $output = OBJECT, $filter = 'raw', $taxonomy = 'cw_class_type')
+{
+  if (!bp_is_root_blog()) {
+    switch_to_blog(bp_get_root_blog_id());
+  }
+
+  $fetched_term = get_term($term, $taxonomy, $output, $filter);
+  $subscriptions = get_term_meta($fetched_term->term_id, 'subscriptions');
+
+  restore_current_blog();
+
+  return $subscriptions;
+}
+
+/**
  * Insert a term for the cw_class type taxonomy.
  *
  * @package CW Class
