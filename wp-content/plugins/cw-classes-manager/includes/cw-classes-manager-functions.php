@@ -950,6 +950,19 @@ function cw_class_delete_term($term_id, $args = array(), $taxonomy = 'cw_class_t
   return $retval;
 }
 
+function cw_class_add_term_meta($term_id, $subscriptions)
+{
+  if (!bp_is_root_blog()) {
+    switch_to_blog(bp_get_root_blog_id());
+  }
+
+  $retval = add_term_meta($term_id, 'cw_class_subscriptions', $subscriptions);
+
+  restore_current_blog();
+
+  return $retval;
+}
+
 
 function cw_class_get_all_class_subs()
 {
