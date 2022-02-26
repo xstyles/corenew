@@ -15,6 +15,24 @@
 
 class ScheduleClassForAllStudents
 {
+  // private $productIds = [65, 66, 67];
+
+  // private $bothProduct = 67;
+
+  // private $classTypes = [
+  //   'Math' => 49,
+  //   'ELA' => 50,
+  // ];
+
+  private $productIds = [410, 412, 414];
+
+  private $bothProduct = 414;
+
+  private $classTypes = [
+    'Math' => 43,
+    'ELA' => 44,
+  ];
+
   /**
    * The single instance of this class
    * @var ScheduleClassForAllStudents
@@ -45,7 +63,7 @@ class ScheduleClassForAllStudents
 
   function addAllPossibleAttendeesForClass($meeting)
   {
-    $attendees = $this->_getAllMembersByType(['student', 'individual']);
+    $attendees = $this->_getAllAttendeesByMemberType(['student', 'individual'], '41');
 
     $memberIds = [];
 
@@ -78,7 +96,21 @@ class ScheduleClassForAllStudents
 
   private function _getAllAttendeesByMemberType($productId, $memberType)
   {
-    $subscriptions = WCSG_Recipient_Management::get_recipient_subscriptions([]);
+    $members = $this->_getAllMembersByType($memberType);
+
+    $attendees = [];
+
+    foreach ($members as $member) {
+      $subscriptions = WCSG_Recipient_Management::get_recipient_subscriptions($member->get('ID'), 0, [
+        'product_id' => $productId,
+      ]);
+
+      if (count($subscriptions)) {
+        $attendees[] = $member;
+      }
+    }
+
+    return $attendees;
   }
 }
 
