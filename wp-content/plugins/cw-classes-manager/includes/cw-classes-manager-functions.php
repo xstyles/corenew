@@ -838,6 +838,7 @@ function cw_class_get_term($term, $output = OBJECT, $filter = 'raw', $taxonomy =
   }
 
   $retval = get_term($term, $taxonomy, $output, $filter);
+  $subjects = cw_class_get_term_meta($retval->term_id);
 
   restore_current_blog();
 
@@ -854,18 +855,18 @@ function cw_class_get_term($term, $output = OBJECT, $filter = 'raw', $taxonomy =
  * @return mixed|null|WP_Error Subscriptions for the database. Will return null if $term is empty.
  * If taxonomy does not exist then WP_error will be returned.
  */
-function cw_class_subscriptions_for_term($term, $output = OBJECT, $filter = 'raw', $taxonomy = 'cw_class_type')
+function cw_class_courses_for_term($term, $output = OBJECT, $filter = 'raw', $taxonomy = 'cw_class_type')
 {
   if (!bp_is_root_blog()) {
     switch_to_blog(bp_get_root_blog_id());
   }
 
   $fetched_term = get_term($term, $taxonomy, $output, $filter);
-  $subscriptions = get_term_meta($fetched_term->term_id, 'subscriptions');
+  $courses = get_term_meta($fetched_term->term_id, 'cw_class_courses');
 
   restore_current_blog();
 
-  return $subscriptions;
+  return $courses;
 }
 
 /**
@@ -950,13 +951,39 @@ function cw_class_delete_term($term_id, $args = array(), $taxonomy = 'cw_class_t
   return $retval;
 }
 
-function cw_class_add_term_meta($term_id, $subscriptions)
+function cw_class_get_term_meta($term_id, $key = 'cw_class_courses', $single = false)
 {
   if (!bp_is_root_blog()) {
     switch_to_blog(bp_get_root_blog_id());
   }
 
-  $retval = add_term_meta($term_id, 'cw_class_subscriptions', $subscriptions);
+  $retval = get_term_meta($term_id, $key, $single);
+
+  restore_current_blog();
+
+  return $retval;
+}
+
+function cw_class_add_term_meta($term_id, $key = 'cw_class_courses', $value)
+{
+  if (!bp_is_root_blog()) {
+    switch_to_blog(bp_get_root_blog_id());
+  }
+
+  $retval = add_term_meta($term_id, $key, is_array($value) ? serialize($value) : $value);
+
+  restore_current_blog();
+
+  return $retval;
+}
+
+function cw_class_update_term_meta($term_id, $key = 'cw_class_courses', $value)
+{
+  if (!bp_is_root_blog()) {
+    switch_to_blog(bp_get_root_blog_id());
+  }
+
+  $retval = update_term_meta($term_id, $key, is_array($value) ? serialize($value) : $value);
 
   restore_current_blog();
 

@@ -227,7 +227,7 @@ function cw_class_ajax_insert_term()
     wp_send_json_error();
   }
 
-  if (!isset($_POST['cw_class_subscription_id'])) {
+  if (!isset($_POST['cw_class_courses'])) {
     wp_send_json_error();
   }
 
@@ -245,11 +245,24 @@ function cw_class_ajax_insert_term()
 
   $inserted = cw_class_insert_term($term);
 
+  $courses = esc_html($_POST['cw_class_courses']);
+
   if (empty($inserted['term_id']) || is_wp_error($inserted)) {
     wp_send_json_error();
   }
 
   $term = cw_class_prepare_term_for_js(cw_class_get_term($inserted['term_id']));
+
+  if (strlen($courses)) {
+    $courses = str_split($courses, ',');
+
+    cw_class_add_term_meta($inserted['term_id'], 'cw_class_courses', $courses);
+    $courses = cw_class_get_term_meta($inserted['term_id']);
+
+    // $term->courses = $courses;
+    // $term['courses'] = $courses;
+  }
+
 
   if (empty($term)) {
     wp_send_json_error();

@@ -82,14 +82,14 @@ window.wp = window.wp || {}
       return resp
     },
 
-    insertTerm: function (name, subscriptionId, options) {
+    insertTerm: function (name, courses, options) {
       model = this
       options = options || {}
 
       return wp.ajax
         .post('cw_class_insert_term', {
           cw_class_type_name: name,
-          cw_class_subscription_id: subscriptionId,
+          cw_class_courses: courses,
           nonce: cwcm_admin.vars.nonce,
         })
         .done(function (resp, status, xhr) {

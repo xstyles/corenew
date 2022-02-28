@@ -328,7 +328,7 @@ function cw_class_enqueue_editor($args = array())
       esc_html__('November', 'cw_class'),
       esc_html__('December', 'cw_class'),
     ),
-    'format'      => _x('mm/dd/yy', 'cw_class date format', 'cw_class'),
+    'format'      => _x('mm/dd/yy', 'Date format', 'cw_class'),
     'firstday'    => intval(bp_get_option('start_of_week', 0)),
     'alert'       => esc_html__('You already selected this date', 'cw_class')
   );
@@ -345,8 +345,8 @@ function cw_class_enqueue_editor($args = array())
 
   wp_localize_script('cw_class-media-views', '_wpMediaViewsL10n', $strings);
 
-  wp_enqueue_script('cw_class-modal');
-  wp_enqueue_style('cw_class-modal-style');
+  wp_enqueue_script('cw-classes-manager-modal');
+  wp_enqueue_style('cw-classes-manager-modal-style');
   cw_class_plupload_settings();
 
   require_once ABSPATH . WPINC . '/media-template.php';
