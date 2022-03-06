@@ -436,7 +436,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
         <h3>
           <ul id="cw_class-nav">
             <li><?php cw_class_editor('new-cw_class', array('group_id' => $group_id)); ?></li>
-            <li class="last"><?php render_vous_type_filter(); ?></li>
+            <li class="last"><?php cw_class_type_filter(); ?></li>
           </ul>
         </h3>
 <?php cw_class_loop();

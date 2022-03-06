@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) exit;
 
 /** Type Filrer ***************************************************************/
 
-function render_vous_type_filter()
+function cw_class_type_filter()
 {
   if (!cw_class_has_types()) {
     return;

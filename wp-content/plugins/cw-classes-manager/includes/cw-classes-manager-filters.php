@@ -489,12 +489,12 @@ add_filter('groups_forbidden_names', 'cw_class_forbidden_names', 10, 1);
  * @uses   buddypress()     to get BuddyPress instance
  * @return string           the login message
  */
-function render_vous_login_message($message = '', $redirect = '')
+function cw_class_login_message($message = '', $redirect = '')
 {
   if (!empty($redirect) && false !== strpos($redirect, buddypress()->cw_class->slug . '/schedule/ical')) {
-    $message = __('You must log in to download the calendar file.', 'render-vous');
+    $message = __('You must log in to download the calendar file.', 'cw_class');
   }
 
   return $message;
 }
-add_filter('bp_wp_login_error', 'render_vous_login_message', 10, 2);
+add_filter('bp_wp_login_error', 'cw_class_login_message', 10, 2);

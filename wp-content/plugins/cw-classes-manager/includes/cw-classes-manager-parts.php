@@ -38,7 +38,7 @@ function cw_class_schedule_actions()
 ?>
   <ul id="cw_class-nav">
     <li><?php cw_class_editor('new-cw_class'); ?></li>
-    <li class="last"><?php render_vous_type_filter(); ?></li>
+    <li class="last"><?php cw_class_type_filter(); ?></li>
   </ul>
 <?php
 }
@@ -82,7 +82,7 @@ function cw_class_attend_actions()
 {
 ?>
   <ul id="cw_class-nav">
-    <li class="last"><?php render_vous_type_filter(); ?></li>
+    <li class="last"><?php cw_class_type_filter(); ?></li>
   </ul>
 <?php
 }
