@@ -235,12 +235,74 @@ class CW_Admin
       </p>
 
       <div class="cw_class-terms-admin">
-        <div class="cw_class-form"></div>
         <div class="cw_class-list-terms"></div>
+        <div class="cw_class-form"></div>
       </div>
 
       <script id="tmpl-cw_class-term" type="text/html">
         <span class="cw_class-term-name">{{data.name}}</span> <span class="cw_class-term-actions"><a href="#" class="cw_class-edit-item" data-term_id="{{data.id}}" title="<?php esc_attr_e('Edit type', 'cw_class'); ?>"></a> <a href="#" class="cw_class-delete-item" data-term_id="{{data.id}}" title="<?php esc_attr_e('Delete type', 'cw_class'); ?>"></a></span>
+      </script>
+
+      <script id="tmpl-cw_class-new-type-form" type="text/html">
+        <style>
+          .class-type-form {
+            max-width: 25em;
+          }
+
+          .class-type-form--container {
+            display: flex;
+            flex-direction: column;
+          }
+
+          .form-field {
+            width: 100%;
+            margin-top: 1rem;
+          }
+
+          .form-field.actions {
+            align-self: center;
+          }
+
+          .class-type-form .button {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+          }
+
+          .form-field .negative {
+            border-color: var(--e-context-error-color);
+            color: var(--e-context-error-color);
+          }
+        </style>
+
+        <div class="class-type-form">
+          <form class="class-type-form--container">
+            <div class="form-field">
+              <label for="type-name">Class type</label>
+              <input type="text" id="type-name" />
+            </div>
+            <div class="form-field">
+              <label for="courses">Courses</label>
+              <!-- <select name="courses[]" id="courses" multiple>
+                <option value="foo" label="Foo"></option>
+                <option value="bar" label="Bar"></option>
+              </select> -->
+              {{ JSON.stringify(data) }}
+              <# _.each(data.courses, function (course, index) { #>
+              <div class="form-field--checkbox">
+                <input type="checkbox" id="course-{{course.index}}" name="courses" value="{{ course.id }}">
+                <label for="vehicle1"> {{ course.name }}</label><br>
+              </div>
+              <# }) #>
+            </div>
+            <div class="form-field actions">
+              <button id="ok" class="button action"><span class="dashicons dashicons-yes"></span></button>
+              <button id="cancel" class="button action"><span class="dashicons dashicons-no"></span></button>
+              <button id="delete" class="button action negative"><span class="dashicons dashicons-trash"></span></button>
+              <button id="edit" class="button action"><span class="dashicons dashicons-edit"></span></button>
+            </div>
+          </form>
+        </div>
       </script>
 
     </div>

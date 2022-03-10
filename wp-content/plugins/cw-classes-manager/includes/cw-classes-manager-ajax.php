@@ -227,11 +227,11 @@ function cw_class_ajax_insert_term()
     wp_send_json_error();
   }
 
-  if (!isset($_POST['cw_class_courses'])) {
-    wp_send_json_error();
-  }
+  // if (!isset($_POST['cw_class_courses'])) {
+  //   wp_send_json_error();
+  // }
 
-  check_ajax_referer('cw_class-admin', 'nonce');
+  check_ajax_referer('cw-classes-manager-admin', 'nonce');
 
   if (!current_user_can('manage_options')) {
     wp_send_json_error();
@@ -285,7 +285,7 @@ add_action('wp_ajax_cw_class_insert_term', 'cw_class_ajax_insert_term');
  */
 function cw_class_ajax_get_terms()
 {
-  check_ajax_referer('cw_class-admin', 'nonce');
+  check_ajax_referer('cw-classes-manager-admin', 'nonce');
 
   if (!current_user_can('manage_options')) {
     wp_send_json_error();
@@ -320,7 +320,7 @@ function cw_class_ajax_delete_term()
     wp_send_json_error();
   }
 
-  check_ajax_referer('cw_class-admin', 'nonce');
+  check_ajax_referer('cw-classes-manager-admin', 'nonce');
 
   if (!current_user_can('manage_options')) {
     wp_send_json_error();
@@ -358,7 +358,7 @@ function cw_class_ajax_update_term()
     wp_send_json_error();
   }
 
-  check_ajax_referer('cw_class-admin', 'nonce');
+  check_ajax_referer('cw-classes-manager-admin', 'nonce');
 
   if (!current_user_can('manage_options')) {
     wp_send_json_error();
@@ -393,16 +393,25 @@ add_action('wp_ajax_cw_class_update_term', 'cw_class_ajax_update_term');
  *
  * @return void
  */
-function cw_class_ajax_get_subs()
+function cw_class_ajax_get_courses()
 {
   if (!current_user_can('manage_options')) {
     wp_send_json_error();
   }
 
-  $subs = cw_class_get_all_class_subs();
+  $courses = cw_class_get_all_class_courses();
 
-  if (!count($subs)) wp_send_json_error();
+  if (!count($courses)) wp_send_json_error();
 
-  wp_send_json_success($subs);
+  $result = [];
+
+  foreach ($courses as $course) {
+    $result[] = [
+      'id' => $course->id,
+      'name' => $course->name,
+    ];
+  }
+
+  wp_send_json_success($result);
 }
-add_action('wp_ajax_cw_class_get_subs', 'cw_class_ajax_get_subs');
+add_action('wp_ajax_cw_class_get_courses', 'cw_class_ajax_get_courses');

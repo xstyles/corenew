@@ -991,11 +991,13 @@ function cw_class_update_term_meta($term_id, $key = 'cw_class_courses', $value)
 }
 
 
-function cw_class_get_all_class_subs()
+function cw_class_get_all_class_courses()
 {
-  return wc_get_products([
+  $products = wc_get_products([
     'type' => 'subscription',
     'category' => 'subjects',
     'post_status' => 'publish',
   ]);
+
+  return $products;
 }

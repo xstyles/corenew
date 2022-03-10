@@ -9,18 +9,24 @@ window.wp = window.wp || {}
   var cwcm_admin = {
     start: function () {
       this.terms = new this.Collections.Terms()
-      this.setForm()
+      this.courses = new this.Collections.Courses()
+      this.courses.fetch()
       this.terms.fetch()
+      this.setForm()
       this.terms.on('add', this.inject, this)
     },
 
     setForm: function () {
-      this.form = new this.Views.Form({ collection: this.terms })
+      // this.form = new this.Views.Form({ collection: this.terms })
+      this.form = new this.Views.ClassTypeForm({
+        collection: this.terms,
+      })
       this.form.inject('.cw_class-form')
     },
 
     inject: function () {
-      this.view = new this.Views.Terms({ collection: this.terms })
+      // this.view = new this.Views.Terms({ collection: this.terms })
+      this.view = new this.Views.ClassTypesList({ collection: this.terms })
       this.view.inject('.cw_class-list-terms')
     },
   }
@@ -50,7 +56,11 @@ window.wp = window.wp || {}
   cwcm_admin.vars = cw_class_admin_vars
 
   cwcm_admin.Models.Term = Backbone.Model.extend({
-    term: {},
+    term: { courses: [] },
+  })
+
+  cwcm_admin.Models.Course = Backbone.Model.extend({
+    course: {},
   })
 
   /* ----------- */
@@ -82,7 +92,7 @@ window.wp = window.wp || {}
       return resp
     },
 
-    insertTerm: function (name, courses, options) {
+    insertTerm: function (name, courses = [], options) {
       model = this
       options = options || {}
 
@@ -139,26 +149,86 @@ window.wp = window.wp || {}
     },
   })
 
+  cwcm_admin.Collections.Courses = Backbone.Collection.extend({
+    model: cwcm_admin.Models.Course,
+
+    sync: function (method, model, options) {
+      if ('read' === method) {
+        options = options || {}
+        options.context = this
+        options.data = _.extend(options.data || {}, {
+          action: 'cw_class_get_courses',
+          nonce: cwcm_admin.vars.nonce,
+        })
+
+        return wp.ajax.send(options)
+      }
+    },
+  })
+
   /* ----- */
   /* VIEWS */
   /* ----- */
   cwcm_admin.Views = {}
 
   // Form to add new cw_class types
-  cwcm_admin.Views.Form = wp.Backbone.Form.extend({
-    tagName: 'form',
+  cwcm_admin.Views.ClassTypesList = cwcm_admin.View.extend({
+    tagName: 'ul',
     current_term: 0,
-    subs: [],
 
     initialize: function () {
-      this.getSubs()
+      this.addItemView({})
+      _.each(this.collection.models, this.addItemView, this)
     },
 
-    getSubs: function () {
-      return wp.ajax.get('cw_class_ajax_get_subs')
-      .done(function (res) {
-        this.subs = res
-      })
+    addItemView: function (term) {
+      console.log(
+        'cwcm_admin.courses =',
+        JSON.stringify(cwcm_admin.courses, null, 2)
+      )
+      this.views.add(
+        new cwcm_admin.Views.ClassTypeItem({
+          model: term,
+        })
+      )
+    },
+  })
+
+  cwcm_admin.View.ClassTypeItem = wp.Backbone.View.extend({
+    tagName: 'li',
+    className: 'class-type-item',
+    template: wp.template('cw_class-type-item'),
+
+    initialize: function () {},
+  })
+
+  cwcm_admin.Views.ClassTypeForm = cwcm_admin.View.extend({
+    tagName: 'div',
+    className: 'class-type-form',
+    template: wp.template('cw_class-new-type-form'),
+    placeholder: cwcm_admin.vars.placeholder_default,
+    // courses: cwcm_admin.Collections.Courses,
+
+    initialize: function () {
+      // this.collection.on('change', this.setTermToEdit, this)
+      this.courses = cwcm_admin.courses.models
+    },
+
+    setTermToEdit: function (model) {
+      if (1 == model.get('editing')) {
+        $(this.el).prop(
+          'placeholder',
+          cwcm_admin.vars.current_edited_type.replace('%s', model.get('name'))
+        )
+        this.current_term = model.get('id')
+      } else {
+        $(this.el).prop('placeholder', this.attributes.placeholder)
+        this.current_term = 0
+
+        if (true == $(this.el).prop('disabled')) {
+          $(this.el).prop('disabled', false)
+        }
+      }
     },
   })
 
@@ -203,7 +273,7 @@ window.wp = window.wp || {}
           this.addingTermFailed
         )
 
-        this.collection.insertTerm(type, subscriptionId)
+        this.collection.insertTerm(type)
 
         // Edit an existing term
       } else {
@@ -271,8 +341,8 @@ window.wp = window.wp || {}
       _.each(this.collection.models, this.addItemView, this)
     },
 
-    addItemView: function (terms) {
-      this.views.add(new cwcm_admin.Views.Term({ model: terms }))
+    addItemView: function (term) {
+      this.views.add(new cwcm_admin.Views.Term({ model: term }))
     },
   })
 
