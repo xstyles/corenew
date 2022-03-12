@@ -146,17 +146,17 @@ class CW_Scheduler
    */
   public function admin_menu()
   {
-    $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
+    // $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
 
-    $hook = add_menu_page(
+    add_menu_page(
       __('cw_class Settings', 'cw_class'),
       __('cw_class Settings', 'cw_class'),
       'manage_options',
-      'schedule',
-      array($this, 'admin_display')
+      'schedule-classes',
+      array($this, 'admin_display'),
+      'dashicons-calendar-alt',
+      1,
     );
-
-    add_action("admin_head-$hook", array($this, 'modify_highlight'));
   }
 
   /**
@@ -194,29 +194,6 @@ class CW_Scheduler
     $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
 
     remove_submenu_page($page, 'cw_class');
-  }
-
-  /**
-   * cw_class tab
-   *
-   * @package CW Class
-   * @subpackage Admin
-   *
-   * @since CW Class (1.2.0)
-   */
-  public function admin_tab()
-  {
-    $class = false;
-
-    $current_screen = get_current_screen();
-
-    // Set the active class
-    if (!empty($current_screen->id) && strpos($current_screen->id, 'cw_class') !== false) {
-      $class = "nav-tab-active";
-    }
-  ?>
-    <a href="<?php echo esc_url(bp_get_admin_url(add_query_arg(array('page' => 'cw_class'), 'admin.php'))); ?>" class="nav-tab <?php echo $class; ?>"><?php esc_html_e('Class Scheduler', 'cw_class'); ?></a>
-<?php
   }
 
   // Enqueue Fullcalender in wp
