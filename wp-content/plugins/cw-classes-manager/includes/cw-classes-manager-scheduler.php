@@ -117,8 +117,8 @@ class CW_Scheduler
 
     // wp_enqueue_style('cw-classes-manager-admin-style', $manager->plugin_css . "cw-classes-manager-admin$suffix.css", array('dashicons'), $manager->version);
     // wp_enqueue_script('cw-classes-manager-admin-backbone', $manager->plugin_js . "cw-classes-manager-admin-backbone$suffix.js", array('wp-backbone'), $manager->version, true);
-    add_action('wp_enqueue_scripts', [ $this, 'cw_calender_css' ]);
-    add_action('wp_enqueue_scripts', [ $this, 'cw_calender_js' ]);
+    add_action('wp_enqueue_scripts', [$this, 'cw_calender_css']);
+    add_action('wp_enqueue_scripts', [$this, 'cw_calender_js']);
 
     wp_enqueue_script('cw-classes-manager-scheduler', $manager->plugin_js . "cw-classes-manager-scheduler$suffix.js", [], $manager->version, true);
     wp_localize_script('cw-classes-manager-admin-backbone', 'cw_class_admin_vars', array(
@@ -178,7 +178,7 @@ class CW_Scheduler
         <div class="calendar"></div>
       </div>
     </div>
-  <?php
+<?php
   }
 
   /**
@@ -189,12 +189,12 @@ class CW_Scheduler
    *
    * @since CW Class (1.2.0)
    */
-  public function admin_head()
-  {
-    $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
+  // public function admin_head()
+  // {
+  //   $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
 
-    remove_submenu_page($page, 'cw_class');
-  }
+  //   remove_submenu_page($page, 'cw_class');
+  // }
 
   // Enqueue Fullcalender in wp
 
