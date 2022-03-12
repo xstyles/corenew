@@ -74,6 +74,7 @@ class CW_Class_Component extends BP_Component
       'cw-classes-manager-parts.php',
       'cw-classes-manager-template.php',
       'cw-classes-manager-functions.php',
+      'cw-classes-manager-scheduler.php',
     );
 
     if (bp_is_active('notifications')) {

@@ -81,17 +81,17 @@ class CW_Scheduler
   private function setup_hooks()
   {
     // update plugin's db version
-    // add_action('bp_admin_init',            array($this, 'maybe_update'));
+    // add_action('bp_admin_init',            [$this, 'maybe_update]);
 
     // javascript
-    add_action('bp_admin_enqueue_scripts', array($this, 'enqueue_script'));
+    add_action('admin_enqueue_scripts', [$this, 'enqueue_script']);
 
     // Page
-    add_action(bp_core_admin_hook(),       array($this, 'admin_menu'));
+    add_action(bp_core_admin_hook(),       [$this, 'admin_menu']);
 
-    add_action('admin_head',               array($this, 'admin_head'), 999);
+    // add_action('admin_head',               [$this, 'admin_head'], 999);
 
-    // add_action('bp_admin_tabs',            array($this, 'admin_tab'));
+    // add_action('bp_admin_tabs',            [$this, 'admin_tab']);
   }
 
   /**
@@ -107,7 +107,7 @@ class CW_Scheduler
     $current_screen = get_current_screen();
 
     // Bail if we're not on the cw_class page
-    if (empty($current_screen->id) || strpos($current_screen->id, 'cw_class') === false) {
+    if (empty($current_screen->id) || strpos($current_screen->id, 'schedule-classes') === false) {
       return;
     }
 
@@ -115,13 +115,13 @@ class CW_Scheduler
     $suffix = '';
     $manager = cw_class();
 
-    // wp_enqueue_style('cw-classes-manager-admin-style', $manager->plugin_css . "cw-classes-manager-admin$suffix.css", array('dashicons'), $manager->version);
-    // wp_enqueue_script('cw-classes-manager-admin-backbone', $manager->plugin_js . "cw-classes-manager-admin-backbone$suffix.js", array('wp-backbone'), $manager->version, true);
-    add_action('wp_enqueue_scripts', [$this, 'cw_calender_css']);
-    add_action('wp_enqueue_scripts', [$this, 'cw_calender_js']);
+    // wp_enqueue_style('cw-classes-manager-admin-style', $manager->plugin_css . "cw-classes-manager-admin$suffix.css", ['dashicons'], $manager->version);
+    // wp_enqueue_script('cw-classes-manager-admin-backbone', $manager->plugin_js . "cw-classes-manager-admin-backbone$suffix.js", ['wp-backbone'], $manager->version, true);
+    $this->cw_calender_css();
+    $this->cw_calender_js();
 
     wp_enqueue_script('cw-classes-manager-scheduler', $manager->plugin_js . "cw-classes-manager-scheduler$suffix.js", [], $manager->version, true);
-    wp_localize_script('cw-classes-manager-admin-backbone', 'cw_class_admin_vars', array(
+    wp_localize_script('cw-classes-manager-scheduler', 'cw_class_admin_vars', [
       'nonce'                  => wp_create_nonce('cw-classes-manager-scheduler'),
       'placeholder_subject'    => esc_html__('Subject', 'cw_class'),
       'placeholder_start_time' => esc_html__('Start time', 'cw_class'),
@@ -133,7 +133,7 @@ class CW_Scheduler
       'placeholder_error'      => esc_html__('Error: class not saved', 'cw_class'),
       'alert_notdeleted'       => esc_html__('Error: class not deleted', 'cw_class'),
       'current_editing_class'  => esc_html__('Editing: %s', 'cw_class'),
-    ));
+    ]);
   }
 
   /**
@@ -149,11 +149,11 @@ class CW_Scheduler
     // $page  = bp_core_do_network_admin()  ? 'settings.php' : 'options-general.php';
 
     add_menu_page(
-      __('cw_class Settings', 'cw_class'),
-      __('cw_class Settings', 'cw_class'),
+      __('Schedule classes', 'cw_class'),
+      __('Schedule classes', 'cw_class'),
       'manage_options',
       'schedule-classes',
-      array($this, 'admin_display'),
+      [$this, 'admin_display'],
       'dashicons-calendar-alt',
       1,
     );
@@ -200,15 +200,15 @@ class CW_Scheduler
 
   function cw_calender_css()
   {
-    wp_register_style('fullcalendercss', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css');
+    wp_register_style('fullcalendercss', '//cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css');
     wp_enqueue_style('fullcalendercss');
   }
 
   function cw_calender_js()
   {
-    wp_register_script('fullcalenderjs', 'https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js');
+    wp_register_script('fullcalenderjs', '//cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js');
     wp_enqueue_script('fullcalenderjs');
   }
 }
 
-add_action('bp_init', array('CW_Scheduler', 'start'), 14);
+add_action('bp_init', ['CW_Scheduler', 'start'], 14);
