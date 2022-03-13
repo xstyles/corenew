@@ -176,6 +176,13 @@ class CW_Scheduler
 
       <div class="cw-class-scheduler-admin">
         <div class="calendar"></div>
+        <div style="display: none">
+          <?php add_thickbox(); ?>
+          <a id="schedule-form" href="#TB_inline?&width=600&height=550&inlineId=my-content-id" class="thickbox">Click me</a>
+        </div>
+        <div id="my-content-id" style="display: none">
+          <p>Hello, World!</p>
+        </div>
       </div>
     </div>
 <?php
