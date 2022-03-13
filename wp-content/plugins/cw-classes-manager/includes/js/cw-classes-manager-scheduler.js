@@ -15,6 +15,10 @@
       //     });
       // },
 
+      dateClick: function (dateClickInfo) {
+        console.log('dateClickInfo =', dateClickInfo)
+      },
+
       events: [
         {
           title: 'Math',
