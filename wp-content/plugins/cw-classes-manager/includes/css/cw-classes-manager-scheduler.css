@@ -1,3 +1,7 @@
+#TB_title {
+  border-bottom-width: 0;
+}
+
 .modal-wrapper nav .nav-tab {
   cursor: pointer;
 }
