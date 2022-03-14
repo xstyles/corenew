@@ -184,8 +184,8 @@ class CW_Scheduler
         <div id="class-scheduler-content" style="display: none">
           <div class="modal-wrapper">
             <nav class=" nav-tab-wrapper">
-              <a class="nav-tab" data-tab="schedule">Schedule</a>
-              <a class="nav-tab" data-tab="attend">Attend</a>
+              <a class="nav-tab" data-tab="schedule"><?php echo __('Schedule', 'cw_class'); ?></a>
+              <a class="nav-tab" data-tab="attend"><?php echo __('Attendance', 'cw_class'); ?></a>
             </nav>
 
             <?php /* Scheduler content */ ?>
