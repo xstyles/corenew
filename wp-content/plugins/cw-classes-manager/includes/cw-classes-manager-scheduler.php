@@ -115,7 +115,7 @@ class CW_Scheduler
     $suffix = '';
     $manager = cw_class();
 
-    // wp_enqueue_style('cw-classes-manager-admin-style', $manager->plugin_css . "cw-classes-manager-admin$suffix.css", ['dashicons'], $manager->version);
+    wp_enqueue_style('cw-classes-manager-admin-style', $manager->plugin_css . "cw-classes-manager-scheduler$suffix.css", ['dashicons'], $manager->version);
     // wp_enqueue_script('cw-classes-manager-admin-backbone', $manager->plugin_js . "cw-classes-manager-admin-backbone$suffix.js", ['wp-backbone'], $manager->version, true);
     $this->cw_calender_css();
     $this->cw_calender_js();
@@ -178,14 +178,28 @@ class CW_Scheduler
         <div class="calendar"></div>
         <div style="display: none">
           <?php add_thickbox(); ?>
-          <a id="schedule-form" href="#TB_inline?&width=600&height=550&inlineId=my-content-id" class="thickbox">Click me</a>
+          <a id="show-dialog" href="#TB_inline?&width=600&height=550&inlineId=class-scheduler-content" class="thickbox">Click me</a>
         </div>
-        <div id="my-content-id" style="display: none">
-          <p>Hello, World!</p>
+
+        <div id="class-scheduler-content" style="display: none">
+          <div class="modal-wrapper">
+            <nav class=" nav-tab-wrapper">
+              <a class="nav-tab" data-tab="schedule">Schedule</a>
+              <a class="nav-tab" data-tab="attend">Attend</a>
+            </nav>
+
+            <?php /* Scheduler content */ ?>
+            <div class="tab-content" data-tab="schedule">
+              Class form goes here
+            </div>
+            <?php /* Attendance content */ ?>
+            <div class="tab-content" data-tab="attend">
+              Attendance list goes here
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-<?php
+  <?php
   }
 
   /**

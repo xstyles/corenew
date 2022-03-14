@@ -1,0 +1,11 @@
+.modal-wrapper nav .nav-tab {
+  cursor: pointer;
+}
+
+.modal-wrapper nav ~ .tab-content {
+  display: none;
+}
+
+.modal-wrapper nav ~ .tab-content.tab-content-active {
+  display: block;
+}
