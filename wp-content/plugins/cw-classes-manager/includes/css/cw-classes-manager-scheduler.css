@@ -1,3 +1,7 @@
+html, body {
+  height: auto;
+}
+
 #TB_title {
   border-bottom-width: 0;
 }
