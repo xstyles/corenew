@@ -97,7 +97,7 @@ function cw_class_format_activity_action($action, $activity)
   if (empty($cw_class_title)) {
 
     $cw_class = cw_class_get_item($cw_class_id);
-    if (is_a($cw_class, 'cw_class_Item')) {
+    if (is_a($cw_class, 'CW_Class_Item')) {
       $cw_class_title = $cw_class->title;
       bp_activity_update_meta($activity->id, 'cw_class_title', $cw_class_title);
     }
@@ -233,7 +233,7 @@ function cw_class_delete_item_activities($cw_class_id = 0, $cw_class = null)
 
   if (is_a($cw_class, 'WP_Post')) {
     $cw_class_status = $cw_class->post_status;
-  } else if (is_a($cw_class, 'cw_class_Item')) {
+  } else if (is_a($cw_class, 'CW_Class_Item')) {
     $cw_class_status = $cw_class->status;
   }
 

@@ -25,7 +25,7 @@ function cw_class_get_item($id = 0)
   if (empty($id))
     return false;
 
-  $cw_class = new cw_class_Item($id);
+  $cw_class = new CW_Class_Item($id);
 
   return apply_filters('cw_class_get_item', $cw_class);
 }
@@ -61,7 +61,7 @@ function cw_class_get_items($args = array())
   }
 
   if (empty($cw_classes)) {
-    $cw_classes = cw_class_Item::get(array(
+    $cw_classes = CW_Class_Item::get(array(
       'attendees' => (array) $r['attendees'],
       'organizer' => (int) $r['organizer'],
       'per_page'  => $r['per_page'],
@@ -92,7 +92,7 @@ function cw_class_get_items($args = array())
  */
 function cw_class_editor($editor_id, $settings = array())
 {
-  cw_class_Editor::editor($editor_id, $settings);
+  CW_Class_Editor::editor($editor_id, $settings);
 }
 
 /**
@@ -178,7 +178,7 @@ function cw_class_save($args = array())
   }
 
   // Using cw_class
-  $cw_class = new cw_class_Item($r['id']);
+  $cw_class = new CW_Class_Item($r['id']);
 
   $cw_class->organizer   = (int) $r['organizer'];
   $cw_class->title       = $r['title'];
@@ -225,7 +225,7 @@ function cw_class_delete_item($id = 0)
 
   do_action('cw_class_before_delete', $id);
 
-  $deleted = cw_class_Item::delete($id);
+  $deleted = CW_Class_Item::delete($id);
 
   if (!empty($deleted)) {
     do_action('cw_class_after_delete', $id, $deleted);
@@ -491,7 +491,7 @@ function cw_class_handle_actions()
 
     do_action("cw_class_before_attendee_prefs", $args);
 
-    if (!cw_class_Item::attendees_pref($cw_class_id, $attendee_id, $args['days'])) {
+    if (!CW_Class_Item::attendees_pref($cw_class_id, $attendee_id, $args['days'])) {
       bp_core_add_message(__('Saving your preferences failed.', 'cw_class'), 'error');
     } else {
       bp_core_add_message(__('Preferences successfully saved.', 'cw_class'));
@@ -649,7 +649,7 @@ add_action('bp_actions', 'cw_class_download_ical');
  *
  * @since CW Class (1.2.0)
  *
- * @param int|cw_class_Item $cw_class_id ID or object for the cw_class
+ * @param int|CW_Class_Item $cw_class_id ID or object for the cw_class
  * @uses cw_class_get_terms()
  * @return bool Whether the taxonomy exists.
  */
@@ -671,7 +671,7 @@ function cw_class_has_types($cw_class = null)
   $retval = true;
 
   if (!empty($cw_class)) {
-    if (!is_a($cw_class, 'cw_class_Item')) {
+    if (!is_a($cw_class, 'CW_Class_Item')) {
       $cw_class = cw_class_get_item($cw_class);
     }
 

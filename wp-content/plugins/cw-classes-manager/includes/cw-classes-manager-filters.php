@@ -430,7 +430,7 @@ function cw_class_quicktags_settings($settings = array())
  * @since CW Class (1.1.0)
  *
  * @param  string $output      the definitive date output for the cw_class
- * @param  cw_class_Item $cw_class the cw_class object
+ * @param  CW_Class_Item $cw_class the cw_class object
  * @return string              HTML Output
  */
 function cw_class_append_ical_link($output = '', $cw_class = null)

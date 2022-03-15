@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) exit;
  *
  * @since CW Class (1.0.0)
  */
-class cw_class_Editor
+class CW_Class_Editor
 {
 
   private static $settings = array();
@@ -100,7 +100,7 @@ class cw_class_Editor
  *
  * @since CW Class (1.0.0)
  */
-class cw_class_Item
+class CW_Class_Item
 {
   public $id;
   public $organizer;
@@ -480,13 +480,13 @@ class cw_class_Item
 }
 
 
-if (!class_exists('cw_class_Upcoming_Widget')) :
+if (!class_exists('CW_Class_Upcoming_Widget')) :
   /**
    * List the upcoming cw_class for the loggedin user
    *
    * @since 1.4.0
    */
-  class cw_class_Upcoming_Widget extends WP_Widget
+  class CW_Class_Upcoming_Widget extends WP_Widget
   {
 
     /**
@@ -494,8 +494,8 @@ if (!class_exists('cw_class_Upcoming_Widget')) :
      */
     public function __construct()
     {
-      $widget_ops = array('description' => __('List the upcoming cw_class for the loggedin user.', 'cw_class'));
-      parent::__construct(false, $name = __('Upcoming cw_class', 'cw_class'), $widget_ops);
+      $widget_ops = array('description' => __('List the upcoming classes for the current user.', 'cw_class'));
+      parent::__construct(false, $name = __('Upcoming classes', 'cw_class'), $widget_ops);
     }
 
     /**
@@ -503,7 +503,7 @@ if (!class_exists('cw_class_Upcoming_Widget')) :
      */
     public static function register_widget()
     {
-      register_widget('cw_class_Upcoming_Widget');
+      register_widget('CW_Class_Upcoming_Widget');
     }
 
     /**
@@ -646,7 +646,7 @@ if (!class_exists('cw_class_Upcoming_Widget')) :
         <input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo esc_attr($title); ?>" />
       </p>
       <p>
-        <label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of upcoming cw_class to show:', 'cw_class'); ?></label>
+        <label for="<?php echo $this->get_field_id('number'); ?>"><?php _e('Number of upcoming classes to show:', 'cw_class'); ?></label>
         <input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" size="3" />
       </p>
 <?php
@@ -655,4 +655,4 @@ if (!class_exists('cw_class_Upcoming_Widget')) :
 
 endif;
 
-add_action('bp_widgets_init', array('cw_class_Upcoming_Widget', 'register_widget'), 10);
+add_action('bp_widgets_init', array('CW_Class_Upcoming_Widget', 'register_widget'), 10);

@@ -522,7 +522,7 @@ if (!class_exists('cw_class_Group') && class_exists('BP_Group_Extension')) :
      *
      * @since CW Class (1.1.0)
      *
-     * @param  cw_class_Item              $cw_class the cw_class object
+     * @param  CW_Class_Item              $cw_class the cw_class object
      * @uses   groups_update_last_activity() to update group's latest activity
      */
     public function group_last_activity($cw_class = null)
@@ -1192,18 +1192,18 @@ function cw_class_groups_activity_actions()
   bp_activity_set_action(
     $bp->groups->id,
     'new_cw_class',
-    __('New cw_class in a group', 'cw_class'),
+    __('New class in a group', 'cw_class'),
     'cw_class_format_activity_action',
-    __('New cw_class', 'cw_class'),
+    __('New class', 'cw_class'),
     array('group', 'member_groups')
   );
 
   bp_activity_set_action(
     $bp->groups->id,
     'updated_cw_class',
-    __('Updated a cw_class in a group', 'cw_class'),
+    __('Updated a class in a group', 'cw_class'),
     'cw_class_format_activity_action',
-    __('Updated a cw_class', 'cw_class'),
+    __('Updated a class', 'cw_class'),
     array('group', 'member_groups')
   );
 }
