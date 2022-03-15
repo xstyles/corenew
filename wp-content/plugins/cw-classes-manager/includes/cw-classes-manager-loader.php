@@ -255,22 +255,22 @@ class CW_Class_Component extends BP_Component
   {
     // Set up some labels for the post type
     $manager_labels = array(
-      'name'               => __('cw_class',                                                  'cw_class'),
-      'singular'           => _x('cw_class',                   'cw_class singular',           'cw_class'),
-      'menu_name'          => _x('cw_class',                   'cw_class menu name',          'cw_class'),
-      'all_items'          => _x('All cw_class',               'cw_class all items',          'cw_class'),
-      'singular_name'      => _x('cw_class',                   'cw_class singular name',      'cw_class'),
-      'add_new'            => _x('Add New cw_class',           'cw_class add new',            'cw_class'),
-      'edit_item'          => _x('Edit cw_class',              'cw_class edit item',          'cw_class'),
-      'new_item'           => _x('New cw_class',               'cw_class new item',           'cw_class'),
-      'view_item'          => _x('View cw_class',              'cw_class view item',          'cw_class'),
-      'search_items'       => _x('Search cw_class',            'cw_class search items',       'cw_class'),
-      'not_found'          => _x('No cw_class Found',          'cw_class not found',          'cw_class'),
-      'not_found_in_trash' => _x('No cw_class Found in Trash', 'cw_class not found in trash', 'cw_class')
+      'name'               => __('Classes',                                                'cw_class'),
+      'singular'           => _x('Class',                   'cw_class singular',           'cw_class'),
+      'menu_name'          => _x('Classes',                 'cw_class menu name',          'cw_class'),
+      'all_items'          => _x('All classes',             'cw_class all items',          'cw_class'),
+      'singular_name'      => _x('Class',                   'cw_class singular name',      'cw_class'),
+      'add_new'            => _x('Add New class',           'cw_class add new',            'cw_class'),
+      'edit_item'          => _x('Edit class',              'cw_class edit item',          'cw_class'),
+      'new_item'           => _x('New class',               'cw_class new item',           'cw_class'),
+      'view_item'          => _x('View class',              'cw_class view item',          'cw_class'),
+      'search_items'       => _x('Search class',            'cw_class search items',       'cw_class'),
+      'not_found'          => _x('No class found',          'cw_class not found',          'cw_class'),
+      'not_found_in_trash' => _x('No class found in trash', 'cw_class not found in trash', 'cw_class')
     );
 
     $manager_args = array(
-      'label'              => _x('cw_class',                    'cw_class label',              'cw_class'),
+      'label'              => _x('Class',                'cw_class label',              'cw_class'),
       'labels'            => $manager_labels,
       'public'            => false,
       'rewrite'           => false,
